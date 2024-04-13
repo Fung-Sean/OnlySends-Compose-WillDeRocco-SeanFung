@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "96287936579",
+    "project_id": "onlysends-compose",
+    "storage_bucket": "onlysends-compose.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:96287936579:android:086fb136ad9a9107b284f6",
+        "android_client_info": {
+          "package_name": "com.example.onlysends_compose"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "96287936579-4dc1uno8bo5di6ebs676e5bid8tfa48f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.onlysends_compose",
+            "certificate_hash": "ac102cf5e110e4ba038916fe425af6a0af10c82d"
+          }
+        },
+        {
+          "client_id": "96287936579-p0gf0ng3h7873eq3ug6s78697s2s6bdv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCy5fbli_gOdbhpKKW7mFUGNywJAPjL1js"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "96287936579-p0gf0ng3h7873eq3ug6s78697s2s6bdv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
