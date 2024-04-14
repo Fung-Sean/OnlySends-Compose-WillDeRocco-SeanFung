@@ -74,6 +74,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+    // compose dependencies
     implementation ("androidx.activity:activity-compose:1.8.2")
     implementation ("androidx.compose.foundation:foundation:1.6.5")
     implementation ("androidx.compose.runtime:runtime:1.6.5")
@@ -81,8 +82,9 @@ dependencies {
     implementation ("androidx.compose.ui:ui-tooling:1.6.5")
     implementation ("androidx.compose.material:material:1.6.5")
     val nav_version = "2.7.7"
-
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
 
+    // coil (image rendering) dependencies
+    implementation("io.coil-kt:coil-compose:2.6.0")
 }
