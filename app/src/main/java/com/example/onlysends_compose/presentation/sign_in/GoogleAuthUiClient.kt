@@ -14,7 +14,7 @@ import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 import java.util.concurrent.CancellationException
 
-class GoogleAuthUiCLient (
+class GoogleAuthUiClient (
     private val context: Context,
     private val oneTapClient: SignInClient
 

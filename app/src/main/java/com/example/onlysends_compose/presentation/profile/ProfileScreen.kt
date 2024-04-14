@@ -24,7 +24,7 @@ import com.example.onlysends_compose.presentation.sign_in.UserData
 // for now -> doesn't contain any state, so no need for ViewModel
 @Composable
 fun ProfileScreen(
-    userData: UserData,
+    userData: UserData?,
     onSignOut: () -> Unit
 ) {
     Column(
@@ -33,7 +33,7 @@ fun ProfileScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // display profile picture
-        if(userData.profilePictureUrl != null) {
+        if(userData?.profilePictureUrl != null) {
             AsyncImage(
                 model = userData.profilePictureUrl,
                 contentDescription = "User profile picture",
@@ -45,7 +45,7 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(16.dp))
         }
         // display username
-        if(userData.username != null) {
+        if(userData?.username != null) {
             Text(
                 text = userData.username,
                 textAlign = TextAlign.Center,
