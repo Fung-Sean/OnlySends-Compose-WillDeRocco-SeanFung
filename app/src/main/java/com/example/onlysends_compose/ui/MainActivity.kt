@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity() {
                     SignInScreen(
                         state = state,
                         onSignInClick = {
+                            Log.d(TAG, "starting signIn process")
                             lifecycleScope.launch {
                                 val signInIntentSender = googleAuthUiClient.signIn()
                                 launcher.launch(
