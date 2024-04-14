@@ -3,7 +3,6 @@ package com.example.onlysends_compose.ui
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.IntentSenderRequest
@@ -16,7 +15,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.example.onlysends_compose.R
 import com.example.onlysends_compose.presentation.sign_in.GoogleAuthUiCLient
 import com.example.onlysends_compose.presentation.sign_in.SignInScreen
 import com.example.onlysends_compose.presentation.sign_in.SignInViewModel
