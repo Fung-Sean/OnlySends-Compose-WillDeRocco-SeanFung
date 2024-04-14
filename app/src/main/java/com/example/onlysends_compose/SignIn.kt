@@ -1,14 +1,12 @@
 package com.example.onlysends_compose
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
-import androidx.compose.runtime.Composable
+import com.example.onlysends_compose.ui.MainActivity
 import com.google.android.gms.common.SignInButton
-import com.google.android.gms.signin.internal.SignInClientImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.Firebase
@@ -36,7 +34,7 @@ class SignIn : ComponentActivity(){
 
     private fun hostActivity(){
         val i = Intent(this, MainActivity::class.java)
-        start
+//        start
 
     }
 }
