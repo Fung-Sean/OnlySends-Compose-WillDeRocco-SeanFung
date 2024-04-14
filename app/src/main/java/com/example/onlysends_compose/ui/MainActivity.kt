@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "what the")
+        Log.d(TAG, "MainActivity loaded")
 
         setContent {
             val navController = rememberNavController()
