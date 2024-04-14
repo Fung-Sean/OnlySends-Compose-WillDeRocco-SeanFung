@@ -115,6 +115,9 @@ class MainActivity : AppCompatActivity() {
                         }
                     )
                 }
+
+                // add more endpoints other composable functions
+
             }
         }
     }
