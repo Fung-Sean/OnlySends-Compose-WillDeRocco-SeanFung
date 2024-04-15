@@ -83,6 +83,8 @@ class MainActivity : AppCompatActivity() {
                 selectedItem = 4
             }
 
+            // keep track of user state (can be passed into other composable functions)
+            var user by remember { mutableStateOf<User?>(null) }
 
             // Define a state variable to hold the current route
             var currentRoute by remember { mutableStateOf("") }
@@ -257,7 +259,7 @@ class MainActivity : AppCompatActivity() {
                         val userData = googleAuthUiClient.getSignedInUser()
 
                         // Convert UserData to User
-                        val user = userData?.let {
+                        user = userData?.let {
                             User(
                                 userId = it.userId,
                                 username = it.username,
