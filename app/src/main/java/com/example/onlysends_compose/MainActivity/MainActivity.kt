@@ -46,6 +46,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 
 
 private const val TAG = "MainActivity"
@@ -76,13 +77,6 @@ class MainActivity : AppCompatActivity() {
             // Define a state variable to hold the current route
             var currentRoute by remember { mutableStateOf("") }
 
-            LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
-                // This effect will re-trigger whenever the route changes
-                Log.d(TAG, "hello, change route: ${navController.currentBackStackEntry?.destination?.route}")
-                scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
-            }
-
-
             Scaffold(
                 scaffoldState = scaffoldState,
                 topBar = {
@@ -96,10 +90,9 @@ class MainActivity : AppCompatActivity() {
                     )
                 },
                 bottomBar = {
-                    val route = navController.currentBackStackEntry?.destination?.route ?: ""
-                    Log.d(TAG, "route ${route.isEmpty()}")
+                    Log.d(TAG, "route ${currentRoute.isEmpty()}")
                     // this is not working yet (ideally don't wanna display navbar until signed in)
-//                    if (!(route.isEmpty() || route == "sign_in")) {
+                    if (!(currentRoute.isEmpty() || currentRoute == "sign_in")) {
                         NavigationBar(
                             modifier = Modifier
                                 .height(60.dp)
@@ -128,7 +121,7 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 }
                             }
-//                        }
+                        }
                     }
                 }
             ) { innerPadding ->
@@ -198,6 +191,11 @@ class MainActivity : AppCompatActivity() {
 
                     // endpoint 2) "profile"
                     composable(route = "profile") {
+                        // Update the currentRoute when navigating to "profile" (or any other page)
+                        LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
+                            currentRoute = navController.currentBackStackEntry?.destination?.route ?: ""
+                        }
+
                         // perform appropriate db operation (create user if not in db)
                         val userData = googleAuthUiClient.getSignedInUser()
 
@@ -236,6 +234,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+
+    private fun updateCurrentRoute(navController: NavHostController) {
+
     }
 
 }
