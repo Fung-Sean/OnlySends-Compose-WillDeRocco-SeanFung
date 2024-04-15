@@ -1,4 +1,4 @@
-package com.example.onlysends_compose.presentation.sign_in
+package com.example.onlysends_compose.ui.sign_in
 
 data class SignInResult(
     val data: UserData?,

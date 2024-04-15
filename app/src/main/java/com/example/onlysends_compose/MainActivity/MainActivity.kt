@@ -1,4 +1,4 @@
-package com.example.onlysends_compose.ui
+package com.example.onlysends_compose.MainActivity
 
 import android.os.Bundle
 import android.util.Log
@@ -15,10 +15,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.example.onlysends_compose.presentation.profile.ProfileScreen
-import com.example.onlysends_compose.presentation.sign_in.GoogleAuthUiClient
-import com.example.onlysends_compose.presentation.sign_in.SignInScreen
-import com.example.onlysends_compose.presentation.sign_in.SignInViewModel
+import com.example.onlysends_compose.ui.profile.ProfileScreen
+import com.example.onlysends_compose.ui.sign_in.GoogleAuthUiClient
+import com.example.onlysends_compose.ui.sign_in.SignInScreen
+import com.example.onlysends_compose.ui.sign_in.SignInViewModel
 import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
 

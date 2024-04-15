@@ -1,4 +1,4 @@
-package com.example.onlysends_compose.presentation.sign_in
+package com.example.onlysends_compose.ui.sign_in
 
 import android.content.Context
 import android.content.Intent
