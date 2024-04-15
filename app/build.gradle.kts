@@ -81,10 +81,17 @@ dependencies {
     implementation ("androidx.compose.ui:ui:1.6.5")
     implementation ("androidx.compose.ui:ui-tooling:1.6.5")
     implementation ("androidx.compose.material:material:1.6.5")
-    val nav_version = "2.7.7"
-    implementation("androidx.navigation:navigation-compose:$nav_version")
+    val navVersion = "2.7.7"
+    implementation("androidx.navigation:navigation-compose:$navVersion")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
 
     // coil (image rendering) dependencies
     implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // m3 design toolkit
+    implementation("androidx.compose.material3:material3:1.2.1")
+    implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
+    implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0-alpha05")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
 }
