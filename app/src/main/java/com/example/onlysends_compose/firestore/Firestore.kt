@@ -29,6 +29,8 @@ object Firestore {
                         .addOnFailureListener { e ->
                             Log.w(TAG, "Error adding document", e)
                         }
+                } else {
+                    Log.d(TAG, "user already exists in db")
                 }
             }
             .addOnFailureListener { exception ->
