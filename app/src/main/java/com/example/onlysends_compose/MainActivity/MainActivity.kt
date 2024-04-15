@@ -19,6 +19,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
@@ -77,21 +78,21 @@ class MainActivity : AppCompatActivity() {
             // navigation bar elements
             val navController = rememberNavController()
             val scaffoldState = rememberScaffoldState()
-            val items = listOf("home", "search", "post", "maps", "profile")
+            val items = listOf("home", "search", "post", "maps", "friends")
             // Define icons map
             val icons = mapOf(
                 "home" to Icons.Filled.Home,
                 "search" to Icons.Filled.Search,
                 "post" to Icons.Filled.AddCircle,
                 "maps" to Icons.Filled.LocationOn,
-                "profile" to Icons.Filled.Person
+                "friends" to Icons.Filled.Face
             )
 
             var selectedItem by remember { mutableIntStateOf(0) }
 
             // if logged in, selectedItem = profile
             if (googleAuthUiClient.getSignedInUser() != null) {
-                selectedItem = 4
+                selectedItem = -1
             }
 
             // keep track of user state (can be passed into other composable functions)
@@ -118,6 +119,7 @@ class MainActivity : AppCompatActivity() {
                         // Add other attributes as needed
                     )
                 }
+                // call createUserDocument function (this will UPDATE the `user` state variable automatically)
                 user?.let { Firestore.createUserDocument(firestore, it) }
             }
 
@@ -261,7 +263,7 @@ class MainActivity : AppCompatActivity() {
 
                     }
 
-                    // ----------------------- endpoint 4) "friends" -----------------------
+                    // ----------------------- endpoint 5) "friends" -----------------------
                     composable(route = getString(R.string.friends)) {
                         // Update the currentRoute when navigating to "profile" (or any other page)
                         updateCurrentRoute(navController = navController)
@@ -273,11 +275,11 @@ class MainActivity : AppCompatActivity() {
                         // Update the currentRoute when navigating to "profile" (or any other page)
                         updateCurrentRoute(navController = navController)
 
-//                        // perform appropriate db operation (create user if not in db)
-//                        val userData = googleAuthUiClient.getSignedInUser()
-//
-//                        // call homemade Firestore method to log the user (and update the db)
-//                        createUserAndDocument(userData)
+                        // perform appropriate db operation (create user if not in db)
+                        val userData = googleAuthUiClient.getSignedInUser()
+
+                        // call homemade Firestore method to log the user (and update the db)
+                        createUserAndDocument(userData)
 
                         ProfileScreen(
                             userData = userData,
