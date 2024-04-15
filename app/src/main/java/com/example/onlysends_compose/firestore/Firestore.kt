@@ -1,6 +1,7 @@
 package com.example.onlysends_compose.firestore
 
 import android.util.Log
+import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.sign_in.UserData
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -8,7 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 object Firestore {
     private const val TAG = "Firestore"
 
-    fun createUserDocument(db: FirebaseFirestore, user: UserData) {
+    fun createUserDocument(db: FirebaseFirestore, user: User) {
         Log.d(TAG, "creating user document: $user")
 
         val userRef = db.collection("users").document(user.userId)
@@ -19,6 +20,13 @@ object Firestore {
                         "userId" to user.userId,
                         "username" to user.username,
                         "profilePictureUrl" to user.profilePictureUrl,
+                        "friends" to user.friends,
+                        "outgoingFriends" to user.outgoingFriends,
+                        "incomingFriends" to user.incomingFriends,
+                        "posts" to user.posts,
+                        "favoriteMaps" to user.favoriteMaps,
+                        "climbingStyle" to user.climbingStyle,
+                        "numFollowers" to user.numFollowers
                         // Add other user data as needed
                     )
 

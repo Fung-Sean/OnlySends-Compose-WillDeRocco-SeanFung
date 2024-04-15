@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.example.onlysends_compose.firestore.Firestore
+import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.profile.ProfileScreen
 import com.example.onlysends_compose.ui.sign_in.GoogleAuthUiClient
 import com.example.onlysends_compose.ui.sign_in.SignInScreen
@@ -110,10 +111,19 @@ class MainActivity : AppCompatActivity() {
                     // perform appropriate db operation (create user if not in db)
                     val userData = googleAuthUiClient.getSignedInUser()
 
-                    // Call createUserDocument here
-                    userData?.let { user ->
-                        Firestore.createUserDocument(firestore, user)
+                    // Convert UserData to User
+                    val user = userData?.let {
+                        User(
+                            userId = it.userId,
+                            username = it.username,
+                            profilePictureUrl = it.profilePictureUrl,
+                            // Add other attributes as needed
+                        )
                     }
+
+                    // Call createUserDocument here
+                    user?.let { Firestore.createUserDocument(firestore, it) }
+
 
                     ProfileScreen(
                         userData = userData,
