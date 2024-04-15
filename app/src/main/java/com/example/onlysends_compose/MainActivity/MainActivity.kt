@@ -41,6 +41,7 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -66,18 +67,21 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "MainActivity loaded")
 
         setContent {
-            //
-            WindowCompat.setDecorFitsSystemWindows(window, false)
-
-
-
+            // navigation bar elements
             val navController = rememberNavController()
-
             val scaffoldState = rememberScaffoldState()
-
             val items = listOf("Sign In", "Profile")
-
             var selectedItem by remember { mutableIntStateOf(0) }
+
+            // Define a state variable to hold the current route
+            var currentRoute by remember { mutableStateOf("") }
+
+            LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
+                // This effect will re-trigger whenever the route changes
+                Log.d(TAG, "hello, change route: ${navController.currentBackStackEntry?.destination?.route}")
+                scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
+            }
+
 
             Scaffold(
                 scaffoldState = scaffoldState,
@@ -88,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                             Text("Your App Title")
                         },
                         modifier = Modifier
-                            .height(80.dp)
+                            .height(60.dp)
                     )
                 },
                 bottomBar = {
@@ -98,7 +102,7 @@ class MainActivity : AppCompatActivity() {
 //                    if (!(route.isEmpty() || route == "sign_in")) {
                         NavigationBar(
                             modifier = Modifier
-                                .height(100.dp)
+                                .height(60.dp)
                         ) {
                             NavigationBar(
                                 modifier = Modifier.fillMaxSize()
@@ -112,7 +116,6 @@ class MainActivity : AppCompatActivity() {
                                                 // Add more icons as needed
                                             }
                                         },
-                                        label = { Text(item) },
                                         selected = selectedItem == index,
                                         onClick = {
                                             selectedItem = index
@@ -171,6 +174,7 @@ class MainActivity : AppCompatActivity() {
                                 ).show()
 
                                 navController.navigate("profile")
+                                Log.d(TAG, "current backstack entry is ${navController.currentBackStackEntry?.destination?.route}")
                                 // make sure state is reset (in case user needs to log back in)
                                 viewModel.resetState()
                             }
@@ -209,7 +213,6 @@ class MainActivity : AppCompatActivity() {
 
                         // Call createUserDocument here
                         user?.let { Firestore.createUserDocument(firestore, it) }
-
 
                         ProfileScreen(
                             userData = userData,
