@@ -88,12 +88,8 @@ class MainActivity : AppCompatActivity() {
                 "friends" to Icons.Filled.Face
             )
 
-            var selectedItem by remember { mutableIntStateOf(0) }
-
-            // if logged in, selectedItem = profile
-            if (googleAuthUiClient.getSignedInUser() != null) {
-                selectedItem = -1
-            }
+            // should not have any item selected on navBar at first
+            var selectedItem by remember { mutableIntStateOf(-1) }
 
             // keep track of user state (can be passed into other composable functions)
             var user by remember { mutableStateOf<User?>(null) }
@@ -184,6 +180,8 @@ class MainActivity : AppCompatActivity() {
                                 createUserAndDocument(userData)
 
                                 // TO-DO: make sure we still receive the user from the Firestore file
+
+
                                 navController.navigate(getString(R.string.profile))
                             }
                         }
@@ -211,9 +209,19 @@ class MainActivity : AppCompatActivity() {
                                     Toast.LENGTH_LONG
                                 ).show()
 
-                                navController.navigate("profile")
-                                // make sure state is reset (in case user needs to log back in)
-                                viewModel.resetState()
+                                // obtain user from database
+                                val userData = googleAuthUiClient.getSignedInUser()
+                                if (userData != null) {
+                                    // perform appropriate db operation (create user if not in db)
+                                    createUserAndDocument(userData)
+
+                                    // TO-DO: make sure we still receive the user from the Firestore file
+
+
+                                    navController.navigate(getString(R.string.profile))
+                                    // make sure state is reset (in case user needs to log back in)
+                                    viewModel.resetState()
+                                }
                             }
                         }
 
@@ -282,7 +290,7 @@ class MainActivity : AppCompatActivity() {
                         createUserAndDocument(userData)
 
                         ProfileScreen(
-                            userData = userData,
+                            user = user,
                             onSignOut = {
                                 lifecycleScope.launch {
                                     googleAuthUiClient.signOut()
@@ -292,6 +300,7 @@ class MainActivity : AppCompatActivity() {
                                         Toast.LENGTH_LONG
                                     ).show()
 
+                                    // navigate back to sign_in page on `signOut`
                                     navController.navigate(getString(R.string.sign_in))
                                 }
                             }
