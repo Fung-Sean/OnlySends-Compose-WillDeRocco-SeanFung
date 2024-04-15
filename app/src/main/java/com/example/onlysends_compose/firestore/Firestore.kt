@@ -2,8 +2,6 @@ package com.example.onlysends_compose.firestore
 
 import android.util.Log
 import com.example.onlysends_compose.firestore.types.User
-import com.example.onlysends_compose.ui.sign_in.UserData
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 
 object Firestore {
