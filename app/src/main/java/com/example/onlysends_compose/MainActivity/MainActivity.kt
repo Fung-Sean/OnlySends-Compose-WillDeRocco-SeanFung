@@ -18,8 +18,11 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.LaunchedEffect
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -47,6 +50,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.onlysends_compose.R
 
 
 private const val TAG = "MainActivity"
@@ -71,8 +75,14 @@ class MainActivity : AppCompatActivity() {
             // navigation bar elements
             val navController = rememberNavController()
             val scaffoldState = rememberScaffoldState()
-            val items = listOf("Sign In", "Profile")
+            val items = listOf("home", "search", "post", "maps", "profile")
             var selectedItem by remember { mutableIntStateOf(0) }
+
+            // if logged in, selectedItem = profile
+            if (googleAuthUiClient.getSignedInUser() != null) {
+                selectedItem = 4
+            }
+
 
             // Define a state variable to hold the current route
             var currentRoute by remember { mutableStateOf("") }
@@ -91,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                 },
                 bottomBar = {
                     Log.d(TAG, "route ${currentRoute.isEmpty()}")
-                    // this is not working yet (ideally don't wanna display navbar until signed in)
+                    // If route is not yet defined (aka on sign_in page) -> don't show navigation bar
                     if (!(currentRoute.isEmpty() || currentRoute == "sign_in")) {
                         NavigationBar(
                             modifier = Modifier
@@ -104,19 +114,19 @@ class MainActivity : AppCompatActivity() {
                                     NavigationBarItem(
                                         icon = {
                                             when (index) {
-                                                0 -> Icon(Icons.Filled.Home, contentDescription = "Sign In")
-                                                1 -> Icon(Icons.Filled.Person, contentDescription = "Profile")
+                                                0 -> Icon(Icons.Filled.Home, contentDescription = "Home")
+                                                1 -> Icon(Icons.Filled.Search, contentDescription = "Find Friends")
+                                                2 -> Icon(Icons.Filled.AddCircle, contentDescription = "Home")
+                                                3 -> Icon(Icons.Filled.LocationOn, contentDescription = "Home")
+                                                4 -> Icon(Icons.Filled.Person, contentDescription = "Friends")
                                                 // Add more icons as needed
                                             }
                                         },
                                         selected = selectedItem == index,
                                         onClick = {
                                             selectedItem = index
-                                            when (index) {
-                                                0 -> navController.navigate("sign_in")
-                                                1 -> navController.navigate("profile")
-                                                // Add more navigation destinations as needed
-                                            }
+                                            Log.d(TAG, "route is: $item")
+                                            navController.navigate(item)
                                         }
                                     )
                                 }
@@ -128,10 +138,10 @@ class MainActivity : AppCompatActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = "sign_in",
+                    startDestination = getString(R.string.sign_in),
                 ) {
-                    // endpoint 1) "sign_in"
-                    composable("sign_in") {
+                    // ----------------------- endpoint 0) "sign_in" -----------------------
+                    composable(getString(R.string.sign_in)) {
                         val viewModel = viewModel<SignInViewModel>()
                         val state = viewModel.state.collectAsStateWithLifecycle().value
 
@@ -139,7 +149,7 @@ class MainActivity : AppCompatActivity() {
                         // already signed in.
                         LaunchedEffect(key1 = Unit) {
                             if (googleAuthUiClient.getSignedInUser() != null) {
-                                navController.navigate("profile")
+                                navController.navigate(getString(R.string.profile))
                             }
                         }
 
@@ -189,8 +199,55 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
-                    // endpoint 2) "profile"
-                    composable(route = "profile") {
+
+                    // add more endpoints other composable functions
+                    // ----------------------- endpoint 1) "home" -----------------------
+                    composable(route = getString(R.string.home)) {
+                        // Update the currentRoute when navigating to "profile" (or any other page)
+                        LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
+                            currentRoute = navController.currentBackStackEntry?.destination?.route ?: ""
+                        }
+
+                    }
+
+                    // ----------------------- endpoint 2) "search" -----------------------
+                    composable(route = getString(R.string.search)) {
+                        // Update the currentRoute when navigating to "profile" (or any other page)
+                        LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
+                            currentRoute = navController.currentBackStackEntry?.destination?.route ?: ""
+                        }
+
+                    }
+
+                    // ----------------------- endpoint 3) "post" -----------------------
+                    composable(route = getString(R.string.post)) {
+                        // Update the currentRoute when navigating to "profile" (or any other page)
+                        LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
+                            currentRoute = navController.currentBackStackEntry?.destination?.route ?: ""
+                        }
+
+                    }
+
+                    // ----------------------- endpoint 4) "maps" -----------------------
+                    composable(route = getString(R.string.maps)) {
+                        // Update the currentRoute when navigating to "profile" (or any other page)
+                        LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
+                            currentRoute = navController.currentBackStackEntry?.destination?.route ?: ""
+                        }
+
+                    }
+
+                    // ----------------------- endpoint 4) "friends" -----------------------
+                    composable(route = getString(R.string.friends)) {
+                        // Update the currentRoute when navigating to "profile" (or any other page)
+                        LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
+                            currentRoute = navController.currentBackStackEntry?.destination?.route ?: ""
+                        }
+
+                    }
+
+                    // ----------------------- endpoint 6) "profile" -----------------------
+                    composable(route = getString(R.string.profile)) {
                         // Update the currentRoute when navigating to "profile" (or any other page)
                         LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
                             currentRoute = navController.currentBackStackEntry?.destination?.route ?: ""
@@ -223,22 +280,15 @@ class MainActivity : AppCompatActivity() {
                                         Toast.LENGTH_LONG
                                     ).show()
 
-                                    navController.navigate("sign_in")
+                                    navController.navigate(getString(R.string.sign_in))
                                 }
                             }
                         )
                     }
 
-                    // add more endpoints other composable functions
-
                 }
             }
         }
-    }
-
-
-    private fun updateCurrentRoute(navController: NavHostController) {
-
     }
 
 }
