@@ -1,4 +1,4 @@
-package com.example.onlysends_compose.presentation.profile
+package com.example.onlysends_compose.ui.profile
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,7 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.onlysends_compose.presentation.sign_in.UserData
+import com.example.onlysends_compose.ui.sign_in.UserData
 
 // simple function to render the profile page (with sign-out options)
 // for now -> doesn't contain any state, so no need for ViewModel
