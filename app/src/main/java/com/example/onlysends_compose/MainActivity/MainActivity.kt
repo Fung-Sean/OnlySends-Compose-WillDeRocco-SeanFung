@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -51,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.onlysends_compose.R
+import com.example.onlysends_compose.ui.sign_in.UserData
 
 
 private const val TAG = "MainActivity"
@@ -76,6 +78,15 @@ class MainActivity : AppCompatActivity() {
             val navController = rememberNavController()
             val scaffoldState = rememberScaffoldState()
             val items = listOf("home", "search", "post", "maps", "profile")
+            // Define icons map
+            val icons = mapOf(
+                "home" to Icons.Filled.Home,
+                "search" to Icons.Filled.Search,
+                "post" to Icons.Filled.AddCircle,
+                "maps" to Icons.Filled.LocationOn,
+                "profile" to Icons.Filled.Person
+            )
+
             var selectedItem by remember { mutableIntStateOf(0) }
 
             // if logged in, selectedItem = profile
@@ -88,6 +99,27 @@ class MainActivity : AppCompatActivity() {
 
             // Define a state variable to hold the current route
             var currentRoute by remember { mutableStateOf("") }
+
+            // Function to update current route
+            @Composable
+            fun updateCurrentRoute(navController: NavHostController) {
+                LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
+                    currentRoute = navController.currentBackStackEntry?.destination?.route ?: ""
+                }
+            }
+
+            // Function to create user and call createUserDocument
+            fun createUserAndDocument(userData: UserData?) {
+                user = userData?.let {
+                    User(
+                        userId = it.userId,
+                        username = it.username,
+                        profilePictureUrl = it.profilePictureUrl,
+                        // Add other attributes as needed
+                    )
+                }
+                user?.let { Firestore.createUserDocument(firestore, it) }
+            }
 
             Scaffold(
                 scaffoldState = scaffoldState,
@@ -115,14 +147,7 @@ class MainActivity : AppCompatActivity() {
                                 items.forEachIndexed { index, item ->
                                     NavigationBarItem(
                                         icon = {
-                                            when (index) {
-                                                0 -> Icon(Icons.Filled.Home, contentDescription = "Home")
-                                                1 -> Icon(Icons.Filled.Search, contentDescription = "Find Friends")
-                                                2 -> Icon(Icons.Filled.AddCircle, contentDescription = "Home")
-                                                3 -> Icon(Icons.Filled.LocationOn, contentDescription = "Home")
-                                                4 -> Icon(Icons.Filled.Person, contentDescription = "Friends")
-                                                // Add more icons as needed
-                                            }
+                                            icons[item]?.let { Icon(it, contentDescription = item) }
                                         },
                                         selected = selectedItem == index,
                                         onClick = {
@@ -206,70 +231,48 @@ class MainActivity : AppCompatActivity() {
                     // ----------------------- endpoint 1) "home" -----------------------
                     composable(route = getString(R.string.home)) {
                         // Update the currentRoute when navigating to "profile" (or any other page)
-                        LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
-                            currentRoute = navController.currentBackStackEntry?.destination?.route ?: ""
-                        }
+                        updateCurrentRoute(navController = navController)
 
                     }
 
                     // ----------------------- endpoint 2) "search" -----------------------
                     composable(route = getString(R.string.search)) {
                         // Update the currentRoute when navigating to "profile" (or any other page)
-                        LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
-                            currentRoute = navController.currentBackStackEntry?.destination?.route ?: ""
-                        }
+                        updateCurrentRoute(navController = navController)
 
                     }
 
                     // ----------------------- endpoint 3) "post" -----------------------
                     composable(route = getString(R.string.post)) {
                         // Update the currentRoute when navigating to "profile" (or any other page)
-                        LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
-                            currentRoute = navController.currentBackStackEntry?.destination?.route ?: ""
-                        }
+                        updateCurrentRoute(navController = navController)
 
                     }
 
                     // ----------------------- endpoint 4) "maps" -----------------------
                     composable(route = getString(R.string.maps)) {
                         // Update the currentRoute when navigating to "profile" (or any other page)
-                        LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
-                            currentRoute = navController.currentBackStackEntry?.destination?.route ?: ""
-                        }
+                        updateCurrentRoute(navController = navController)
 
                     }
 
                     // ----------------------- endpoint 4) "friends" -----------------------
                     composable(route = getString(R.string.friends)) {
                         // Update the currentRoute when navigating to "profile" (or any other page)
-                        LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
-                            currentRoute = navController.currentBackStackEntry?.destination?.route ?: ""
-                        }
+                        updateCurrentRoute(navController = navController)
 
                     }
 
                     // ----------------------- endpoint 6) "profile" -----------------------
                     composable(route = getString(R.string.profile)) {
                         // Update the currentRoute when navigating to "profile" (or any other page)
-                        LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
-                            currentRoute = navController.currentBackStackEntry?.destination?.route ?: ""
-                        }
+                        updateCurrentRoute(navController = navController)
 
                         // perform appropriate db operation (create user if not in db)
                         val userData = googleAuthUiClient.getSignedInUser()
 
-                        // Convert UserData to User
-                        user = userData?.let {
-                            User(
-                                userId = it.userId,
-                                username = it.username,
-                                profilePictureUrl = it.profilePictureUrl,
-                                // Add other attributes as needed
-                            )
-                        }
-
-                        // Call createUserDocument here
-                        user?.let { Firestore.createUserDocument(firestore, it) }
+                        // call homemade Firestore method to log the user (and update the db)
+                        createUserAndDocument(userData)
 
                         ProfileScreen(
                             userData = userData,
