@@ -15,11 +15,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import com.example.onlysends_compose.firestore.Firestore
+import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.profile.ProfileScreen
 import com.example.onlysends_compose.ui.sign_in.GoogleAuthUiClient
 import com.example.onlysends_compose.ui.sign_in.SignInScreen
 import com.example.onlysends_compose.ui.sign_in.SignInViewModel
 import com.google.android.gms.auth.api.identity.Identity
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.launch
 
 private const val TAG = "MainActivity"
@@ -31,6 +36,10 @@ class MainActivity : AppCompatActivity() {
             oneTapClient = Identity.getSignInClient(applicationContext)
         )
     }
+    private val firestore: FirebaseFirestore by lazy {
+        Firebase.firestore
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,8 +108,25 @@ class MainActivity : AppCompatActivity() {
 
                 // endpoint 2) "profile"
                 composable(route = "profile") {
+                    // perform appropriate db operation (create user if not in db)
+                    val userData = googleAuthUiClient.getSignedInUser()
+
+                    // Convert UserData to User
+                    val user = userData?.let {
+                        User(
+                            userId = it.userId,
+                            username = it.username,
+                            profilePictureUrl = it.profilePictureUrl,
+                            // Add other attributes as needed
+                        )
+                    }
+
+                    // Call createUserDocument here
+                    user?.let { Firestore.createUserDocument(firestore, it) }
+
+
                     ProfileScreen(
-                        userData = googleAuthUiClient.getSignedInUser(),
+                        userData = userData,
                         onSignOut = {
                             lifecycleScope.launch {
                                 googleAuthUiClient.signOut()
