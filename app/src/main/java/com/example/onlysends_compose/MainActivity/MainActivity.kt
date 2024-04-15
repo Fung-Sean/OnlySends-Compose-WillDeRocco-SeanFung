@@ -9,12 +9,13 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.LaunchedEffect
+import androidx.core.view.WindowCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import com.example.onlysends_compose.firestore.Firestore
 import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.profile.ProfileScreen
@@ -26,6 +27,13 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.launch
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.runtime.Composable
+
 
 private const val TAG = "MainActivity"
 
@@ -40,13 +48,36 @@ class MainActivity : AppCompatActivity() {
         Firebase.firestore
     }
 
+    private val bottomNavigationItems = listOf(
+        BottomNavigationScreens.Home,
+        BottomNavigationScreens.Profile
+    )
+
+    // Define your screens
+    sealed class BottomNavigationScreens(
+        val route: String,
+        val label: String,
+        val icon: @Composable () -> Unit
+    ) {
+        object Home : BottomNavigationScreens("home", "Home", { Icon(Icons.Default.Home, contentDescription = "Home") })
+        object Profile : BottomNavigationScreens("profile", "Profile", { Icon(Icons.Default.AccountCircle, contentDescription = "Profile") })
+    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "MainActivity loaded")
 
         setContent {
+            //
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+
+
+
             val navController = rememberNavController()
+
+
             NavHost(navController = navController, startDestination = "sign_in") {
                 // endpoint 1) "sign_in"
                 composable("sign_in") {
