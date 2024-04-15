@@ -1,4 +1,17 @@
 <resources>
     <string name="app_name">OnlySends-Compose</string>
-    <string name="default_web_client_id">96287936579-4dc1uno8bo5di6ebs676e5bid8tfa48f.apps.googleusercontent.com</string>
+    <string name="default_web_client_id">search</string>
+
+    <!--  page routes  -->
+    <string name="sign_in">sign_in</string>
+    <!--  homes -> friends pages linked to `bottomBar`  -->
+    <string name="home">home</string>
+    <string name="search">search</string>
+    <string name="post">post</string>
+    <string name="maps">maps</string>
+    <string name="friends">friends</string>
+    <!--  profile page will be linked to `topBar`  -->
+    <string name="profile">profile</string>
+
+
 </resources>
