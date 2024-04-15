@@ -175,7 +175,13 @@ class MainActivity : AppCompatActivity() {
                         // Skip straight to "profile" page (or whatever we end up choosing) if
                         // already signed in.
                         LaunchedEffect(key1 = Unit) {
-                            if (googleAuthUiClient.getSignedInUser() != null) {
+                            // obtain user from database
+                            val userData = googleAuthUiClient.getSignedInUser()
+                            if (userData != null) {
+                                // perform appropriate db operation (create user if not in db)
+                                createUserAndDocument(userData)
+
+                                // TO-DO: make sure we still receive the user from the Firestore file
                                 navController.navigate(getString(R.string.profile))
                             }
                         }
@@ -204,7 +210,6 @@ class MainActivity : AppCompatActivity() {
                                 ).show()
 
                                 navController.navigate("profile")
-                                Log.d(TAG, "current backstack entry is ${navController.currentBackStackEntry?.destination?.route}")
                                 // make sure state is reset (in case user needs to log back in)
                                 viewModel.resetState()
                             }
@@ -268,11 +273,11 @@ class MainActivity : AppCompatActivity() {
                         // Update the currentRoute when navigating to "profile" (or any other page)
                         updateCurrentRoute(navController = navController)
 
-                        // perform appropriate db operation (create user if not in db)
-                        val userData = googleAuthUiClient.getSignedInUser()
-
-                        // call homemade Firestore method to log the user (and update the db)
-                        createUserAndDocument(userData)
+//                        // perform appropriate db operation (create user if not in db)
+//                        val userData = googleAuthUiClient.getSignedInUser()
+//
+//                        // call homemade Firestore method to log the user (and update the db)
+//                        createUserAndDocument(userData)
 
                         ProfileScreen(
                             userData = userData,
