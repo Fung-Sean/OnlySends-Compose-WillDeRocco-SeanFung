@@ -98,11 +98,10 @@ fun ProfileScreen(
 
             // input box for user's full name
             OutlinedTextField(
-                value = username ?: "",
+                value = username,
                 onValueChange = { newValue ->
                     username = newValue
                 },
-                label = { username ?: "" },
                 modifier = Modifier.padding(vertical = 8.dp),
                 singleLine = true,
                 textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp)
