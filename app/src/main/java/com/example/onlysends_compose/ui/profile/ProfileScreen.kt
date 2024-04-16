@@ -60,7 +60,9 @@ fun ProfileScreen(
     val climbStyles = listOf("Bouldering", "Sport Climbing", "Trad Climbing", "Lead Climbing", "Top-rope Climbing", "Ice Climbing")
 
     LaunchedEffect(user) {
-        climbStyle = user.climbingStyle
+        climbStyle = user.climbingStyle.ifEmpty {
+            "pick a style"
+        }
     }
 
     Log.d(TAG, "current user is $username || ${user.climbingStyle} || $climbStyle sussy")
