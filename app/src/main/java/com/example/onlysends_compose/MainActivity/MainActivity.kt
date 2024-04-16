@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            //  Function to update the user state variable
+            // IMPORTANT: Function to update the user state variable (call this any time you update `user` within a composable)
             fun updateUser(newUser: User) {
                 user = newUser
             }
@@ -257,7 +257,10 @@ class MainActivity : AppCompatActivity() {
                         updateCurrentRoute(navController = navController)
 
                         // render SearchScreen composable
-                        SearchScreen(user = user!!)
+                        SearchScreen(
+                            user = user!!,
+                            onUpdateUser = ::updateUser
+                        )
 
                     }
 

@@ -1,6 +1,7 @@
 package com.example.onlysends_compose.firestore
 
 import android.content.Context
+import android.icu.util.Freezable
 import android.util.Log
 import android.widget.Toast
 import com.example.onlysends_compose.firestore.types.Friend
@@ -129,7 +130,7 @@ object Firestore {
                 val friendsList = mutableListOf<Friend>()
 
                 for (document in querySnapshot.documents) {
-                    // TO-DO: filter out self and current friends
+                    // TO-DO: filter out user and current friends
                     val friend = userToFriend(document)
                     friendsList.add(friend)
                 }
@@ -145,4 +146,91 @@ object Firestore {
 
     // searchUserFriends : returns a list of Friend objects for the current USER
 
+
+    // followFriend : adds friend to `outgoingFriends` for user and `incomingFriends` for friend
+    fun followFriend(
+        user: User,
+        friend: Friend,
+        onUpdateUser: (User) -> Unit
+    ) {
+        // Get references to the user and friend documents
+        val userRef = db.collection("users").document(user.userId)
+        val friendRef = db.collection("users").document(friend.userId)
+
+        // Fetch the friend document from Firestore
+        friendRef.get()
+            .addOnSuccessListener { friendDoc ->
+                if (friendDoc.exists()) {
+                    // Extract the incomingFriends list from the friend document
+                    val incomingFriendsList =
+                        friendDoc.get("incomingFriends") as? List<Map<String, Any>> ?: emptyList()
+
+                    // Convert incomingFriends list to a list of Friend objects
+                    val incomingFriends = incomingFriendsList.map { friendData ->
+                        Friend(
+                            userId = friendData["userId"] as String,
+                            username = friendData["username"] as String,
+                            profilePictureUrl = friendData["profilePictureUrl"] as? String,
+                            climbingStyle = friendData["climbingStyle"] as String,
+                            numFriends = friendData["numFriends"] as Int
+                        )
+                    }
+
+                    val userFriend = Friend(
+                        userId = user.userId,
+                        username = user.username,
+                        profilePictureUrl = user.profilePictureUrl,
+                        climbingStyle = user.climbingStyle,
+                        numFriends = user.numFriends
+                    )
+
+                    // Add user as an incoming friend for the friend
+                    val friendUpdates = hashMapOf<String, Any>(
+                        "incomingFriends" to incomingFriends + userFriend
+                    )
+
+                    // Update the friend document in Firestore
+                    friendRef.update(friendUpdates)
+                        .addOnSuccessListener {
+                            // Successfully updated friend document
+                            Log.d(TAG, "Friend document updated successfully")
+
+                            /*--------------------------------------------------------------------*/
+                            // Now, update the user's outgoingFriends list
+                            // Now, update the user's outgoingFriends list
+                            val updatedUserOutgoingFriends = user.outgoingFriends + friend
+                            val userUpdates = hashMapOf<String, Any>(
+                                "outgoingFriends" to updatedUserOutgoingFriends
+                            )
+
+                            // Update the user document in Firestore
+                            userRef.update(userUpdates)
+                                .addOnSuccessListener {
+                                    // Successfully updated user document
+                                    Log.d(TAG, "User document updated successfully")
+
+                                    // Update local user object with the new outgoingFriends list
+                                    val updatedUser = user.copy(outgoingFriends = updatedUserOutgoingFriends)
+                                    onUpdateUser(updatedUser)
+                                }
+                                .addOnFailureListener { exception ->
+                                    // Failed to update user document
+                                    Log.e(TAG, "Error updating user document", exception)
+                                }
+                            /*--------------------------------------------------------------------*/
+                        }
+                        .addOnFailureListener { exception ->
+                            // Failed to update friend document
+                            Log.e(TAG, "Error updating friend document", exception)
+                        }
+                } else {
+                    // Friend document doesn't exist
+                    Log.e(TAG, "Friend document does not exist")
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Error fetching friend document
+                Log.e(TAG, "Error fetching friend document", exception)
+            }
+    }
 }
