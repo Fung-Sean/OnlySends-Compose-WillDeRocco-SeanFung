@@ -17,8 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.onlysends_compose.R
 import com.example.onlysends_compose.ui.components.CircleImage
+import com.example.onlysends_compose.ui.components.FollowsButton
 import com.example.onlysends_compose.ui.home.fake_data.FollowsUser
 
 @Composable
@@ -63,6 +66,17 @@ fun OnBoardingUserItem(
             )
 
             Spacer(modifier = modifier.height(8.dp))
+
+            FollowsButton(
+                text = R.string.follow_button_text,
+                onClick = { onFollowButtonClick(!isFollowing, followsUser) }
+            )
         }
     }
+}
+
+@Preview
+@Composable
+private fun OnBoardingUserPreview(){
+    So
 }

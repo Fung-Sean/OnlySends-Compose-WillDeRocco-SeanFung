@@ -12,6 +12,7 @@
     <string name="friends">friends</string>
     <!--  profile page will be linked to `topBar`  -->
     <string name="profile">profile</string>
+    <string name="follow_button_text">Follow</string>
 
 
 </resources>
