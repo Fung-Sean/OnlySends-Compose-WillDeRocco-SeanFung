@@ -57,14 +57,14 @@ fun SearchScreen(
         // Render your UI here using the `potentialFriends` list
         // For example:
         Column(
-            modifier = Modifier.padding(16.dp) // Add some padding for better spacing
+            modifier = Modifier.padding(30.dp) // Add some padding for better spacing
         ) {
             potentialFriends.forEach { friend ->
                 // pic, username (plus info underneath), button (follow or pending)
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .padding(top = 20.dp)
+                        .padding(bottom = 30.dp)
                 ) {
                     // display profile picture
                     if (friend.profilePictureUrl != null) {
@@ -81,7 +81,7 @@ fun SearchScreen(
                     Spacer(modifier = Modifier.width(10.dp))
 
                     // display column of username (plus info)
-                    Column {
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = friend.username,
                             fontSize = 14.sp,
@@ -93,19 +93,21 @@ fun SearchScreen(
                                 fontSize = 12.sp,
                             )
                             Text(
-                                text = "climbing style: ${friend.climbingStyle}",
+                                text = friend.climbingStyle,
                                 fontSize = 12.sp,
                             )
                         }
                     }
 
-                    Spacer(modifier = Modifier.width(4.dp))
 
                     // display button to add friend (or disabled button saying "pending")
                     Button(
                         onClick = {},
                         modifier = Modifier
-                            .size(30.dp)
+                            .size(
+                                width = 90.dp,
+                                height = 35.dp
+                            )
                     ) {
                         Text(text = "Follow")
                     }
