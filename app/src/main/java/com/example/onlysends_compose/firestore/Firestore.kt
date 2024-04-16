@@ -15,6 +15,7 @@ object Firestore {
         Firebase.firestore
     }
 
+    // createUserDocument : creates and updates user (calls onUpdateUser when successful)
     fun createUserDocument(user: User, onUpdateUser: (User) -> Unit) {
         Log.d(TAG, "creating user document: $user")
 
@@ -59,6 +60,7 @@ object Firestore {
             }
     }
 
+    // updateUserProfile : updates the user with `newUsername` and `newClimbStyle`
     fun updateUserProfile(
         context: Context,
         userId: String,
@@ -100,5 +102,7 @@ object Firestore {
                 Log.e(TAG, "Error updating user profile", exception)
             }
     }
+
+
 
 }
