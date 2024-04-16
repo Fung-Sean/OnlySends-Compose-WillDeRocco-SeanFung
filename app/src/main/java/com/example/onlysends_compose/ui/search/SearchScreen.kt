@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,6 +43,9 @@ fun SearchScreen(
     user: User,
     onUpdateUser: KFunction1<User, Unit>
 ) {
+    // Get the current context
+    val context = LocalContext.current
+
     // State to hold the list of friends
     var potentialFriends by remember { mutableStateOf(emptyList<Friend>()) }
     // track loading state
@@ -132,6 +136,7 @@ fun SearchScreen(
                         Button(
                             onClick = {
                                 Firestore.followFriend(
+                                    context = context,
                                     user = user,
                                     friend = friend,
                                     onUpdateUser = onUpdateUser
