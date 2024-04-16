@@ -7,4 +7,9 @@ data class Friend(
     // MAYBE??? include the outgoingFriends so we can quickly (prob not tho tbh -> too confusing)
     val climbingStyle: String = "",
     val numFriends: Int = 0,
-)
+){
+    // No-argument constructor (able to initialize User without arguments -> allows Firestore to deserialize User object)
+
+    constructor() : this("", "", "", "", 0)
+
+}
