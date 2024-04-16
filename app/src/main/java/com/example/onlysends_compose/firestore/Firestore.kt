@@ -148,6 +148,7 @@ object Firestore {
 
     // followFriend : adds friend to `outgoingFriends` for user and `incomingFriends` for friend
     fun followFriend(
+        context: Context,
         user: User,
         friend: Friend,
         onUpdateUser: (User) -> Unit
@@ -208,12 +209,15 @@ object Firestore {
                                     // Successfully updated user document
                                     Log.d(TAG, "User document updated successfully")
 
+                                    Toast.makeText(context, "Added friend successfully", Toast.LENGTH_SHORT).show()
+
                                     // Update local user object with the new outgoingFriends list
                                     val updatedUser = user.copy(outgoingFriends = updatedUserOutgoingFriends)
                                     onUpdateUser(updatedUser)
                                 }
                                 .addOnFailureListener { exception ->
                                     // Failed to update user document
+                                    Toast.makeText(context, "Error adding friend", Toast.LENGTH_SHORT).show()
                                     Log.e(TAG, "Error updating user document", exception)
                                 }
                             /*--------------------------------------------------------------------*/
