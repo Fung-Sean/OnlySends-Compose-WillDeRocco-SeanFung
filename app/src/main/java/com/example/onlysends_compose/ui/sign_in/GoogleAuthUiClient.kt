@@ -49,7 +49,7 @@ class GoogleAuthUiClient (
     fun getSignedInUser(): UserData? = auth.currentUser?.run {
         UserData(
             userId = uid,
-            username = displayName,
+            username = displayName ?: "",
             profilePictureUrl = photoUrl.toString()
         )
     }
@@ -64,7 +64,7 @@ class GoogleAuthUiClient (
                 data = user?.run {
                     UserData(
                         userId = uid,
-                        username = displayName,
+                        username = displayName ?: "",
                         profilePictureUrl = photoUrl?.toString()
                     )
                 },

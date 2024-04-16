@@ -1,5 +1,6 @@
 package com.example.onlysends_compose.ui.profile
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,35 +28,49 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.onlysends_compose.firestore.Firestore
 import com.example.onlysends_compose.firestore.types.User
+import kotlin.reflect.KFunction1
 
-// simple function to render the profile page (with sign-out options)
-// for now -> doesn't contain any state, so no need for ViewModel
+private const val TAG = "Profile Screen"
+
+// renders Profile page and allows users to update their info
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    user: User?,
-    onSignOut: () -> Unit
+    user: User,
+    onSignOut: () -> Unit,
+    onUpdateUser: KFunction1<User, Unit>
 ) {
+    // Get the current context
+    val context = LocalContext.current
+
+
     // variable to keep track of username
-    var username by remember { mutableStateOf(user?.username) }
+    var username by remember { mutableStateOf(user.username) }
 
     // variables for dropdown menu of climbing styles
-    var climbStyle by remember { mutableStateOf(user?.climbingStyle) }
+    var climbStyle by remember { mutableStateOf(user.climbingStyle) }
     var expanded by remember { mutableStateOf(false) }
     val climbStyles = listOf("Bouldering", "Sport Climbing", "Trad Climbing", "Lead Climbing", "Top-rope Climbing", "Ice Climbing")
 
+    LaunchedEffect(user) {
+        climbStyle = user.climbingStyle
+    }
+
+    Log.d(TAG, "current user is $username || ${user.climbingStyle} || $climbStyle sussy")
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // display profile picture
-        if (user?.profilePictureUrl != null) {
+        if (user.profilePictureUrl != null) {
             AsyncImage(
                 model = user.profilePictureUrl,
                 contentDescription = "User profile picture",
@@ -89,7 +105,7 @@ fun ProfileScreen(
                 label = { username ?: "" },
                 modifier = Modifier.padding(vertical = 8.dp),
                 singleLine = true,
-                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 18.sp)
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp)
             )
         }
 
@@ -128,7 +144,12 @@ fun ProfileScreen(
                 ) {
                     climbStyles.forEach { style ->
                         DropdownMenuItem(
-                            text = { Text(text = style) },
+                            text = {
+                                Text(
+                                    text = style,
+                                    fontSize = 12.sp
+                                )
+                                   },
                             onClick = { climbStyle = style }
                         )
                     }
@@ -139,7 +160,14 @@ fun ProfileScreen(
 
         // button to let user update the user in Firestore db
         Button(
-            onClick = {},
+            onClick = {
+                Firestore.updateUserProfile(
+                    context,
+                    user.userId,
+                    username,
+                    climbStyle,
+                    onUpdateUser
+                )},
             modifier = Modifier
                 .padding(top = 20.dp)
         ) {
