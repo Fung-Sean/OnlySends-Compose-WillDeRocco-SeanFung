@@ -2,12 +2,18 @@ package com.example.onlysends_compose.firestore
 
 import android.util.Log
 import com.example.onlysends_compose.firestore.types.User
+import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 
 object Firestore {
     private const val TAG = "Firestore"
 
-    fun createUserDocument(db: FirebaseFirestore, user: User, onUpdateUser: (User) -> Unit) {
+    private val db: FirebaseFirestore by lazy {
+        Firebase.firestore
+    }
+
+    fun createUserDocument(user: User, onUpdateUser: (User) -> Unit) {
         Log.d(TAG, "creating user document: $user")
 
         val userRef = db.collection("users").document(user.userId)

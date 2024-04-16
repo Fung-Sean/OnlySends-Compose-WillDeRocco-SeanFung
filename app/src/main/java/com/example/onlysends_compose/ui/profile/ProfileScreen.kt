@@ -40,10 +40,13 @@ fun ProfileScreen(
     user: User?,
     onSignOut: () -> Unit
 ) {
-    // dropdown menu of climbing styles
+    // variable to keep track of username
+    var username by remember { mutableStateOf(user?.username) }
+
+    // variables for dropdown menu of climbing styles
+    var climbStyle by remember { mutableStateOf(user?.climbingStyle) }
     var expanded by remember { mutableStateOf(false) }
-    var climbStyle by remember { mutableStateOf("") }
-    val climbStyles = listOf("Bouldering", "Sport Climbing", "Trad Climbing", "Ice Climbing")
+    val climbStyles = listOf("Bouldering", "Sport Climbing", "Trad Climbing", "Lead Climbing", "Top-rope Climbing", "Ice Climbing")
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -79,9 +82,11 @@ fun ProfileScreen(
 
             // input box for user's full name
             OutlinedTextField(
-                value = user?.username ?: "",
-                onValueChange = { /*TODO*/ },
-                label = { user?.username ?: "" },
+                value = username ?: "",
+                onValueChange = { newValue ->
+                    username = newValue
+                },
+                label = { username ?: "" },
                 modifier = Modifier.padding(vertical = 8.dp),
                 singleLine = true,
                 textStyle = androidx.compose.ui.text.TextStyle(fontSize = 18.sp)
@@ -107,7 +112,7 @@ fun ProfileScreen(
                 onExpandedChange = { expanded = it }
             ) {
                 TextField(
-                    value = climbStyle,
+                    value = climbStyle ?: "pick a climbing style",
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = {
@@ -130,6 +135,15 @@ fun ProfileScreen(
                 }
             }
 
+        }
+
+        // button to let user update the user in Firestore db
+        Button(
+            onClick = {},
+            modifier = Modifier
+                .padding(top = 20.dp)
+        ) {
+            Text(text = "Update")
         }
 
         // button to let user sign out

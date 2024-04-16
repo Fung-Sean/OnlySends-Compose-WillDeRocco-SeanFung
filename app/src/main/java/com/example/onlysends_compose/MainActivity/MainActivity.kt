@@ -64,9 +64,7 @@ class MainActivity : AppCompatActivity() {
             oneTapClient = Identity.getSignInClient(applicationContext)
         )
     }
-    private val firestore: FirebaseFirestore by lazy {
-        Firebase.firestore
-    }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,7 +119,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 // call createUserDocument function (this will UPDATE the `user` state variable automatically)
                 // with the updateUser callback function
-                user?.let { Firestore.createUserDocument(firestore, it, ::updateUser) }
+                user?.let { Firestore.createUserDocument(it, ::updateUser) }
             }
 
             Scaffold(
