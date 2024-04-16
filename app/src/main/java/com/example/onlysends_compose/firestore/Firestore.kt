@@ -1,7 +1,6 @@
 package com.example.onlysends_compose.firestore
 
 import android.content.Context
-import android.icu.util.Freezable
 import android.util.Log
 import android.widget.Toast
 import com.example.onlysends_compose.firestore.types.Friend

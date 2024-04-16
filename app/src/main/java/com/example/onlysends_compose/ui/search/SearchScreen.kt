@@ -62,6 +62,7 @@ fun SearchScreen(
 
     LaunchedEffect(key1 = user) {
         // update state variables every time user object is altered
+        Log.d(TAG, "user added friend $user")
 
     }
 
