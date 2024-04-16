@@ -52,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.onlysends_compose.R
+import com.example.onlysends_compose.ui.search.SearchScreen
 import com.example.onlysends_compose.ui.sign_in.UserData
 
 
@@ -102,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            //  Function to update the user state variable
+            // IMPORTANT: Function to update the user state variable (call this any time you update `user` within a composable)
             fun updateUser(newUser: User) {
                 user = newUser
             }
@@ -255,6 +256,12 @@ class MainActivity : AppCompatActivity() {
                         // Update the currentRoute when navigating to "search" (or any other page)
                         updateCurrentRoute(navController = navController)
 
+                        // render SearchScreen composable
+                        SearchScreen(
+                            user = user!!,
+                            onUpdateUser = ::updateUser
+                        )
+
                     }
 
                     // ----------------------- route 3) "post" -----------------------
@@ -285,6 +292,7 @@ class MainActivity : AppCompatActivity() {
                         // Update the currentRoute when navigating to "profile" (or any other page)
                         updateCurrentRoute(navController = navController)
 
+                        // render ProfileScreen composable
                         ProfileScreen(
                             user = user!!,
                             onSignOut = {
