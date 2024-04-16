@@ -1,13 +1,21 @@
 package com.example.onlysends_compose.firestore
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import com.example.onlysends_compose.firestore.types.User
+import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 
 object Firestore {
     private const val TAG = "Firestore"
 
-    fun createUserDocument(db: FirebaseFirestore, user: User, onUpdateUser: (User) -> Unit) {
+    private val db: FirebaseFirestore by lazy {
+        Firebase.firestore
+    }
+
+    fun createUserDocument(user: User, onUpdateUser: (User) -> Unit) {
         Log.d(TAG, "creating user document: $user")
 
         val userRef = db.collection("users").document(user.userId)
@@ -51,5 +59,46 @@ object Firestore {
             }
     }
 
-    // Define other Firestore functions here
+    fun updateUserProfile(
+        context: Context,
+        userId: String,
+        newUsername: String,
+        newClimbStyle: String,
+        onUpdateUser: (User) -> Unit
+    ) {        // Get reference to the user document
+        val userRef = db.collection("users").document(userId)
+
+        // Update the fields
+        val updates = hashMapOf<String, Any>(
+            "username" to newUsername,
+            "climbingStyle" to newClimbStyle
+        )
+
+        // Perform the update
+        userRef.update(updates)
+            .addOnSuccessListener {
+                Log.d(TAG, "User profile updated successfully")
+
+                // Retrieve the updated user document and invoke the onUpdateUser callback
+                userRef.get()
+                    .addOnSuccessListener { documentSnapshot ->
+                        val updatedUser = documentSnapshot.toObject(User::class.java)
+                        if (updatedUser != null) {
+                            // update `user` state
+                            onUpdateUser(updatedUser)
+                            // Display toast message
+                            Toast.makeText(context, "User profile updated successfully", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e(TAG, "Error retrieving updated user document", exception)
+                        // Display toast message
+                        Toast.makeText(context, "Internal error updating profile", Toast.LENGTH_SHORT).show()
+                    }
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error updating user profile", exception)
+            }
+    }
+
 }
