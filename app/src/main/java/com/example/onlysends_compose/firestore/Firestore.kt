@@ -33,7 +33,7 @@ object Firestore {
                         "posts" to user.posts,
                         "favoriteMaps" to user.favoriteMaps,
                         "climbingStyle" to user.climbingStyle,
-                        "numFollowers" to user.numFollowers
+                        "numFollowers" to user.numFriends
                         // Add other user data as needed
                     )
 
@@ -104,5 +104,9 @@ object Firestore {
     }
 
 
+    // searchAllFriends : returns a list of Friend objects for all POTENTIAL friends
+
+
+    // searchUserFriends : returns a list of Friend objects for the current USER
 
 }
