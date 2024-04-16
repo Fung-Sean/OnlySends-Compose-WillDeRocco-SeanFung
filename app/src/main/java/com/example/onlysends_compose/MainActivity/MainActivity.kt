@@ -52,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.onlysends_compose.R
+import com.example.onlysends_compose.ui.search.SearchScreen
 import com.example.onlysends_compose.ui.sign_in.UserData
 
 
@@ -255,6 +256,9 @@ class MainActivity : AppCompatActivity() {
                         // Update the currentRoute when navigating to "search" (or any other page)
                         updateCurrentRoute(navController = navController)
 
+                        // render SearchScreen composable
+                        SearchScreen(user = user!!)
+
                     }
 
                     // ----------------------- route 3) "post" -----------------------
@@ -285,6 +289,7 @@ class MainActivity : AppCompatActivity() {
                         // Update the currentRoute when navigating to "profile" (or any other page)
                         updateCurrentRoute(navController = navController)
 
+                        // render ProfileScreen composable
                         ProfileScreen(
                             user = user!!,
                             onSignOut = {

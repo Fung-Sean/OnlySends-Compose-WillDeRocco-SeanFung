@@ -3,8 +3,10 @@ package com.example.onlysends_compose.firestore
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import com.example.onlysends_compose.firestore.types.Friend
 import com.example.onlysends_compose.firestore.types.User
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 
@@ -16,7 +18,10 @@ object Firestore {
     }
 
     // createUserDocument : creates and updates user (calls onUpdateUser when successful)
-    fun createUserDocument(user: User, onUpdateUser: (User) -> Unit) {
+    fun createUserDocument(
+        user: User,
+        onUpdateUser: (User) -> Unit
+    ) {
         Log.d(TAG, "creating user document: $user")
 
         val userRef = db.collection("users").document(user.userId)
@@ -104,7 +109,37 @@ object Firestore {
     }
 
 
+    // userToFriend : function to convert a User document to a Friend object
+    private fun userToFriend(userDoc: DocumentSnapshot): Friend {
+        return Friend(
+            userId = userDoc.id,
+            username = userDoc.getString("username") ?: "",
+            profilePictureUrl = userDoc.getString("profilePictureUrl"),
+            climbingStyle = userDoc.getString("climbingStyle") ?: "",
+            numFriends = (userDoc.get("friends") as? List<*>)?.size ?: 0
+        )
+    }
+
     // searchAllFriends : returns a list of Friend objects for all POTENTIAL friends
+    fun searchAllFriends(user: User, onFriendsLoaded: (List<Friend>) -> Unit) {
+        val usersCollection = db.collection("users")
+
+        usersCollection.get()
+            .addOnSuccessListener { querySnapshot ->
+                val friendsList = mutableListOf<Friend>()
+
+                for (document in querySnapshot.documents) {
+                    val friend = userToFriend(document)
+                    friendsList.add(friend)
+                }
+
+                onFriendsLoaded(friendsList)
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error searching all friends", exception)
+                onFriendsLoaded(emptyList()) // Return empty list in case of failure
+            }
+    }
 
 
     // searchUserFriends : returns a list of Friend objects for the current USER
