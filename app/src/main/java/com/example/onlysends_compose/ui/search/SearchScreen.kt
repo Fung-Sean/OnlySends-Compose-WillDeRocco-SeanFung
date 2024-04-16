@@ -2,6 +2,7 @@ package com.example.onlysends_compose.ui.search
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -40,12 +41,20 @@ fun SearchScreen(
     // Render the UI using the list of potentialFriends
     Box(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.TopCenter
     ) {
         // Render your UI here using the `potentialFriends` list
         // For example:
-        potentialFriends.forEach { friend ->
-            Text(text = friend.username)
+        Column(
+            modifier = Modifier.padding(16.dp) // Add some padding for better spacing
+        ) {
+            potentialFriends.forEach { friend ->
+                Text(
+                    text = friend.username,
+                    modifier = Modifier.padding(vertical = 8.dp) // Add vertical padding between each username
+                )
+            }
         }
     }
+
 }
