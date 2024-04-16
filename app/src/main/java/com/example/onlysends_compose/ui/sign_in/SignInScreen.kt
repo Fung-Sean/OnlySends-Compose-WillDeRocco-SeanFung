@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
+// SignInScreen : composable to render screen for user to login with Google (calls onSignInClick
+// via lambda to update the state
 @Composable
 fun SignInScreen(
     state: SignInState,
