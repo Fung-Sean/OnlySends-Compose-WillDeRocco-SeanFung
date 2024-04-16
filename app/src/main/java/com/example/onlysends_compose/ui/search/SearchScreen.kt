@@ -121,8 +121,14 @@ fun SearchScreen(
                                 fontWeight = FontWeight.Bold
                             )
                             Row() {
+                                val numFriendsText = if (friend.numFriends == 1) {
+                                    "${friend.numFriends} friend, "
+                                } else {
+                                    "${friend.numFriends} friends, "
+                                }
+
                                 Text(
-                                    text = "${friend.numFriends} friends, ",
+                                    text = numFriendsText,
                                     fontSize = 12.sp,
                                 )
                                 Text(
