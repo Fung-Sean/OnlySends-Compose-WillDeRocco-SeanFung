@@ -104,7 +104,7 @@ fun ProfileScreen(
                 },
                 modifier = Modifier.padding(vertical = 8.dp),
                 singleLine = true,
-                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp)
+                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp)
             )
         }
 
