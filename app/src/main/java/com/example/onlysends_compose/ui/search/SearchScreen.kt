@@ -51,10 +51,12 @@ fun SearchScreen(
     // track loading state
     var isLoading by remember { mutableStateOf(false) }
 
-    // Call searchUserFriends on initialization
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(key1 = user) {
+        // update state variables every time user object is altered
+
         // start loading the loader
         isLoading = true
+
         // fetch potentialFriends from db
         Firestore.searchAllFriends(user) { loadedFriends ->
             // update potentialFriends with db results
@@ -64,12 +66,9 @@ fun SearchScreen(
         }
     }
 
-    LaunchedEffect(key1 = user) {
-        // update state variables every time user object is altered
-        Log.d(TAG, "user added friend $user")
-
+    fun isFriendInOutgoingList(user: User, friend: Friend): Boolean {
+        return user.outgoingFriends.any { it.userId == friend.userId }
     }
-
 
     // Render the UI using the list of potentialFriends
     Box(
@@ -131,26 +130,43 @@ fun SearchScreen(
                         }
 
 
-                        // button : either "Follow", "Accept", or "Pending"
+                        // button : either "Follow" or "Pending"
                         // display button to add friend (or disabled button saying "pending")
-                        Button(
-                            onClick = {
-                                Firestore.followFriend(
-                                    context = context,
-                                    user = user,
-                                    friend = friend,
-                                    onUpdateUser = onUpdateUser
-                                )},
-                            modifier = Modifier
-                                .size(
-                                    width = 85.dp,
-                                    height = 35.dp
+                        if (!isFriendInOutgoingList(user, friend)) {
+                            Button(
+                                onClick = {
+                                    Firestore.followFriend(
+                                        context = context,
+                                        user = user,
+                                        friend = friend,
+                                        onUpdateUser = onUpdateUser)
+                                },
+                                modifier = Modifier
+                                    .size(
+                                        width = 85.dp,
+                                        height = 35.dp
+                                    )
+                            ) {
+                                Text(
+                                    text = "Follow",
+                                    fontSize = 12.sp
                                 )
-                        ) {
-                            Text(
-                                text = "Follow",
-                                fontSize = 12.sp
-                            )
+                            }
+                        } else {
+                            Button(
+                                onClick = {},
+                                enabled = false,
+                                modifier = Modifier
+                                    .size(
+                                        width = 85.dp,
+                                        height = 35.dp
+                                    )
+                            ) {
+                                Text(
+                                    text = "Pending",
+                                    fontSize = 9.sp
+                                )
+                            }
                         }
                     }
                 }
