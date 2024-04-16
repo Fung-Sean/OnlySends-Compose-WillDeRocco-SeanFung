@@ -132,7 +132,7 @@ object Firestore {
                     // TO-DO: filter out user and current friends
                     val friend = userToFriend(document)
 
-                    // Filter out the current user and their friends
+                    // Filter out the `user` `user.friends` and user.incomingFriends`
                     if (friend.userId != user.userId && !user.friends.any { it.userId == friend.userId }) {
                         friendsList.add(friend)
                     }
