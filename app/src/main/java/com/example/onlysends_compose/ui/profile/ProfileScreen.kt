@@ -39,7 +39,7 @@ import kotlin.reflect.KFunction1
 
 private const val TAG = "Profile Screen"
 
-// renders Profile page and allows users to update their info
+// ProfileScreen : renders Profile page and allows users to update their info
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
