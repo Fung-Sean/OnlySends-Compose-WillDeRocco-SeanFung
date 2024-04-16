@@ -286,7 +286,7 @@ class MainActivity : AppCompatActivity() {
                         updateCurrentRoute(navController = navController)
 
                         ProfileScreen(
-                            user = user,
+                            user = user!!,
                             onSignOut = {
                                 lifecycleScope.launch {
                                     googleAuthUiClient.signOut()
@@ -299,7 +299,8 @@ class MainActivity : AppCompatActivity() {
                                     // navigate back to sign_in page on `signOut`
                                     navController.navigate(getString(R.string.sign_in))
                                 }
-                            }
+                            },
+                            onUpdateUser = ::updateUser
                         )
                     }
 

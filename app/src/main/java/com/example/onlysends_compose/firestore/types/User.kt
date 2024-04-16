@@ -4,7 +4,7 @@ import com.example.onlysends_compose.ui.sign_in.UserData
 
 data class User(
     val userId: String,
-    val username: String?,
+    val username: String,
     val profilePictureUrl: String?,
     val friends: List<Friend> = listOf(),
     val outgoingFriends: List<FriendRequest> = listOf(),
