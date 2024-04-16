@@ -7,7 +7,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -35,8 +37,14 @@ fun FollowsButton(
             defaultElevation = 0.dp
         )
     ) {
-        Text(text = stringResource(id = text), style = MaterialTheme.typography.displaySmall.copy(
-            fontSize = 12.sp
-        ))
+
+        Text(
+            text = stringResource(id = text),
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontSize = 12.sp,
+                color = Color.Black
+            ),
+            textAlign = TextAlign.Center // Center the text horizontally and vertically
+        )
     }
 }

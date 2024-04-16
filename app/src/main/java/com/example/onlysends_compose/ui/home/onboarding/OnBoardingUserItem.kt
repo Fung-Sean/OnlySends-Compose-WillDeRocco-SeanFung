@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,6 +24,8 @@ import com.example.onlysends_compose.R
 import com.example.onlysends_compose.ui.components.CircleImage
 import com.example.onlysends_compose.ui.components.FollowsButton
 import com.example.onlysends_compose.ui.home.fake_data.FollowsUser
+import com.example.onlysends_compose.ui.home.fake_data.sampleUsers
+import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
 
 @Composable
 
@@ -60,7 +63,7 @@ fun OnBoardingUserItem(
 
             Text(
                 text = followsUser.name,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodySmall,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -68,6 +71,7 @@ fun OnBoardingUserItem(
             Spacer(modifier = modifier.height(8.dp))
 
             FollowsButton(
+                modifier = modifier.fillMaxWidth().height(30.dp),
                 text = R.string.follow_button_text,
                 onClick = { onFollowButtonClick(!isFollowing, followsUser) }
             )
@@ -78,5 +82,9 @@ fun OnBoardingUserItem(
 @Preview
 @Composable
 private fun OnBoardingUserPreview(){
-    So
+    OnlySendsTheme {
+        OnBoardingUserItem(followsUser = sampleUsers.first(),
+            onUserClick = {},
+            onFollowButtonClick = { _, _ ->})
+    }
 }
