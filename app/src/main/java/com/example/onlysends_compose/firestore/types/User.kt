@@ -17,13 +17,13 @@ data class User(
     // No-argument constructor (able to initialize User without arguments -> allows Firestore to deserialize User object)
     constructor() : this("", "", "", listOf(), listOf(), listOf(), listOf(), listOf(), "", 0)
 
-    companion object {
-        fun fromUserData(userData: UserData): User {
-            return User(
-                userId = userData.userId,
-                username = userData.username,
-                profilePictureUrl = userData.profilePictureUrl
-            )
-        }
-    }
+//    companion object {
+//        fun fromUserData(userData: UserData): User {
+//            return User(
+//                userId = userData.userId,
+//                username = userData.username,
+//                profilePictureUrl = userData.profilePictureUrl
+//            )
+//        }
+//    }
 }
