@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,14 +40,20 @@ const val TAG = "SearchScreen"
 fun SearchScreen(
     user: User
 ) {
-// State to hold the list of friends
+    // State to hold the list of friends
     var potentialFriends by remember { mutableStateOf(emptyList<Friend>()) }
+    // track loading state
+    var isLoading by remember { mutableStateOf(false) }
 
     // Call searchUserFriends whenever anything about the user changes
     LaunchedEffect(user) {
+        // start loading the loader
+        isLoading = true
+        // fetch potentialFriends from db
         Firestore.searchAllFriends(user) { loadedFriends ->
             potentialFriends = loadedFriends
             Log.d(TAG, "loaded potential friends $potentialFriends")
+            isLoading = false
         }
     }
 
@@ -59,57 +67,67 @@ fun SearchScreen(
         Column(
             modifier = Modifier.padding(30.dp) // Add some padding for better spacing
         ) {
-            potentialFriends.forEach { friend ->
-                // pic, username (plus info underneath), button (follow or pending)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(bottom = 30.dp)
-                ) {
-                    // display profile picture
-                    if (friend.profilePictureUrl != null) {
-                        AsyncImage(
-                            model = friend.profilePictureUrl,
-                            contentDescription = "User profile picture",
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
+            // Show loading indicator if potentialFriends is empty and loading is true
+            if (potentialFriends.isEmpty() && isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.width(64.dp),
+                    color = MaterialTheme.colorScheme.secondary,
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                )
 
-                    Spacer(modifier = Modifier.width(10.dp))
-
-                    // display column of username (plus info)
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = friend.username,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Row() {
-                            Text(
-                                text = "${friend.numFriends} friends, ",
-                                fontSize = 12.sp,
-                            )
-                            Text(
-                                text = friend.climbingStyle,
-                                fontSize = 12.sp,
+            } else {
+                potentialFriends.forEach { friend ->
+                    // pic, username (plus info underneath), button (follow or pending)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(bottom = 30.dp)
+                    ) {
+                        // display profile picture
+                        if (friend.profilePictureUrl != null) {
+                            AsyncImage(
+                                model = friend.profilePictureUrl,
+                                contentDescription = "User profile picture",
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
                             )
                         }
-                    }
 
+                        Spacer(modifier = Modifier.width(10.dp))
 
-                    // display button to add friend (or disabled button saying "pending")
-                    Button(
-                        onClick = {},
-                        modifier = Modifier
-                            .size(
-                                width = 90.dp,
-                                height = 35.dp
+                        // display column of username (plus info)
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = friend.username,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
                             )
-                    ) {
-                        Text(text = "Follow")
+                            Row() {
+                                Text(
+                                    text = "${friend.numFriends} friends, ",
+                                    fontSize = 12.sp,
+                                )
+                                Text(
+                                    text = friend.climbingStyle,
+                                    fontSize = 12.sp,
+                                )
+                            }
+                        }
+
+
+                        // display button to add friend (or disabled button saying "pending")
+                        Button(
+                            onClick = {},
+                            modifier = Modifier
+                                .size(
+                                    width = 90.dp,
+                                    height = 35.dp
+                                )
+                        ) {
+                            Text(text = "Follow")
+                        }
                     }
                 }
             }
