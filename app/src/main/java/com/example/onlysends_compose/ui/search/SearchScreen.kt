@@ -3,8 +3,14 @@ package com.example.onlysends_compose.ui.search
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,7 +21,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.onlysends_compose.firestore.Firestore
 import com.example.onlysends_compose.firestore.types.Friend
 import com.example.onlysends_compose.firestore.types.User
@@ -49,10 +60,56 @@ fun SearchScreen(
             modifier = Modifier.padding(16.dp) // Add some padding for better spacing
         ) {
             potentialFriends.forEach { friend ->
-                Text(
-                    text = friend.username,
-                    modifier = Modifier.padding(vertical = 8.dp) // Add vertical padding between each username
-                )
+                // pic, username (plus info underneath), button (follow or pending)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(top = 20.dp)
+                ) {
+                    // display profile picture
+                    if (friend.profilePictureUrl != null) {
+                        AsyncImage(
+                            model = friend.profilePictureUrl,
+                            contentDescription = "User profile picture",
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    // display column of username (plus info)
+                    Column {
+                        Text(
+                            text = friend.username,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Row() {
+                            Text(
+                                text = "${friend.numFriends} friends, ",
+                                fontSize = 12.sp,
+                            )
+                            Text(
+                                text = "climbing style: ${friend.climbingStyle}",
+                                fontSize = 12.sp,
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    // display button to add friend (or disabled button saying "pending")
+                    Button(
+                        onClick = {},
+                        modifier = Modifier
+                            .size(30.dp)
+                    ) {
+                        Text(text = "Follow")
+                    }
+                }
             }
         }
     }

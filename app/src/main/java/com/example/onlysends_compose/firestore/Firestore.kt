@@ -129,6 +129,7 @@ object Firestore {
                 val friendsList = mutableListOf<Friend>()
 
                 for (document in querySnapshot.documents) {
+                    // TO-DO: filter out self and current friends
                     val friend = userToFriend(document)
                     friendsList.add(friend)
                 }
