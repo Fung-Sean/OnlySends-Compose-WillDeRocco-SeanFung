@@ -30,7 +30,6 @@ object Firestore {
 
                     userRef.set(userData)
                         .addOnSuccessListener {
-
                             Log.d(TAG, "User document created successfully")
                         }
                         .addOnFailureListener { e ->
