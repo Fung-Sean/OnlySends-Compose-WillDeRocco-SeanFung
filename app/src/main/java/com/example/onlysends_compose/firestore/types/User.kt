@@ -14,6 +14,9 @@ data class User(
     val climbingStyle: String = "",
     val numFollowers: Int = 0
 ) {
+    // No-argument constructor (able to initialize User without arguments -> allows Firestore to deserialize User object)
+    constructor() : this("", "", "", listOf(), listOf(), listOf(), listOf(), listOf(), "", 0)
+
     companion object {
         fun fromUserData(userData: UserData): User {
             return User(

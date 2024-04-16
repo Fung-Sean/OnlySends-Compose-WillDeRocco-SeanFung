@@ -105,6 +105,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            //  Function to update the user state variable
+            fun updateUser(newUser: User) {
+                user = newUser
+            }
+
             // Function to create user and call createUserDocument
             fun createUserAndDocument(userData: UserData?) {
                 user = userData?.let {
@@ -116,7 +121,8 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
                 // call createUserDocument function (this will UPDATE the `user` state variable automatically)
-                user?.let { Firestore.createUserDocument(firestore, it) }
+                // with the updateUser callback function
+                user?.let { Firestore.createUserDocument(firestore, it, ::updateUser) }
             }
 
             Scaffold(
@@ -165,23 +171,21 @@ class MainActivity : AppCompatActivity() {
                     navController = navController,
                     startDestination = getString(R.string.sign_in),
                 ) {
-                    // ----------------------- endpoint 0) "sign_in" -----------------------
+                    // ----------------------- route 0) "sign_in" -----------------------
                     composable(getString(R.string.sign_in)) {
                         val viewModel = viewModel<SignInViewModel>()
                         val state = viewModel.state.collectAsStateWithLifecycle().value
 
                         // Skip straight to "profile" page (or whatever we end up choosing) if
                         // already signed in.
-                        LaunchedEffect(key1 = Unit) {
+                        LaunchedEffect(key1 = Unit) { // since key1 = Unit -> function only runs once (when composable is composed)
                             // obtain user from database
                             val userData = googleAuthUiClient.getSignedInUser()
                             if (userData != null) {
                                 // perform appropriate db operation (create user if not in db)
                                 createUserAndDocument(userData)
 
-                                // TO-DO: make sure we still receive the user from the Firestore file
-
-
+                                // navigate to profile page on successful login
                                 navController.navigate(getString(R.string.profile))
                             }
                         }
@@ -215,10 +219,9 @@ class MainActivity : AppCompatActivity() {
                                     // perform appropriate db operation (create user if not in db)
                                     createUserAndDocument(userData)
 
-                                    // TO-DO: make sure we still receive the user from the Firestore file
-
-
+                                    // navigate to profile page on successful login
                                     navController.navigate(getString(R.string.profile))
+
                                     // make sure state is reset (in case user needs to log back in)
                                     viewModel.resetState()
                                 }
@@ -242,52 +245,54 @@ class MainActivity : AppCompatActivity() {
                     }
 
 
-                    // add more endpoints other composable functions
-                    // ----------------------- endpoint 1) "home" -----------------------
+                    // add more routes other composable functions
+                    // ----------------------- route 1) "home" -----------------------
                     composable(route = getString(R.string.home)) {
                         // Update the currentRoute when navigating to "profile" (or any other page)
                         updateCurrentRoute(navController = navController)
 
                     }
 
-                    // ----------------------- endpoint 2) "search" -----------------------
+                    // ----------------------- route 2) "search" -----------------------
                     composable(route = getString(R.string.search)) {
                         // Update the currentRoute when navigating to "profile" (or any other page)
                         updateCurrentRoute(navController = navController)
 
                     }
 
-                    // ----------------------- endpoint 3) "post" -----------------------
+                    // ----------------------- route 3) "post" -----------------------
                     composable(route = getString(R.string.post)) {
                         // Update the currentRoute when navigating to "profile" (or any other page)
                         updateCurrentRoute(navController = navController)
 
                     }
 
-                    // ----------------------- endpoint 4) "maps" -----------------------
+                    // ----------------------- route 4) "maps" -----------------------
                     composable(route = getString(R.string.maps)) {
                         // Update the currentRoute when navigating to "profile" (or any other page)
                         updateCurrentRoute(navController = navController)
 
                     }
 
-                    // ----------------------- endpoint 5) "friends" -----------------------
+                    // ----------------------- route 5) "friends" -----------------------
                     composable(route = getString(R.string.friends)) {
                         // Update the currentRoute when navigating to "profile" (or any other page)
                         updateCurrentRoute(navController = navController)
 
                     }
 
-                    // ----------------------- endpoint 6) "profile" -----------------------
+                    // ----------------------- route 6) "profile" -----------------------
                     composable(route = getString(R.string.profile)) {
+                        Log.d(TAG, "entering profile page, user is: $user")
+
                         // Update the currentRoute when navigating to "profile" (or any other page)
                         updateCurrentRoute(navController = navController)
 
-                        // perform appropriate db operation (create user if not in db)
-                        val userData = googleAuthUiClient.getSignedInUser()
-
-                        // call homemade Firestore method to log the user (and update the db)
-                        createUserAndDocument(userData)
+//                        // perform appropriate db operation (create user if not in db)
+//                        val userData = googleAuthUiClient.getSignedInUser()
+//
+//                        // call homemade Firestore method to log the user (and update the db)
+//                        createUserAndDocument(userData)
 
                         ProfileScreen(
                             user = user,

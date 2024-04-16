@@ -7,7 +7,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 object Firestore {
     private const val TAG = "Firestore"
 
-    fun createUserDocument(db: FirebaseFirestore, user: User) {
+    fun createUserDocument(db: FirebaseFirestore, user: User, onUpdateUser: (User) -> Unit) {
         Log.d(TAG, "creating user document: $user")
 
         val userRef = db.collection("users").document(user.userId)
@@ -30,13 +30,21 @@ object Firestore {
 
                     userRef.set(userData)
                         .addOnSuccessListener {
+
                             Log.d(TAG, "User document created successfully")
                         }
                         .addOnFailureListener { e ->
                             Log.w(TAG, "Error adding document", e)
+
                         }
                 } else {
-                    Log.d(TAG, "user already exists in db")
+                    // update `user` object according to database
+                    // User exists in Firestore, update the local user object
+                    val updatedUser = document.toObject(User::class.java)
+                    if (updatedUser != null) {
+                        onUpdateUser(updatedUser)
+                    }
+                    Log.d(TAG, "user already exists in db: $updatedUser")
                 }
             }
             .addOnFailureListener { exception ->
