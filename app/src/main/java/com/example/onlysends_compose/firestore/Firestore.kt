@@ -131,7 +131,11 @@ object Firestore {
                 for (document in querySnapshot.documents) {
                     // TO-DO: filter out user and current friends
                     val friend = userToFriend(document)
-                    friendsList.add(friend)
+
+                    // Filter out the current user and their friends
+                    if (friend.userId != user.userId && !user.friends.any { it.userId == friend.userId }) {
+                        friendsList.add(friend)
+                    }
                 }
 
                 onFriendsLoaded(friendsList)
