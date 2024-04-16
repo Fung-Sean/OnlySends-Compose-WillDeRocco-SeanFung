@@ -32,30 +32,39 @@ import coil.compose.AsyncImage
 import com.example.onlysends_compose.firestore.Firestore
 import com.example.onlysends_compose.firestore.types.Friend
 import com.example.onlysends_compose.firestore.types.User
+import kotlin.reflect.KFunction1
 
 const val TAG = "SearchScreen"
 
 // SearchScreen : composable function that allows user to search for friends and accept/delete requests
 @Composable
 fun SearchScreen(
-    user: User
+    user: User,
+    onUpdateUser: KFunction1<User, Unit>
 ) {
     // State to hold the list of friends
     var potentialFriends by remember { mutableStateOf(emptyList<Friend>()) }
     // track loading state
     var isLoading by remember { mutableStateOf(false) }
 
-    // Call searchUserFriends whenever anything about the user changes
-    LaunchedEffect(user) {
+    // Call searchUserFriends on initialization
+    LaunchedEffect(key1 = Unit) {
         // start loading the loader
         isLoading = true
         // fetch potentialFriends from db
         Firestore.searchAllFriends(user) { loadedFriends ->
+            // update potentialFriends with db results
             potentialFriends = loadedFriends
             Log.d(TAG, "loaded potential friends $potentialFriends")
             isLoading = false
         }
     }
+
+    LaunchedEffect(key1 = user) {
+        // update state variables every time user object is altered
+
+    }
+
 
     // Render the UI using the list of potentialFriends
     Box(
@@ -117,9 +126,15 @@ fun SearchScreen(
                         }
 
 
+                        // button : either "Follow", "Accept", or "Pending"
                         // display button to add friend (or disabled button saying "pending")
                         Button(
-                            onClick = {},
+                            onClick = {
+                                Firestore.followFriend(
+                                    user = user,
+                                    friend = friend,
+                                    onUpdateUser = onUpdateUser
+                                )},
                             modifier = Modifier
                                 .size(
                                     width = 85.dp,
@@ -136,5 +151,9 @@ fun SearchScreen(
             }
         }
     }
+
+
+
+
 
 }
