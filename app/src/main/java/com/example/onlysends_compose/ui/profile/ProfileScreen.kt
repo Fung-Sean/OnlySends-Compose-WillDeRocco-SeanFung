@@ -63,6 +63,7 @@ fun ProfileScreen(
         climbStyle = user.climbingStyle.ifEmpty {
             "pick a style"
         }
+        username = user.username
     }
 
     Log.d(TAG, "current user is $username || ${user.climbingStyle} || $climbStyle sussy")
