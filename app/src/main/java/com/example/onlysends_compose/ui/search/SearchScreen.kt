@@ -122,11 +122,14 @@ fun SearchScreen(
                             onClick = {},
                             modifier = Modifier
                                 .size(
-                                    width = 90.dp,
+                                    width = 85.dp,
                                     height = 35.dp
                                 )
                         ) {
-                            Text(text = "Follow")
+                            Text(
+                                text = "Follow",
+                                fontSize = 12.sp
+                            )
                         }
                     }
                 }
