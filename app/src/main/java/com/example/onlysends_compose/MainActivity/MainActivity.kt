@@ -19,13 +19,13 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -77,22 +77,18 @@ class MainActivity : AppCompatActivity() {
             // navigation bar elements
             val navController = rememberNavController()
             val scaffoldState = rememberScaffoldState()
-            val items = listOf("home", "search", "post", "maps", "profile")
+            val items = listOf("home", "search", "post", "maps", "friends")
             // Define icons map
             val icons = mapOf(
                 "home" to Icons.Filled.Home,
                 "search" to Icons.Filled.Search,
                 "post" to Icons.Filled.AddCircle,
                 "maps" to Icons.Filled.LocationOn,
-                "profile" to Icons.Filled.Person
+                "friends" to Icons.Filled.Face
             )
 
-            var selectedItem by remember { mutableIntStateOf(0) }
-
-            // if logged in, selectedItem = profile
-            if (googleAuthUiClient.getSignedInUser() != null) {
-                selectedItem = 4
-            }
+            // should not have any item selected on navBar at first
+            var selectedItem by remember { mutableIntStateOf(-1) }
 
             // keep track of user state (can be passed into other composable functions)
             var user by remember { mutableStateOf<User?>(null) }
@@ -108,6 +104,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            //  Function to update the user state variable
+            fun updateUser(newUser: User) {
+                user = newUser
+            }
+
             // Function to create user and call createUserDocument
             fun createUserAndDocument(userData: UserData?) {
                 user = userData?.let {
@@ -118,7 +119,9 @@ class MainActivity : AppCompatActivity() {
                         // Add other attributes as needed
                     )
                 }
-                user?.let { Firestore.createUserDocument(firestore, it) }
+                // call createUserDocument function (this will UPDATE the `user` state variable automatically)
+                // with the updateUser callback function
+                user?.let { Firestore.createUserDocument(firestore, it, ::updateUser) }
             }
 
             Scaffold(
@@ -167,15 +170,21 @@ class MainActivity : AppCompatActivity() {
                     navController = navController,
                     startDestination = getString(R.string.sign_in),
                 ) {
-                    // ----------------------- endpoint 0) "sign_in" -----------------------
+                    // ----------------------- route 0) "sign_in" -----------------------
                     composable(getString(R.string.sign_in)) {
                         val viewModel = viewModel<SignInViewModel>()
                         val state = viewModel.state.collectAsStateWithLifecycle().value
 
                         // Skip straight to "profile" page (or whatever we end up choosing) if
                         // already signed in.
-                        LaunchedEffect(key1 = Unit) {
-                            if (googleAuthUiClient.getSignedInUser() != null) {
+                        LaunchedEffect(key1 = Unit) { // since key1 = Unit -> function only runs once (when composable is composed)
+                            // obtain user from database
+                            val userData = googleAuthUiClient.getSignedInUser()
+                            if (userData != null) {
+                                // perform appropriate db operation (create user if not in db)
+                                createUserAndDocument(userData)
+
+                                // navigate to profile page on successful login
                                 navController.navigate(getString(R.string.profile))
                             }
                         }
@@ -203,10 +212,18 @@ class MainActivity : AppCompatActivity() {
                                     Toast.LENGTH_LONG
                                 ).show()
 
-                                navController.navigate("profile")
-                                Log.d(TAG, "current backstack entry is ${navController.currentBackStackEntry?.destination?.route}")
-                                // make sure state is reset (in case user needs to log back in)
-                                viewModel.resetState()
+                                // obtain user from database
+                                val userData = googleAuthUiClient.getSignedInUser()
+                                if (userData != null) {
+                                    // perform appropriate db operation (create user if not in db)
+                                    createUserAndDocument(userData)
+
+                                    // navigate to profile page on successful login
+                                    navController.navigate(getString(R.string.profile))
+
+                                    // make sure state is reset (in case user needs to log back in)
+                                    viewModel.resetState()
+                                }
                             }
                         }
 
@@ -227,55 +244,51 @@ class MainActivity : AppCompatActivity() {
                     }
 
 
-                    // add more endpoints other composable functions
-                    // ----------------------- endpoint 1) "home" -----------------------
+                    // add more routes other composable functions
+                    // ----------------------- route 1) "home" -----------------------
                     composable(route = getString(R.string.home)) {
-                        // Update the currentRoute when navigating to "profile" (or any other page)
+                        // Update the currentRoute when navigating to "home" (or any other page)
                         updateCurrentRoute(navController = navController)
 
                     }
 
-                    // ----------------------- endpoint 2) "search" -----------------------
+                    // ----------------------- route 2) "search" -----------------------
                     composable(route = getString(R.string.search)) {
-                        // Update the currentRoute when navigating to "profile" (or any other page)
+                        // Update the currentRoute when navigating to "search" (or any other page)
                         updateCurrentRoute(navController = navController)
 
                     }
 
-                    // ----------------------- endpoint 3) "post" -----------------------
+                    // ----------------------- route 3) "post" -----------------------
                     composable(route = getString(R.string.post)) {
-                        // Update the currentRoute when navigating to "profile" (or any other page)
+                        // Update the currentRoute when navigating to "post" (or any other page)
                         updateCurrentRoute(navController = navController)
 
                     }
 
-                    // ----------------------- endpoint 4) "maps" -----------------------
+                    // ----------------------- route 4) "maps" -----------------------
                     composable(route = getString(R.string.maps)) {
-                        // Update the currentRoute when navigating to "profile" (or any other page)
+                        // Update the currentRoute when navigating to "maps" (or any other page)
                         updateCurrentRoute(navController = navController)
 
                     }
 
-                    // ----------------------- endpoint 4) "friends" -----------------------
+                    // ----------------------- route 5) "friends" -----------------------
                     composable(route = getString(R.string.friends)) {
-                        // Update the currentRoute when navigating to "profile" (or any other page)
+                        // Update the currentRoute when navigating to "friends" (or any other page)
                         updateCurrentRoute(navController = navController)
 
                     }
 
-                    // ----------------------- endpoint 6) "profile" -----------------------
+                    // ----------------------- route 6) "profile" -----------------------
                     composable(route = getString(R.string.profile)) {
+                        Log.d(TAG, "entering profile page, user is: $user")
+
                         // Update the currentRoute when navigating to "profile" (or any other page)
                         updateCurrentRoute(navController = navController)
-
-                        // perform appropriate db operation (create user if not in db)
-                        val userData = googleAuthUiClient.getSignedInUser()
-
-                        // call homemade Firestore method to log the user (and update the db)
-                        createUserAndDocument(userData)
 
                         ProfileScreen(
-                            userData = userData,
+                            user = user,
                             onSignOut = {
                                 lifecycleScope.launch {
                                     googleAuthUiClient.signOut()
@@ -285,6 +298,7 @@ class MainActivity : AppCompatActivity() {
                                         Toast.LENGTH_LONG
                                     ).show()
 
+                                    // navigate back to sign_in page on `signOut`
                                     navController.navigate(getString(R.string.sign_in))
                                 }
                             }
