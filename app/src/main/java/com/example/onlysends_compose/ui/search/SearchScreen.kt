@@ -68,7 +68,7 @@ fun SearchScreen(
             modifier = Modifier.padding(30.dp) // Add some padding for better spacing
         ) {
             // Show loading indicator if potentialFriends is empty and loading is true
-            if (potentialFriends.isEmpty() && isLoading) {
+            if (isLoading) {
                 CircularProgressIndicator(
                     modifier = Modifier.width(64.dp),
                     color = MaterialTheme.colorScheme.secondary,
