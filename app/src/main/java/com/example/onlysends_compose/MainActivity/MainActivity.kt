@@ -26,7 +26,6 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -248,35 +247,35 @@ class MainActivity : AppCompatActivity() {
                     // add more routes other composable functions
                     // ----------------------- route 1) "home" -----------------------
                     composable(route = getString(R.string.home)) {
-                        // Update the currentRoute when navigating to "profile" (or any other page)
+                        // Update the currentRoute when navigating to "home" (or any other page)
                         updateCurrentRoute(navController = navController)
 
                     }
 
                     // ----------------------- route 2) "search" -----------------------
                     composable(route = getString(R.string.search)) {
-                        // Update the currentRoute when navigating to "profile" (or any other page)
+                        // Update the currentRoute when navigating to "search" (or any other page)
                         updateCurrentRoute(navController = navController)
 
                     }
 
                     // ----------------------- route 3) "post" -----------------------
                     composable(route = getString(R.string.post)) {
-                        // Update the currentRoute when navigating to "profile" (or any other page)
+                        // Update the currentRoute when navigating to "post" (or any other page)
                         updateCurrentRoute(navController = navController)
 
                     }
 
                     // ----------------------- route 4) "maps" -----------------------
                     composable(route = getString(R.string.maps)) {
-                        // Update the currentRoute when navigating to "profile" (or any other page)
+                        // Update the currentRoute when navigating to "maps" (or any other page)
                         updateCurrentRoute(navController = navController)
 
                     }
 
                     // ----------------------- route 5) "friends" -----------------------
                     composable(route = getString(R.string.friends)) {
-                        // Update the currentRoute when navigating to "profile" (or any other page)
+                        // Update the currentRoute when navigating to "friends" (or any other page)
                         updateCurrentRoute(navController = navController)
 
                     }
@@ -287,12 +286,6 @@ class MainActivity : AppCompatActivity() {
 
                         // Update the currentRoute when navigating to "profile" (or any other page)
                         updateCurrentRoute(navController = navController)
-
-//                        // perform appropriate db operation (create user if not in db)
-//                        val userData = googleAuthUiClient.getSignedInUser()
-//
-//                        // call homemade Firestore method to log the user (and update the db)
-//                        createUserAndDocument(userData)
 
                         ProfileScreen(
                             user = user,
