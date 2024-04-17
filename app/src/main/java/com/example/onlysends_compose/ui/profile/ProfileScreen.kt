@@ -154,6 +154,7 @@ fun ProfileScreen(
 
                 ExposedDropdownMenu(
                     expanded = expanded,
+
                     onDismissRequest = { expanded = false }
                 ) {
                     climbStyles.forEach { style ->

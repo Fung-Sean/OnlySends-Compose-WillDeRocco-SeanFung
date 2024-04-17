@@ -3,6 +3,7 @@
     <style name="Base.Theme.OnlySendsCompose" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/onlySends</item> <!-- Change the primary color here -->
+        <item name="colorSurface">@color/onlySends</item>
     </style>
 
     <style name="Theme.OnlySendsCompose" parent="Base.Theme.OnlySendsCompose" />
