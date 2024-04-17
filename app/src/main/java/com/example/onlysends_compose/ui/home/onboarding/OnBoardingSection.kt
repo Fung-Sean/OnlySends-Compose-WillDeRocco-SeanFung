@@ -41,7 +41,7 @@ fun OnBoardingSection(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp),
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center
         )
        Text(text = stringResource(id = R.string.onboarding_description),
