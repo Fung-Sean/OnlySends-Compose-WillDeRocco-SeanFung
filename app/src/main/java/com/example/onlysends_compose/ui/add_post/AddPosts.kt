@@ -1,5 +1,6 @@
 package com.example.onlysends_compose.ui.add_post
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
@@ -133,7 +134,8 @@ fun AddPostScreen(
             ),
             onClick = {
                 // TODO: Create new post and pass it to onPostAdded
-            },
+                Toast.makeText(null, "Post added!", Toast.LENGTH_SHORT).show()
+                      },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .align(Alignment.CenterHorizontally)
