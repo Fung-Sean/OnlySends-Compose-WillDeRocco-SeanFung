@@ -42,3 +42,6 @@ internal val DarkColors = darkColors(
     surface = Black24,
     onSurface = White87
 )
+
+val buttonColor = Color(0xFF6CC4D3) // Define the color using hexadecimal notation
+val signOutColor = Color(0xFF308AB4)
