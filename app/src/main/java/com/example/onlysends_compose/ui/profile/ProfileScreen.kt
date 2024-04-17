@@ -1,6 +1,8 @@
 package com.example.onlysends_compose.ui.profile
 
+import android.text.style.BackgroundColorSpan
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,10 +13,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -27,14 +32,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.onlysends_compose.firestore.Firestore
 import com.example.onlysends_compose.firestore.types.User
+import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
+import com.example.onlysends_compose.ui.home.theme.buttonColor
+import com.example.onlysends_compose.ui.home.theme.signOutColor
+import okhttp3.internal.userAgent
 import kotlin.reflect.KFunction1
 
 private const val TAG = "Profile Screen"
@@ -127,7 +138,8 @@ fun ProfileScreen(
             // dropdown menu of climbing styles
             ExposedDropdownMenuBox(
                 expanded = expanded,
-                onExpandedChange = { expanded = it }
+                onExpandedChange = { expanded = it },
+
             ) {
                 TextField(
                     value = climbStyle ?: "pick a climbing style",
@@ -162,6 +174,7 @@ fun ProfileScreen(
 
         // button to let user update the user in Firestore db
         Button(
+            colors = ButtonDefaults.buttonColors(buttonColor),
             onClick = {
                 Firestore.updateUserProfile(
                     context,
@@ -179,6 +192,7 @@ fun ProfileScreen(
         // button to let user sign out
         Button(
             onClick = onSignOut,
+            colors = ButtonDefaults.buttonColors(signOutColor),
             modifier = Modifier
                 .padding(top = 20.dp)
         ) {
