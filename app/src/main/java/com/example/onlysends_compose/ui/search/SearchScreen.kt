@@ -79,7 +79,8 @@ fun SearchScreen(
         contentAlignment = Alignment.TopCenter
     ) {
         Column(
-            modifier = Modifier.padding(30.dp) // Add some padding for better spacing
+            modifier = Modifier
+                .padding(30.dp) // Add some padding for better spacing
         ) {
             // Show loading indicator if potentialFriends is empty and loading is true
             if (isLoading) {
@@ -156,8 +157,14 @@ fun SearchScreen(
                             }
                         } else if (isFriendInIncoming(user, friend)){
                             Button(
-                                onClick = {},
-                                enabled = false,
+                                onClick = {
+                                          Firestore.acceptFriend(
+                                              context = context,
+                                              user = user,
+                                              friend = friend,
+                                              onUpdateUser = onUpdateUser
+                                          )
+                                },
                                 modifier = Modifier
                                     .size(
                                         width = 85.dp,
