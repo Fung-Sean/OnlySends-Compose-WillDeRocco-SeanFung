@@ -340,7 +340,6 @@ object Firestore {
                             /*--------------------------------------------------------------------*/
                             // Stage 2) (updating userRef)
                             // Step 2) adds friend to userRef.friends
-                            // Extract the incomingFriends list from the friend document
                             userRef.get()
                                 .addOnSuccessListener { userDoc ->
                                     val userRefFriends =
