@@ -4,13 +4,17 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -42,33 +46,35 @@ import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
 
 @Composable
 fun AddPostScreen(
-
     modifier: Modifier = Modifier,
     onPostAdded: (Post) -> Unit,
-//    getContent: ActivityResultLauncher<String>, // Pass ActivityResultLauncher as a parameter
-    postText: MutableState<String> // Pass postText as a parameter
+    postText: MutableState<String>
 ) {
     var selectedImageByUri by remember {
         mutableStateOf<Uri?>(null)
     }
+
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = {selectedImageByUri = it
+        onResult = {
+            selectedImageByUri = it
         }
     )
+
     Column(
         modifier = modifier
             .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Text(
             text = "Add a Post",
             style = MaterialTheme.typography.displaySmall
         )
-        // Button to launch the image picker
+
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(56.dp),
+                .padding(vertical = 16.dp),
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.DarkGray,
@@ -80,34 +86,37 @@ fun AddPostScreen(
                 )
             }
         ) {
-            Row {
-
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Text(
                     text = "Pick A Photo To Post",
                     style = MaterialTheme.typography.labelMedium.copy(
                         fontSize = 18.sp,
-
-                    )
+                    ),
+                    modifier = Modifier.weight(1f)
                 )
-                Spacer(modifier = modifier.padding(4.dp))
+                Spacer(modifier = Modifier.padding(4.dp))
                 Icon(
                     painter = painterResource(id = R.drawable.add_photo),
                     contentDescription = "Add image",
-                    modifier = Modifier.size(24.dp))
+                    modifier = Modifier.size(24.dp)
+                )
             }
-
         }
-
+        Spacer(modifier = modifier.padding(30.dp))
         AsyncImage(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .height(240.dp)
+                .aspectRatio(1f)
                 .clip(RoundedCornerShape()),
             model = selectedImageByUri,
             contentDescription = null,
-            contentScale = ContentScale.FillBounds)
-        // Text input field
-
+            contentScale = ContentScale.FillBounds
+        )
+        Spacer(modifier = modifier.padding(40.dp))
         OutlinedTextField(
             value = postText.value,
             onValueChange = { newValue -> postText.value = newValue },
@@ -115,7 +124,7 @@ fun AddPostScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Button to submit the post
+        Spacer(modifier = Modifier.height(12.dp))
 
         Button(
             shape = RoundedCornerShape(8.dp),
@@ -133,14 +142,17 @@ fun AddPostScreen(
             Row {
                 Icon(
                     painter = painterResource(id = android.R.drawable.ic_input_add),
-                    contentDescription = null)
-                Text("Add Post",
-                    style = MaterialTheme.typography.bodyLarge)
+                    contentDescription = null
+                )
+                Text(
+                    "Add Post",
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
-
         }
     }
 }
+
 
 
 @Preview
