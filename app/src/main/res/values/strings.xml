@@ -12,6 +12,9 @@
     <string name="friends">friends</string>
     <!--  profile page will be linked to `topBar`  -->
     <string name="profile">profile</string>
-
+    <string name="follow_button_text">Follow</string>
+    <string name="onboarding_title">Suggested Accounts</string>
+    <string name="onboarding_description">Posts from people you follow will appear here. Here are some suggested people you can follow</string>
+    <string name="onboarding_done_button">Done</string>
 
 </resources>
