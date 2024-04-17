@@ -12,7 +12,6 @@ class SignInViewModel: ViewModel() {
     fun onSignInResult(result: SignInResult) {
         _state.update { it.copy(
             isSignInSuccessful = result.data != null,
-            isLoading = false,
             signInError = result.errorMessage
         ) }
     }
@@ -20,11 +19,5 @@ class SignInViewModel: ViewModel() {
     // ensures state is now viewed as successful after moving to diff page
     fun resetState() {
         _state.update { SignInState() }
-    }
-
-    fun startLoading() {
-        _state.update {
-            it.copy(isLoading = true)
-        }
     }
 }

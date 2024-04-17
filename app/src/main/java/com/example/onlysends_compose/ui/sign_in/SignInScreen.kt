@@ -41,24 +41,15 @@ fun SignInScreen(
         }
     }
 
-    // Show loading indicator if potentialFriends is empty and loading is true
-    if (state.isLoading) {
-        CircularProgressIndicator(
-            modifier = Modifier.width(64.dp),
-            color = MaterialTheme.colorScheme.secondary,
-            trackColor = MaterialTheme.colorScheme.surfaceVariant,
-        )
-
-    } else {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Button(onClick = onSignInClick) {
-                Text(text = "Sign in with Google")
-            }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Button(onClick = onSignInClick) {
+            Text(text = "Sign in with Google")
         }
     }
+
 }
