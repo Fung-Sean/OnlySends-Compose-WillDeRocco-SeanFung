@@ -63,6 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.onlysends_compose.R
+import com.example.onlysends_compose.ui.add_post.AddPostScreen
 import com.example.onlysends_compose.ui.home.HomeScreen
 import com.example.onlysends_compose.ui.home.HomeScreenViewModel
 import com.example.onlysends_compose.ui.search.SearchScreen
@@ -329,7 +330,13 @@ class MainActivity : AppCompatActivity() {
                     composable(route = getString(R.string.post)) {
                         // Update the currentRoute when navigating to "post" (or any other page)
                         updateCurrentRoute(navController = navController)
-
+                        AddPostScreen(
+                            modifier = Modifier.fillMaxSize(), // Adjust the modifier as needed
+                            onPostAdded = { post -> /*TODO*/
+                                // Handle the new post, e.g., add it to the list of posts
+                            },
+                            postText = remember { mutableStateOf("") } // Initialize postText state
+                        )
                     }
 
                     // ----------------------- route 4) "maps" -----------------------
