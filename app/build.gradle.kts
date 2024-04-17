@@ -85,6 +85,9 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$navVersion")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
 
+    //Camera
+    implementation ("androidx.activity:activity-ktx:1.8.2")
+    implementation ("androidx.fragment:fragment-ktx:1.6.2")
     // coil (image rendering) dependencies
     implementation("io.coil-kt:coil-compose:2.6.0")
 
