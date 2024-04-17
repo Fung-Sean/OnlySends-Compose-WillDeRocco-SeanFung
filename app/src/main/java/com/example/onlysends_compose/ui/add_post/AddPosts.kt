@@ -44,6 +44,8 @@ import com.example.onlysends_compose.R
 import com.example.onlysends_compose.ui.home.fake_data.Post
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
 import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
+import com.example.onlysends_compose.ui.home.theme.buttonColor
+import com.example.onlysends_compose.ui.home.theme.signOutColor
 
 @Composable
 fun AddPostScreen(
@@ -78,7 +80,7 @@ fun AddPostScreen(
                 .padding(vertical = 16.dp),
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.DarkGray,
+                signOutColor,
                 contentColor = Color.White
             ),
             onClick = {
@@ -130,7 +132,7 @@ fun AddPostScreen(
         Button(
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.DarkGray,
+                signOutColor,
             ),
             onClick = {
                 // TODO: Create new post and pass it to onPostAdded
