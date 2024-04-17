@@ -42,7 +42,7 @@ fun FollowsButton(
             text = stringResource(id = text),
             style = MaterialTheme.typography.labelSmall.copy(
                 fontSize = 12.sp,
-                color = Color.Black
+                color = Color.White
             ),
             textAlign = TextAlign.Center // Center the text horizontally and vertically
         )
