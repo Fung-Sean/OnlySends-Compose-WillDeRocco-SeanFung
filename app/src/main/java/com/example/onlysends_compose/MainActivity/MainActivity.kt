@@ -173,6 +173,7 @@ class MainActivity : AppCompatActivity() {
                                             modifier = Modifier.size(42.dp), // Adjust size as needed
                                         )
 
+
                                         Spacer(modifier = Modifier.width(8.dp)) // Adjust spacer width as needed
 
                                         Text(
@@ -181,6 +182,23 @@ class MainActivity : AppCompatActivity() {
                                         )
                                         Text(
                                             text = "Hello, ${user?.username?.split("\\s+".toRegex())?.firstOrNull() ?: ""}",
+
+                                    Spacer(modifier  = Modifier.width(16.dp))
+
+                                    // display profile picture
+                                    if (user?.profilePictureUrl != null) {
+                                        AsyncImage(
+                                            model = user?.profilePictureUrl,
+                                            contentDescription = "User profile picture",
+                                            modifier = Modifier
+                                                .size(30.dp)
+                                                .clip(CircleShape)
+                                                .clickable {
+                                                    selectedItem = -1
+                                                    navController.navigate( getString(R.string.profile) )
+                                                           },
+                                            contentScale = ContentScale.Crop
+
                                         )
 
                                         Spacer(modifier = Modifier.width(16.dp))
