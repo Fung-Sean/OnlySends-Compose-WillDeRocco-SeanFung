@@ -52,6 +52,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.onlysends_compose.R
+import com.example.onlysends_compose.ui.home.HomeScreen
+import com.example.onlysends_compose.ui.home.HomeScreenViewModel
 import com.example.onlysends_compose.ui.search.SearchScreen
 import com.example.onlysends_compose.ui.sign_in.UserData
 
@@ -247,8 +249,23 @@ class MainActivity : AppCompatActivity() {
                     // ----------------------- route 1) "home" -----------------------
                     composable(route = getString(R.string.home)) {
                         // Update the currentRoute when navigating to "home" (or any other page)
-                        updateCurrentRoute(navController = navController)
 
+                        updateCurrentRoute(navController = navController)
+                        val viewModel: HomeScreenViewModel = HomeScreenViewModel()
+
+                        HomeScreen(
+                            onBoardingUiState = viewModel.onBoardingUiState,
+                            postsUiState = viewModel.postsUiState,
+                            onPostClick = {},
+                            onProfileClick = {},
+                            onLikeClick = {},
+                            onCommentClick = {},
+                            onFollowButtonClick = {_, _ ->},
+                            onBoardingFinish = {},
+                            fetchMoreData = {
+                                viewModel.fetchData()
+                            }
+                        )
                     }
 
                     // ----------------------- route 2) "search" -----------------------
