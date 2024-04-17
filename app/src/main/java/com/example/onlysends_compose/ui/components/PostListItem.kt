@@ -133,11 +133,7 @@ fun PostHeader(
             ),
             modifier = modifier.weight(1f)
         )
-        Icon(painter = painterResource(
-            id = R.drawable.round_more_horiz_24), 
-            contentDescription = null,
-            tint = Color.LightGray
-        )
+
     }
 }
 
@@ -158,34 +154,34 @@ fun PostLikesRow(
             ),
         verticalAlignment = Alignment.CenterVertically
     ){
-        IconButton(onClick = onLikeClick) {
-            Icon(painter = painterResource(
-                id = R.drawable.like_icon_outlined), 
-                contentDescription = null,
-                tint = Color.LightGray
-            )
-        }
-        Text(
-            text = "$likeCount",
-            style = MaterialTheme.typography.bodyMedium.copy(
-                fontSize = 18.sp
-            )
-        )
-        Spacer(modifier = modifier.width(8.dp))
-
-        IconButton(onClick = onCommentClick) {
-            Icon(painter = painterResource(
-                id = R.drawable.chat_icon_outlined),
-                contentDescription = null,
-                tint = Color.LightGray
-            )
-        }
-        Text(
-            text = "$commentCount",
-            style = MaterialTheme.typography.bodyMedium.copy(
-                fontSize = 18.sp
-            )
-        )
+//        IconButton(onClick = onLikeClick) {
+//            Icon(painter = painterResource(
+//                id = R.drawable.like_icon_outlined),
+//                contentDescription = null,
+//                tint = Color.LightGray
+//            )
+//        }
+//        Text(
+//            text = "$likeCount",
+//            style = MaterialTheme.typography.bodyMedium.copy(
+//                fontSize = 18.sp
+//            )
+//        )
+//        Spacer(modifier = modifier.width(8.dp))
+//
+//        IconButton(onClick = onCommentClick) {
+//            Icon(painter = painterResource(
+//                id = R.drawable.chat_icon_outlined),
+//                contentDescription = null,
+//                tint = Color.LightGray
+//            )
+//        }
+//        Text(
+//            text = "$commentCount",
+//            style = MaterialTheme.typography.bodyMedium.copy(
+//                fontSize = 18.sp
+//            )
+//        )
     }
 }
 
