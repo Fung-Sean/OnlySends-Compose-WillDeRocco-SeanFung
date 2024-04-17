@@ -9,6 +9,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.toObject
 
 object Firestore {
     private const val TAG = "Firestore"
@@ -128,12 +129,21 @@ object Firestore {
             .addOnSuccessListener { querySnapshot ->
                 val friendsList = mutableListOf<Friend>()
 
+                // iterate over every user document
                 for (document in querySnapshot.documents) {
+                    // obtain the list of friends this friend has
+                    val friendUser = document.toObject<User>() ?: User()
+                    val friends = friendUser.friends
+
                     // TO-DO: filter out user and current friends
                     val friend = userToFriend(document)
 
-                    // Filter out the `user` `user.friends` and user.incomingFriends`
-                    if (friend.userId != user.userId && !user.friends.any { it.userId == friend.userId }) {
+
+                    // Filter out the `user` `user.friends` and `friend.friends` for user
+                    if (friend.userId != user.userId &&
+                        !user.friends.any { it.userId == friend.userId } &&
+                        !friends.any{ it.userId == user.userId}
+                    ) {
                         friendsList.add(friend)
                     }
                 }
@@ -240,6 +250,157 @@ object Firestore {
                                     Log.e(TAG, "Error updating user document", exception)
                                 }
                             /*--------------------------------------------------------------------*/
+                        }
+                        .addOnFailureListener { exception ->
+                            // Failed to update friend document
+                            Log.e(TAG, "Error updating friend document", exception)
+                        }
+                } else {
+                    // Friend document doesn't exist
+                    Log.e(TAG, "Friend document does not exist")
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Error fetching friend document
+                Log.e(TAG, "Error fetching friend document", exception)
+            }
+    }
+
+    // acceptFriend : two stage process
+    // 1) add user to friendUserRef.friends
+    // 2) adds friend to userRef.friends
+
+    // this was the old approach below (let's simplify it to the one above ^^)
+    // 1) a) adds user to friendUserRef.friends b) deletes `user` from `friendUserRef.outgoingFriends`
+    // 2) c) adds friend to userRef.friends d) deletes `friend` from `userRef.incomingFriends`
+    fun acceptFriend(
+        context: Context,
+        user: User,
+        friend: Friend,
+        onUpdateUser: (User) -> Unit
+    ) {
+        // Get references to the user and friend documents
+        val userRef = db.collection("users").document(user.userId)
+        val friendRef = db.collection("users").document(friend.userId)
+
+        // Stage 1 (updating friendRef)
+        // Fetch the friend document from Firestore
+        friendRef.get()
+            .addOnSuccessListener { friendDoc ->
+                if (friendDoc.exists()) {
+                    // STEP 1) adds user to friendUserRef.friends
+                    // Extract the incomingFriends list from the friend document
+                    val friendRefFriends =
+                        friendDoc.get("friends") as? List<Map<String, Any>> ?: emptyList()
+
+                    var userAlreadyInFriendRefFriends = false
+
+                    // Convert friendRef.friends list to a list of Friend objects
+                    val updatedFriendRefFriends = friendRefFriends.map { friendData ->
+                        if (user.userId == friendData["userId"] as String) {
+                            // Set flag indicating user is already in friends list
+                            userAlreadyInFriendRefFriends = true
+                            return@map null // Skip mapping this friend
+                        }
+                        Friend(
+                            userId = friendData["userId"] as String,
+                            username = friendData["username"] as String,
+                            profilePictureUrl = friendData["profilePictureUrl"] as? String,
+                            climbingStyle = friendData["climbingStyle"] as String,
+                            numFriends = friendData["numFriends"] as Int
+                        )
+                    }.filterNotNull() // Filter out null values
+
+                    // If user is already in incomingFriends list, exit function
+                    if (userAlreadyInFriendRefFriends) {
+                        Log.d(TAG, "user already inside of friends list of friend:  $friend")
+                        return@addOnSuccessListener
+                    }
+
+
+                    val userFriend = Friend(
+                        userId = user.userId,
+                        username = user.username,
+                        profilePictureUrl = user.profilePictureUrl,
+                        climbingStyle = user.climbingStyle,
+                        numFriends = user.numFriends
+                    )
+
+                    // LAST STEP of 1) Update the friend document
+                    val friendUpdates = hashMapOf<String, Any>(
+                        "friends" to friendRefFriends + userFriend
+                    )
+
+                    // Update the friend document in Firestore
+                    friendRef.update(friendUpdates)
+                        .addOnSuccessListener {
+                            // Successfully updated friend document
+                            Log.d(TAG, "Friend document updated successfully")
+
+                            /*--------------------------------------------------------------------*/
+                            // Stage 2) (updating userRef)
+                            // Step 2) adds friend to userRef.friends
+                            userRef.get()
+                                .addOnSuccessListener { userDoc ->
+                                    val userRefFriends =
+                                        userDoc.get("friends") as? List<Map<String, Any>> ?: emptyList()
+
+                                    var friendAlreadyInUserRefFriends = false
+
+                                    // Convert friendRef.friends list to a list of Friend objects
+                                    val updatedUserRefFriends = userRefFriends.map { friendData ->
+                                        if (friend.userId == friendData["userId"] as String) {
+                                            // Set flag indicating user is already in friends list
+                                            friendAlreadyInUserRefFriends = true
+                                            return@map null // Skip mapping this friend
+                                        }
+                                        Friend(
+                                            userId = friendData["userId"] as String,
+                                            username = friendData["username"] as String,
+                                            profilePictureUrl = friendData["profilePictureUrl"] as? String,
+                                            climbingStyle = friendData["climbingStyle"] as String,
+                                            numFriends = friendData["numFriends"] as Int
+                                        )
+                                    }.filterNotNull() // Filter out null values
+
+                                    // If user is already in incomingFriends list, exit function
+                                    if (friendAlreadyInUserRefFriends) {
+                                        Log.d(TAG, "user already inside of friends list of friend:  $friend")
+                                        return@addOnSuccessListener
+                                    }
+
+                                    val userRefFriend = Friend(
+                                        userId = user.userId,
+                                        username = user.username,
+                                        profilePictureUrl = user.profilePictureUrl,
+                                        climbingStyle = user.climbingStyle,
+                                        numFriends = user.numFriends
+                                    )
+
+                                    // LAST STEP: Update the user document
+                                    val userUpdates = hashMapOf<String, Any>(
+                                        "friends" to updatedUserRefFriends + userRefFriend
+                                    )
+                                    // Update the user document in Firestore
+                                    userRef.update(userUpdates)
+                                        .addOnSuccessListener {
+                                            // Successfully updated user document
+                                            Log.d(TAG, "User document updated successfully")
+
+                                            Toast.makeText(context, "Accepted friend successfully", Toast.LENGTH_SHORT).show()
+
+                                            // Update local user object with the new friends list
+                                            val updatedUser = user.copy(friends = updatedUserRefFriends)
+                                            onUpdateUser(updatedUser)
+
+                                        }
+                                        .addOnFailureListener { exception ->
+                                            // Failed to update user document
+                                            Toast.makeText(context, "Error adding friend", Toast.LENGTH_SHORT).show()
+                                            Log.e(TAG, "Error updating user document", exception)
+                                        }
+                                    /*--------------------------------------------------------------------*/
+                                }
                         }
                         .addOnFailureListener { exception ->
                             // Failed to update friend document
