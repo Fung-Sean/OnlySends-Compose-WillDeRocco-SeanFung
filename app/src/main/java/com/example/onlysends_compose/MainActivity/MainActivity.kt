@@ -167,7 +167,10 @@ class MainActivity : AppCompatActivity() {
                                             modifier = Modifier
                                                 .size(30.dp)
                                                 .clip(CircleShape)
-                                                .clickable { navController.navigate( getString(R.string.profile) ) },
+                                                .clickable {
+                                                    selectedItem = -1
+                                                    navController.navigate( getString(R.string.profile) )
+                                                           },
                                             contentScale = ContentScale.Crop
                                         )
                                     }
@@ -272,6 +275,7 @@ class MainActivity : AppCompatActivity() {
                         SignInScreen(
                             state = state,
                             onSignInClick = {
+//                                viewModel.startLoading()
                                 Log.d(TAG, "starting signIn process")
                                 lifecycleScope.launch {
                                     val signInIntentSender = googleAuthUiClient.signIn()
