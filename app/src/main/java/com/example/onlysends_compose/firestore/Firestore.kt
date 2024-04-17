@@ -132,7 +132,7 @@ object Firestore {
                     // TO-DO: filter out user and current friends
                     val friend = userToFriend(document)
 
-                    // Filter out the current user and their friends
+                    // Filter out the `user` `user.friends` and user.incomingFriends`
                     if (friend.userId != user.userId && !user.friends.any { it.userId == friend.userId }) {
                         friendsList.add(friend)
                     }
@@ -169,8 +169,16 @@ object Firestore {
                     val incomingFriendsList =
                         friendDoc.get("incomingFriends") as? List<Map<String, Any>> ?: emptyList()
 
+                    // Variable to track whether user is already in incomingFriends list
+                    var userAlreadyInIncomingFriends = false
+
                     // Convert incomingFriends list to a list of Friend objects
                     val incomingFriends = incomingFriendsList.map { friendData ->
+                        if (user.userId == friendData["userId"] as String) {
+                            // Set flag indicating user is already in incomingFriends list
+                            userAlreadyInIncomingFriends = true
+                            return@map null // Skip mapping this friend
+                        }
                         Friend(
                             userId = friendData["userId"] as String,
                             username = friendData["username"] as String,
@@ -178,7 +186,14 @@ object Firestore {
                             climbingStyle = friendData["climbingStyle"] as String,
                             numFriends = friendData["numFriends"] as Int
                         )
+                    }.filterNotNull() // Filter out null values
+
+                    // If user is already in incomingFriends list, exit function
+                    if (userAlreadyInIncomingFriends) {
+                        Log.d(TAG, "user already inside of incomingFriends list")
+                        return@addOnSuccessListener
                     }
+
 
                     val userFriend = Friend(
                         userId = user.userId,
