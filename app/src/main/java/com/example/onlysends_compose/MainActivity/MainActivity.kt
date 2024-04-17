@@ -295,7 +295,7 @@ class MainActivity : AppCompatActivity() {
                         // Update the currentRoute when navigating to "home" (or any other page)
 
                         updateCurrentRoute(navController = navController)
-                        val viewModel: HomeScreenViewModel = HomeScreenViewModel()
+                        val viewModel: HomeScreenViewModel = viewModel()
 
                         HomeScreen(
                             onBoardingUiState = viewModel.onBoardingUiState,
