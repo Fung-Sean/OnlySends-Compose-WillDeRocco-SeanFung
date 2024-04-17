@@ -69,14 +69,15 @@ fun SearchScreen(
     fun isFriendInOutgoingList(user: User, friend: Friend): Boolean {
         return user.outgoingFriends.any { it.userId == friend.userId }
     }
+    fun isFriendInIncoming(user: User, friend: Friend): Boolean {
+        return user.incomingFriends.any { it.userId == friend.userId }
+    }
 
     // Render the UI using the list of potentialFriends
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
     ) {
-        // Render your UI here using the `potentialFriends` list
-        // For example:
         Column(
             modifier = Modifier.padding(30.dp) // Add some padding for better spacing
         ) {
@@ -118,8 +119,14 @@ fun SearchScreen(
                                 fontWeight = FontWeight.Bold
                             )
                             Row() {
+                                val numFriendsText = if (friend.numFriends == 1) {
+                                    "${friend.numFriends} friend, "
+                                } else {
+                                    "${friend.numFriends} friends, "
+                                }
+
                                 Text(
-                                    text = "${friend.numFriends} friends, ",
+                                    text = numFriendsText,
                                     fontSize = 12.sp,
                                 )
                                 Text(
@@ -132,7 +139,37 @@ fun SearchScreen(
 
                         // button : either "Follow" or "Pending"
                         // display button to add friend (or disabled button saying "pending")
-                        if (!isFriendInOutgoingList(user, friend)) {
+                        if (isFriendInOutgoingList(user, friend)) {
+                            Button(
+                                onClick = {},
+                                enabled = false,
+                                modifier = Modifier
+                                    .size(
+                                        width = 85.dp,
+                                        height = 35.dp
+                                    )
+                            ) {
+                                Text(
+                                    text = "Pending",
+                                    fontSize = 9.sp
+                                )
+                            }
+                        } else if (isFriendInIncoming(user, friend)){
+                            Button(
+                                onClick = {},
+                                enabled = false,
+                                modifier = Modifier
+                                    .size(
+                                        width = 85.dp,
+                                        height = 35.dp
+                                    )
+                            ) {
+                                Text(
+                                    text = "Accept",
+                                    fontSize = 9.sp
+                                )
+                            }
+                        } else {
                             Button(
                                 onClick = {
                                     Firestore.followFriend(
@@ -150,21 +187,6 @@ fun SearchScreen(
                                 Text(
                                     text = "Follow",
                                     fontSize = 12.sp
-                                )
-                            }
-                        } else {
-                            Button(
-                                onClick = {},
-                                enabled = false,
-                                modifier = Modifier
-                                    .size(
-                                        width = 85.dp,
-                                        height = 35.dp
-                                    )
-                            ) {
-                                Text(
-                                    text = "Pending",
-                                    fontSize = 9.sp
                                 )
                             }
                         }
