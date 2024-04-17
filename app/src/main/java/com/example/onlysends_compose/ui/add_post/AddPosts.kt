@@ -1,39 +1,113 @@
 package com.example.onlysends_compose.ui.add_post
-
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalMapOf
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.example.onlysends_compose.R
 import com.example.onlysends_compose.ui.home.fake_data.Post
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
+import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
 
 @Composable
 fun AddPostScreen(
+
+    modifier: Modifier = Modifier,
     onPostAdded: (Post) -> Unit,
-    modifier:  Modifier = Modifier
+//    getContent: ActivityResultLauncher<String>, // Pass ActivityResultLauncher as a parameter
+    postText: MutableState<String> // Pass postText as a parameter
 ) {
-    // Define local state for text input
-    val postText = remember { mutableStateOf("") }
-
-
-    // Add more state for other input fields as needed
-
+    var selectedImageByUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = {selectedImageByUri = it
+        }
+    )
     Column(
-        modifier = Modifier.padding(16.dp)
+        modifier = modifier
+            .padding(16.dp)
     ) {
+        Text(
+            text = "Add a Post",
+            style = MaterialTheme.typography.displaySmall
+        )
+        // Button to launch the image picker
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(56.dp),
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.DarkGray,
+                contentColor = Color.White
+            ),
+            onClick = {
+                photoPickerLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
+            }
+        ) {
+            Row {
+
+                Text(
+                    text = "Pick A Photo To Post",
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontSize = 18.sp,
+
+                    )
+                )
+                Spacer(modifier = modifier.padding(4.dp))
+                Icon(
+                    painter = painterResource(id = R.drawable.add_photo),
+                    contentDescription = "Add image",
+                    modifier = Modifier.size(24.dp))
+            }
+
+        }
+
+        AsyncImage(
+            modifier = modifier
+                .fillMaxWidth()
+                .height(240.dp)
+                .clip(RoundedCornerShape()),
+            model = selectedImageByUri,
+            contentDescription = null,
+            contentScale = ContentScale.FillBounds)
         // Text input field
+
         OutlinedTextField(
             value = postText.value,
             onValueChange = { newValue -> postText.value = newValue },
@@ -41,35 +115,33 @@ fun AddPostScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Add more input fields here as needed (e.g., image picker)
-
         // Button to submit the post
+
         Button(
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.DarkGray,
+            ),
             onClick = {
-                // Create a Post object with the input data
-                val newPost = Post(
-                    id = "", // You may generate an ID for the post FIX LATER
-                    text = postText.value,
-                    imageUrl = "", // If you have an image URL, you can use it here
-                    createdAt = "", // You may want to use the actual current date here
-                    likesCount = 0, // Initialize likes count to zero
-                    commentCount = 0, // Initialize comment count to zero
-                    authorId = 0, // Assign the ID of the author if applicable
-                    authorName = "Your Name", // You may have a logged-in user's name here
-                    authorImage = "Your Profile URL", // You may have a logged-in user's profile image URL here
-                    isLiked = false, // Initialize isLiked to false
-                    isOwnPost = true // Assuming this is a post created by the current user
-                )
-                // Pass the new post to the callback function
-                onPostAdded(newPost)
+                // TODO: Create new post and pass it to onPostAdded
             },
-            modifier = modifier
+            modifier = Modifier
                 .padding(vertical = 16.dp)
+                .align(Alignment.CenterHorizontally)
+                .fillMaxWidth()
         ) {
-            Text("Add Post")
+            Row {
+                Icon(
+                    painter = painterResource(id = android.R.drawable.ic_input_add),
+                    contentDescription = null)
+                Text("Add Post",
+                    style = MaterialTheme.typography.bodyLarge)
+            }
+
         }
     }
 }
+
 
 @Preview
 @Composable
@@ -79,23 +151,11 @@ fun AddPostScreenPreview() {
     OnlySendsTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             AddPostScreen(
-                onPostAdded = { newPost ->
-                    // Handle the new post, e.g., add it to the list of posts
-                }
+                onPostAdded = { /* Dummy onPostAdded function */ },
+                postText = postText
             )
         }
     }
 }
-//data class Post(
-//    val id: String,
-//    val text: String,
-//    val imageUrl: String,
-//    val createdAt: String,
-//    val likesCount: Int,
-//    val commentCount: Int,
-//    val authorId: Int,
-//    val authorName: String,
-//    val authorImage: String,
-//    val isLiked: Boolean = false,
-//    val isOwnPost: Boolean = false
-//)
+
+
