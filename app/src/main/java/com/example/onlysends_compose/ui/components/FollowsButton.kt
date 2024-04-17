@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.onlysends_compose.ui.home.theme.buttonColor
 
 @Composable
 fun FollowsButton(
@@ -24,9 +25,9 @@ fun FollowsButton(
         onClick = onClick,
         modifier = modifier,
         colors = if(isOutline){
-            ButtonDefaults.outlinedButtonColors()
+            ButtonDefaults.buttonColors(buttonColor)
         }else{
-            ButtonDefaults.buttonColors()
+            ButtonDefaults.buttonColors(buttonColor)
         },
         border = if(isOutline){
             ButtonDefaults.outlinedBorder

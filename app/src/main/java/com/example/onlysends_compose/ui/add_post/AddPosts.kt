@@ -1,5 +1,6 @@
 package com.example.onlysends_compose.ui.add_post
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
@@ -43,6 +44,8 @@ import com.example.onlysends_compose.R
 import com.example.onlysends_compose.ui.home.fake_data.Post
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
 import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
+import com.example.onlysends_compose.ui.home.theme.buttonColor
+import com.example.onlysends_compose.ui.home.theme.signOutColor
 
 @Composable
 fun AddPostScreen(
@@ -77,7 +80,7 @@ fun AddPostScreen(
                 .padding(vertical = 16.dp),
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.DarkGray,
+                signOutColor,
                 contentColor = Color.White
             ),
             onClick = {
@@ -129,11 +132,12 @@ fun AddPostScreen(
         Button(
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.DarkGray,
+                signOutColor,
             ),
             onClick = {
                 // TODO: Create new post and pass it to onPostAdded
-            },
+                Toast.makeText(null, "Post added!", Toast.LENGTH_SHORT).show()
+                      },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .align(Alignment.CenterHorizontally)

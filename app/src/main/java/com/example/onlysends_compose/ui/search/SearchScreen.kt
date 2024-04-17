@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,12 +28,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.onlysends_compose.firestore.Firestore
 import com.example.onlysends_compose.firestore.types.Friend
 import com.example.onlysends_compose.firestore.types.User
+import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
+import com.example.onlysends_compose.ui.home.theme.buttonColor
 import kotlin.reflect.KFunction1
 
 const val TAG = "SearchScreen"
@@ -178,6 +182,7 @@ fun SearchScreen(
                             }
                         } else {
                             Button(
+                                colors = ButtonDefaults.buttonColors(buttonColor),
                                 onClick = {
                                     Firestore.followFriend(
                                         context = context,
@@ -208,3 +213,4 @@ fun SearchScreen(
 
 
 }
+
