@@ -78,8 +78,6 @@ fun SearchScreen(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
     ) {
-        // Render your UI here using the `potentialFriends` list
-        // For example:
         Column(
             modifier = Modifier.padding(30.dp) // Add some padding for better spacing
         ) {
