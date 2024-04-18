@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 // call createUserDocument function (this will UPDATE the `user` state variable automatically)
                 // with the updateUser callback function
-                user?.let { Firestore.createUserDocument(it, ::updateUser) }
+                user?.let { Firestore.handleCreateUserDocument(it, ::updateUser) }
             }
 
             Scaffold(
