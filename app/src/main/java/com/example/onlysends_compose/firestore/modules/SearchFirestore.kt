@@ -59,3 +59,49 @@ fun searchAllFriends(
             onFriendsLoaded(emptyList()) // Return empty list in case of failure
         }
 }
+
+// searchUserFriends : returns a list of Friend objects for USER friends
+fun searchUserFriends(
+    db: FirebaseFirestore,
+    user: User,
+    onFriendsLoaded: (List<Friend>) -> Unit
+) {
+    // grab userCollection
+    val usersCollection = db.collection("users")
+
+    // Get the reference to the specific user document
+    val userDocRef = usersCollection.document(user.userId)
+
+    // Fetch the user document from Firestore
+    userDocRef.get()
+        .addOnSuccessListener { documentSnapshot ->
+            if (documentSnapshot.exists()) {
+                // Extract the "friends" field from the user document
+                val friendsData = documentSnapshot.get("friends") as? List<Map<String, Any>>
+
+                // Convert the "friends" field to a list of Friend objects
+                val friendsList = friendsData?.map { friendData ->
+                    Friend(
+                        userId = friendData["userId"] as String,
+                        username = friendData["username"] as String,
+                        profilePictureUrl = friendData["profilePictureUrl"] as? String,
+                        climbingStyle = friendData["climbingStyle"] as String,
+                        numFriends = (friendData["numFriends"] as Long).toInt()
+                    )
+                } ?: emptyList() // If friendsData is null, return an empty list
+
+                // Invoke the callback with the list of friends
+                onFriendsLoaded(friendsList)
+            } else {
+                // User document doesn't exist
+                Log.e(TAG, "User document does not exist")
+                onFriendsLoaded(emptyList()) // Return empty list
+            }
+        }
+        .addOnFailureListener { exception ->
+            // Error fetching user document
+            Log.e(TAG, "Error fetching user document", exception)
+            onFriendsLoaded(emptyList()) // Return empty list in case of failure
+        }
+
+}

@@ -48,6 +48,7 @@ import androidx.navigation.NavHostController
 import com.example.onlysends_compose.R
 import com.example.onlysends_compose.ui.add_post.AddPostScreen
 import com.example.onlysends_compose.ui.components.CustomTopAppBar
+import com.example.onlysends_compose.ui.friends.FriendsScreen
 import com.example.onlysends_compose.ui.home.HomeScreen
 import com.example.onlysends_compose.ui.home.HomeScreenViewModel
 import com.example.onlysends_compose.ui.search.SearchScreen
@@ -301,6 +302,11 @@ class MainActivity : AppCompatActivity() {
                     composable(route = getString(R.string.friends)) {
                         // Update the currentRoute when navigating to "friends" (or any other page)
                         updateCurrentRoute(navController = navController)
+
+                        FriendsScreen(
+                            user = user!!,
+                            onUpdateUser = ::updateUser
+                        )
 
                     }
 
