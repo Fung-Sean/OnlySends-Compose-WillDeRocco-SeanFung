@@ -138,11 +138,11 @@ object Firestore {
                     // TO-DO: filter out user and current friends
                     val friend = userToFriend(document)
 
-
+                    Log.d(TAG, "friends of friend are $friends")
                     // Filter out the `user` `user.friends` and `friend.friends` for user
                     if (friend.userId != user.userId &&
                         !user.friends.any { it.userId == friend.userId } &&
-                        !friends.any{ it.userId == user.userId}
+                        !friends.any{ it.userId == user.userId }
                     ) {
                         friendsList.add(friend)
                     }
@@ -328,7 +328,7 @@ object Firestore {
 
                     // LAST STEP of 1) Update the friend document
                     val friendUpdates = hashMapOf<String, Any>(
-                        "friends" to friendRefFriends + userFriend
+                        "friends" to updatedFriendRefFriends + userFriend
                     )
 
                     // Update the friend document in Firestore
@@ -370,11 +370,11 @@ object Firestore {
                                     }
 
                                     val userRefFriend = Friend(
-                                        userId = user.userId,
-                                        username = user.username,
-                                        profilePictureUrl = user.profilePictureUrl,
-                                        climbingStyle = user.climbingStyle,
-                                        numFriends = user.numFriends
+                                        userId = friend.userId,
+                                        username = friend.username,
+                                        profilePictureUrl = friend.profilePictureUrl,
+                                        climbingStyle = friend.climbingStyle,
+                                        numFriends = friend.numFriends
                                     )
 
                                     // LAST STEP: Update the user document
