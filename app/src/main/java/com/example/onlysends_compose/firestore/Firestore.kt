@@ -194,7 +194,7 @@ object Firestore {
                             username = friendData["username"] as String,
                             profilePictureUrl = friendData["profilePictureUrl"] as? String,
                             climbingStyle = friendData["climbingStyle"] as String,
-                            numFriends = friendData["numFriends"] as Int
+                            numFriends = (friendData["numFriends"] as Long).toInt()
                         )
                     }.filterNotNull() // Filter out null values
 
@@ -307,7 +307,7 @@ object Firestore {
                             username = friendData["username"] as String,
                             profilePictureUrl = friendData["profilePictureUrl"] as? String,
                             climbingStyle = friendData["climbingStyle"] as String,
-                            numFriends = friendData["numFriends"] as Int
+                            numFriends = (friendData["numFriends"] as Long).toInt()
                         )
                     }.filterNotNull() // Filter out null values
 
