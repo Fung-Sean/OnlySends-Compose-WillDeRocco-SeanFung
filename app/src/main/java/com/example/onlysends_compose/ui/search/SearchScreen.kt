@@ -63,7 +63,7 @@ fun SearchScreen(
         isLoading = true
 
         // fetch potentialFriends from db
-        Firestore.searchAllFriends(user) { loadedFriends ->
+        Firestore.handleSearchAllFriends(user) { loadedFriends ->
             // update potentialFriends with db results
             potentialFriends = loadedFriends
             Log.d(TAG, "loaded potential friends $potentialFriends")
@@ -164,7 +164,7 @@ fun SearchScreen(
                             Button(
                                 colors = ButtonDefaults.buttonColors(buttonColor),
                                 onClick = {
-                                          Firestore.acceptFriend(
+                                          Firestore.handleAcceptFriend(
                                               context = context,
                                               user = user,
                                               friend = friend,
@@ -186,7 +186,7 @@ fun SearchScreen(
                             Button(
                                 colors = ButtonDefaults.buttonColors(buttonColor),
                                 onClick = {
-                                    Firestore.followFriend(
+                                    Firestore.handleFollowFriend(
                                         context = context,
                                         user = user,
                                         friend = friend,
@@ -209,10 +209,5 @@ fun SearchScreen(
             }
         }
     }
-
-
-
-
-
 }
 

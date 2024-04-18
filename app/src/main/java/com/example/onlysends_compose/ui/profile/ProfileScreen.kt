@@ -178,7 +178,7 @@ fun ProfileScreen(
         Button(
             colors = ButtonDefaults.buttonColors(buttonColor),
             onClick = {
-                Firestore.updateUserProfile(
+                Firestore.handleUpdateUserProfile(
                     context,
                     user.userId,
                     username,
