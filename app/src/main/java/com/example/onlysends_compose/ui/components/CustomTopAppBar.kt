@@ -22,11 +22,15 @@ import androidx.compose.ui.draw.clip
 import coil.compose.AsyncImage
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 
 @Composable
 fun CustomTopAppBar(user: User?) {
+    val onlySendsBlue = colorResource(id = R.color.onlySendsBlue)
+    val white = colorResource(id = R.color.white)
+
     val gradientBrush = Brush.verticalGradient(
-        colors = listOf(Color(0xFF0072FF), Color(0xFF00C6FF)) // Define your gradient colors here
+        colors = listOf(onlySendsBlue, white)
     )
 
     TopAppBar(
