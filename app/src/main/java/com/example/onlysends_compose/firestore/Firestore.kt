@@ -17,12 +17,12 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
 
 object Firestore {
-    private const val TAG = "Firestore"
 
     private val db: FirebaseFirestore by lazy {
         Firebase.firestore
     }
 
+    // handleCreateUserDocument : creates and updates user (calls onUpdateUser when successful)
     fun handleCreateUserDocument(
         user: User,
         onUpdateUser: (User) -> Unit
@@ -35,6 +35,7 @@ object Firestore {
         )
     }
 
+    // handleUpdateUserProfile : updates the user with `newUsername` and `newClimbStyle`
     fun handleUpdateUserProfile(
         context: Context,
         userId: String,
@@ -63,11 +64,10 @@ object Firestore {
         )
     }
 
-
-
     // searchUserFriends : returns a list of Friend objects for the current USER
+    // TBD
 
-
+    // handleFollowFriend : adds friend to `outgoingFriends` for user and `incomingFriends` for friend
     fun handleFollowFriend(
         context: Context,
         user: User,
@@ -83,6 +83,9 @@ object Firestore {
         )
     }
 
+    // handleAcceptFriend : two stage process
+    // 1) add user to friendUserRef.friends
+    // 2) adds friend to userRef.friends
     fun handleAcceptFriend(
         context: Context,
         user: User,
