@@ -3,6 +3,7 @@ package com.example.onlysends_compose.ui.sign_in
 import android.widget.Space
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,8 +23,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.fontResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -42,16 +45,17 @@ fun SignInScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val gradientBrush = Brush.verticalGradient(
+        colors = listOf(
+            colorResource(id = R.color.onlySendsBlue),
+            colorResource(id = R.color.white)
+        )
+    )
     Box(
-        modifier = Modifier.fillMaxSize(), // Fill the entire screen
+        modifier = Modifier.fillMaxSize().background(brush = gradientBrush),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.blue_gradient),
-            contentDescription = "Background",
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillBounds
-        )
+        
         Text(text = "OnlySends", modifier = modifier
             .padding(top = 40.dp)
             .align(Alignment.TopCenter),
