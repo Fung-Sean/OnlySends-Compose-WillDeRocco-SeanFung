@@ -67,144 +67,97 @@ fun FriendsScreen(
             isLoading = false
         }
     }
-
-    fun isFriendInOutgoingList(user: User, friend: Friend): Boolean {
-        return user.outgoingFriends.any { it.userId == friend.userId }
-    }
-    fun isFriendInIncoming(user: User, friend: Friend): Boolean {
-        return user.incomingFriends.any { it.userId == friend.userId }
-    }
-
-//    // Render the UI using the list of friends
-//    Box(
-//        modifier = Modifier.fillMaxSize(),
-//        contentAlignment = Alignment.TopCenter
-//    ) {
-//        Column(
-//            modifier = Modifier
-//                .padding(30.dp) // Add some padding for better spacing
-//        ) {
-//            // Show loading indicator if friends is empty and loading is true
-//            if (isLoading) {
-//                CircularProgressIndicator(
-//                    modifier = Modifier.width(64.dp),
-//                    color = MaterialTheme.colorScheme.secondary,
-//                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
-//                )
 //
-//            } else {
-//                friends.forEach { friend ->
-//                    // pic, username (plus info underneath), button (follow or pending)
-//                    Row(
-//                        verticalAlignment = Alignment.CenterVertically,
-//                        modifier = Modifier
-//                            .padding(bottom = 30.dp)
-//                    ) {
-//                        // display profile picture
-//                        if (friend.profilePictureUrl != null) {
-//                            AsyncImage(
-//                                model = friend.profilePictureUrl,
-//                                contentDescription = "User profile picture",
-//                                modifier = Modifier
-//                                    .size(40.dp)
-//                                    .clip(CircleShape),
-//                                contentScale = ContentScale.Crop
-//                            )
-//                        }
-//
-//                        Spacer(modifier = Modifier.width(10.dp))
-//
-//                        // display column of username (plus info)
-//                        Column(modifier = Modifier.weight(1f)) {
-//                            Text(
-//                                text = friend.username,
-//                                fontSize = 14.sp,
-//                                fontWeight = FontWeight.Bold
-//                            )
-//                            Row() {
-//                                val numFriendsText = if (friend.numFriends == 1) {
-//                                    "${friend.numFriends} friend, "
-//                                } else {
-//                                    "${friend.numFriends} friends, "
-//                                }
-//
-//                                Text(
-//                                    text = numFriendsText,
-//                                    fontSize = 12.sp,
-//                                )
-//                                Text(
-//                                    text = friend.climbingStyle,
-//                                    fontSize = 12.sp,
-//                                )
-//                            }
-//                        }
-//
-//
-//                        // button : either "Follow" or "Pending"
-//                        // display button to add friend (or disabled button saying "pending")
-//                        if (isFriendInOutgoingList(user, friend)) {
-//                            Button(
-//                                onClick = {},
-//                                enabled = false,
-//                                modifier = Modifier
-//                                    .size(
-//                                        width = 85.dp,
-//                                        height = 35.dp
-//                                    )
-//                            ) {
-//                                Text(
-//                                    text = "Pending",
-//                                    fontSize = 9.sp
-//                                )
-//                            }
-//                        } else if (isFriendInIncoming(user, friend)){
-//                            Button(
-//                                colors = ButtonDefaults.buttonColors(buttonColor),
-//                                onClick = {
-//                                    Firestore.handleAcceptFriend(
-//                                        context = context,
-//                                        user = user,
-//                                        friend = friend,
-//                                        onUpdateUser = onUpdateUser
-//                                    )
-//                                },
-//                                modifier = Modifier
-//                                    .size(
-//                                        width = 85.dp,
-//                                        height = 35.dp
-//                                    )
-//                            ) {
-//                                Text(
-//                                    text = "Accept",
-//                                    fontSize = 10.sp
-//                                )
-//                            }
-//                        } else {
-//                            Button(
-//                                colors = ButtonDefaults.buttonColors(buttonColor),
-//                                onClick = {
-//                                    Firestore.handleFollowFriend(
-//                                        context = context,
-//                                        user = user,
-//                                        friend = friend,
-//                                        onUpdateUser = onUpdateUser)
-//                                },
-//                                modifier = Modifier
-//                                    .size(
-//                                        width = 85.dp,
-//                                        height = 35.dp
-//                                    ),
-//                            ) {
-//                                Text(
-//                                    text = "Follow",
-//                                    fontSize = 12.sp
-//                                )
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
+//    fun isFriendInOutgoingList(user: User, friend: Friend): Boolean {
+//        return user.outgoingFriends.any { it.userId == friend.userId }
 //    }
+//    fun isFriendInIncoming(user: User, friend: Friend): Boolean {
+//        return user.incomingFriends.any { it.userId == friend.userId }
+//    }
+
+    // Render the UI using the list of friends
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(30.dp) // Add some padding for better spacing
+        ) {
+            // Show loading indicator if friends is empty and loading is true
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.width(64.dp),
+                    color = MaterialTheme.colorScheme.secondary,
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                )
+
+            } else {
+                friends.forEach { friend ->
+                    // pic, username (plus info underneath), button (follow or pending)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(bottom = 30.dp)
+                    ) {
+                        // display profile picture
+                        if (friend.profilePictureUrl != null) {
+                            AsyncImage(
+                                model = friend.profilePictureUrl,
+                                contentDescription = "User profile picture",
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(10.dp))
+
+                        // display column of username (plus info)
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = friend.username,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Row() {
+                                val numFriendsText = if (friend.numFriends == 1) {
+                                    "${friend.numFriends} friend, "
+                                } else {
+                                    "${friend.numFriends} friends, "
+                                }
+
+                                Text(
+                                    text = numFriendsText,
+                                    fontSize = 12.sp,
+                                )
+                                Text(
+                                    text = friend.climbingStyle,
+                                    fontSize = 12.sp,
+                                )
+                            }
+                        }
+
+                        Button(
+                            colors = ButtonDefaults.buttonColors(buttonColor),
+                            enabled = false,
+                            onClick = { },
+                            modifier = Modifier
+                                .size(
+                                    width = 95.dp,
+                                    height = 35.dp
+                                ),
+                        ) {
+                            Text(
+                                text = "Remove",
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
