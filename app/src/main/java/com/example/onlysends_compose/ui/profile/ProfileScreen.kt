@@ -139,6 +139,7 @@ fun ProfileScreen(
             ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = { expanded = it },
+                modifier = Modifier.background(Color.White)
 
             ) {
                 TextField(
