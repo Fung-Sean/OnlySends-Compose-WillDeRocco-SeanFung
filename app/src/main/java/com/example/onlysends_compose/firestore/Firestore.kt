@@ -7,6 +7,7 @@ import com.example.onlysends_compose.firestore.modules.acceptFriend
 import com.example.onlysends_compose.firestore.modules.createUserDocument
 import com.example.onlysends_compose.firestore.modules.followFriend
 import com.example.onlysends_compose.firestore.modules.searchAllFriends
+import com.example.onlysends_compose.firestore.modules.searchUserFriends
 import com.example.onlysends_compose.firestore.modules.updateUserProfile
 import com.example.onlysends_compose.firestore.types.Friend
 import com.example.onlysends_compose.firestore.types.User
@@ -65,7 +66,16 @@ object Firestore {
     }
 
     // searchUserFriends : returns a list of Friend objects for the current USER
-    // TBD
+    fun handleSearchUserFriends(
+        user: User,
+        onFriendsLoaded: (List<Friend>) -> Unit
+    ) {
+        searchUserFriends(
+            db = db,
+            user = user,
+            onFriendsLoaded = onFriendsLoaded
+        )
+    }
 
     // handleFollowFriend : adds friend to `outgoingFriends` for user and `incomingFriends` for friend
     fun handleFollowFriend(
