@@ -126,7 +126,11 @@ class MainActivity : AppCompatActivity() {
                 topBar = {
                     // If route is not yet defined (aka on sign_in page) -> don't show navigation bar
                     if (!(currentRoute.isEmpty() || currentRoute == "sign_in")) {
-                        CustomTopAppBar(user)
+                        CustomTopAppBar(
+                            user = user,
+                            navController = navController,
+                            context = applicationContext
+                        )
                     }
                 },
                 bottomBar = {
