@@ -359,7 +359,7 @@ object Firestore {
                                             username = friendData["username"] as String,
                                             profilePictureUrl = friendData["profilePictureUrl"] as? String,
                                             climbingStyle = friendData["climbingStyle"] as String,
-                                            numFriends = friendData["numFriends"] as Int
+                                            numFriends = (friendData["numFriends"] as Long).toInt()
                                         )
                                     }.filterNotNull() // Filter out null values
 
@@ -390,7 +390,7 @@ object Firestore {
                                             Toast.makeText(context, "Accepted friend successfully", Toast.LENGTH_SHORT).show()
 
                                             // Update local user object with the new friends list
-                                            val updatedUser = user.copy(friends = updatedUserRefFriends)
+                                            val updatedUser = user.copy(friends = updatedUserRefFriends + userRefFriend)
                                             onUpdateUser(updatedUser)
 
                                         }
