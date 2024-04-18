@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -161,6 +162,7 @@ fun SearchScreen(
                             }
                         } else if (isFriendInIncoming(user, friend)){
                             Button(
+                                colors = ButtonDefaults.buttonColors(buttonColor),
                                 onClick = {
                                           Firestore.acceptFriend(
                                               context = context,
@@ -177,7 +179,7 @@ fun SearchScreen(
                             ) {
                                 Text(
                                     text = "Accept",
-                                    fontSize = 9.sp
+                                    fontSize = 10.sp
                                 )
                             }
                         } else {
@@ -194,7 +196,7 @@ fun SearchScreen(
                                     .size(
                                         width = 85.dp,
                                         height = 35.dp
-                                    )
+                                    ),
                             ) {
                                 Text(
                                     text = "Follow",
