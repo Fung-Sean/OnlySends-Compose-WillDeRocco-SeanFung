@@ -47,6 +47,7 @@ import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 import com.example.onlysends_compose.ui.home.theme.signOutColor
 
+//USED CHATGPT FOR LAYOUT IN THAT IT WASN'T BEING LAYED OUT CORRECTLY
 @Composable
 fun AddPostScreen(
     modifier: Modifier = Modifier,
