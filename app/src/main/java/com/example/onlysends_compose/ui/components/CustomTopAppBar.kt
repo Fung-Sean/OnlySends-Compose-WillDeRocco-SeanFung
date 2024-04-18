@@ -1,7 +1,10 @@
 package com.example.onlysends_compose.ui.components
 
+import android.content.Context
+import android.provider.Settings.Global.getString
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,9 +26,14 @@ import coil.compose.AsyncImage
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.navigation.NavHostController
 
 @Composable
-fun CustomTopAppBar(user: User?) {
+fun CustomTopAppBar(
+    user: User?,
+    navController: NavHostController,
+    context: Context,
+) {
     val onlySendsBlue = colorResource(id = R.color.onlySendsBlue)
     val white = colorResource(id = R.color.white)
 
@@ -59,7 +67,8 @@ fun CustomTopAppBar(user: User?) {
                         contentDescription = "User profile picture",
                         modifier = Modifier
                             .size(30.dp)
-                            .clip(CircleShape),
+                            .clip(CircleShape)
+                            .clickable { navController.navigate( context.getString(R.string.profile) ) },
                         contentScale = ContentScale.Crop
                     )
                 }
