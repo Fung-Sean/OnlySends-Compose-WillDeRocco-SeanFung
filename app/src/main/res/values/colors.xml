@@ -3,4 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="onlySends">#FF308AB4</color>
+    <color name="onlySendsBlue">#6CC4D3</color>
+<!--    <color name="onlySendsWhite">#DDEEF0</color>-->
+
 </resources>
