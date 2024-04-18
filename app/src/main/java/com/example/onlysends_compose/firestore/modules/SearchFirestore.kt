@@ -66,35 +66,42 @@ fun searchUserFriends(
     user: User,
     onFriendsLoaded: (List<Friend>) -> Unit
 ) {
+    // grab userCollection
     val usersCollection = db.collection("users")
 
-    usersCollection.get()
-        .addOnSuccessListener { querySnapshot ->
-            val friendsList = mutableListOf<Friend>()
+    // Get the reference to the specific user document
+    val userDocRef = usersCollection.document(user.userId)
 
-            // iterate over every user document
-            for (document in querySnapshot.documents) {
-                // obtain the list of friends this friend has
-                val friendUser = document.toObject<User>() ?: User()
-                val friends = friendUser.friends
+    // Fetch the user document from Firestore
+    userDocRef.get()
+        .addOnSuccessListener { documentSnapshot ->
+            if (documentSnapshot.exists()) {
+                // Extract the "friends" field from the user document
+                val friendsData = documentSnapshot.get("friends") as? List<Map<String, Any>>
 
-                // TO-DO: filter out user and current friends
-                val friend = userToFriend(document)
+                // Convert the "friends" field to a list of Friend objects
+                val friendsList = friendsData?.map { friendData ->
+                    Friend(
+                        userId = friendData["userId"] as String,
+                        username = friendData["username"] as String,
+                        profilePictureUrl = friendData["profilePictureUrl"] as? String,
+                        climbingStyle = friendData["climbingStyle"] as String,
+                        numFriends = (friendData["numFriends"] as Long).toInt()
+                    )
+                } ?: emptyList() // If friendsData is null, return an empty list
 
-                Log.d(TAG, "friends of friend are $friends")
-                // Filter out the `user` `user.friends` and `friend.friends` for user
-                if (friend.userId != user.userId &&
-                    !user.friends.any { it.userId == friend.userId } &&
-                    !friends.any{ it.userId == user.userId }
-                ) {
-                    friendsList.add(friend)
-                }
+                // Invoke the callback with the list of friends
+                onFriendsLoaded(friendsList)
+            } else {
+                // User document doesn't exist
+                Log.e(TAG, "User document does not exist")
+                onFriendsLoaded(emptyList()) // Return empty list
             }
-
-            onFriendsLoaded(friendsList)
         }
         .addOnFailureListener { exception ->
-            Log.e(TAG, "Error searching all friends", exception)
+            // Error fetching user document
+            Log.e(TAG, "Error fetching user document", exception)
             onFriendsLoaded(emptyList()) // Return empty list in case of failure
         }
+
 }

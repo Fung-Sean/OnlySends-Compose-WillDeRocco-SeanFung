@@ -47,34 +47,35 @@ fun FriendsScreen(
     // Get the current context
     val context = LocalContext.current
 
-//    // State to hold the list of friends
-//    var potentialFriends by remember { mutableStateOf(emptyList<Friend>()) }
-//    // track loading state
-//    var isLoading by remember { mutableStateOf(false) }
-//
-//    LaunchedEffect(key1 = user) {
-//        // update state variables every time user object is altered
-//
-//        // start loading the loader
-//        isLoading = true
-//
-//        // fetch potentialFriends from db
-//        Firestore.handleSearchAllFriends(user) { loadedFriends ->
-//            // update potentialFriends with db results
-//            potentialFriends = loadedFriends
-//            Log.d(TAG, "loaded potential friends $potentialFriends")
-//            isLoading = false
-//        }
-//    }
-//
-//    fun isFriendInOutgoingList(user: User, friend: Friend): Boolean {
-//        return user.outgoingFriends.any { it.userId == friend.userId }
-//    }
-//    fun isFriendInIncoming(user: User, friend: Friend): Boolean {
-//        return user.incomingFriends.any { it.userId == friend.userId }
-//    }
-//
-//    // Render the UI using the list of potentialFriends
+    // State to hold the list of friends
+    var friends by remember { mutableStateOf(emptyList<Friend>()) }
+
+    // track loading state
+    var isLoading by remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = user) {
+        // update state variables every time user object is altered
+
+        // start loading the loader
+        isLoading = true
+
+        // fetch potentialFriends from db
+        Firestore.handleSearchUserFriends(user) { loadedFriends ->
+            // update potentialFriends with db results
+            friends = loadedFriends
+            Log.d(TAG, "loaded friends $friends")
+            isLoading = false
+        }
+    }
+
+    fun isFriendInOutgoingList(user: User, friend: Friend): Boolean {
+        return user.outgoingFriends.any { it.userId == friend.userId }
+    }
+    fun isFriendInIncoming(user: User, friend: Friend): Boolean {
+        return user.incomingFriends.any { it.userId == friend.userId }
+    }
+
+//    // Render the UI using the list of friends
 //    Box(
 //        modifier = Modifier.fillMaxSize(),
 //        contentAlignment = Alignment.TopCenter
@@ -83,7 +84,7 @@ fun FriendsScreen(
 //            modifier = Modifier
 //                .padding(30.dp) // Add some padding for better spacing
 //        ) {
-//            // Show loading indicator if potentialFriends is empty and loading is true
+//            // Show loading indicator if friends is empty and loading is true
 //            if (isLoading) {
 //                CircularProgressIndicator(
 //                    modifier = Modifier.width(64.dp),
@@ -92,7 +93,7 @@ fun FriendsScreen(
 //                )
 //
 //            } else {
-//                potentialFriends.forEach { friend ->
+//                friends.forEach { friend ->
 //                    // pic, username (plus info underneath), button (follow or pending)
 //                    Row(
 //                        verticalAlignment = Alignment.CenterVertically,
