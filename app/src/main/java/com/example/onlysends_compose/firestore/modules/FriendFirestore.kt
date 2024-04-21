@@ -3,8 +3,6 @@ package com.example.onlysends_compose.firestore.modules
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import com.example.onlysends_compose.firestore.Firestore
-import com.example.onlysends_compose.firestore.types.Friend
 import com.example.onlysends_compose.firestore.types.User
 import com.google.firebase.firestore.FirebaseFirestore
 
