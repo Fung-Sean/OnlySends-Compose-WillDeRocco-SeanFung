@@ -31,7 +31,7 @@ fun createUserDocument(
                     "posts" to user.posts,
                     "favoriteMaps" to user.favoriteMaps,
                     "climbingStyle" to user.climbingStyle,
-                    "numFollowers" to user.numFriends
+                    "numFriends" to user.numFriends
                     // Add other user data as needed
                 )
 
