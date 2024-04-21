@@ -1,21 +1,16 @@
 package com.example.onlysends_compose.firestore
 
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import com.example.onlysends_compose.firestore.modules.acceptFriend
 import com.example.onlysends_compose.firestore.modules.createUserDocument
 import com.example.onlysends_compose.firestore.modules.followFriend
 import com.example.onlysends_compose.firestore.modules.searchAllFriends
 import com.example.onlysends_compose.firestore.modules.searchUserFriends
 import com.example.onlysends_compose.firestore.modules.updateUserProfile
-import com.example.onlysends_compose.firestore.types.Friend
 import com.example.onlysends_compose.firestore.types.User
 import com.google.firebase.Firebase
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
-import com.google.firebase.firestore.toObject
 
 object Firestore {
 
@@ -56,7 +51,7 @@ object Firestore {
 
     fun handleSearchAllFriends(
         user: User,
-        onFriendsLoaded: (List<Friend>) -> Unit
+        onFriendsLoaded: (List<User>) -> Unit
     ) {
         searchAllFriends(
             db = db,
@@ -68,7 +63,7 @@ object Firestore {
     // searchUserFriends : returns a list of Friend objects for the current USER
     fun handleSearchUserFriends(
         user: User,
-        onFriendsLoaded: (List<Friend>) -> Unit
+        onFriendsLoaded: (List<User>) -> Unit
     ) {
         searchUserFriends(
             db = db,
@@ -81,7 +76,7 @@ object Firestore {
     fun handleFollowFriend(
         context: Context,
         user: User,
-        friend: Friend,
+        friend: User,
         onUpdateUser: (User) -> Unit
     ) {
         followFriend(
@@ -99,7 +94,7 @@ object Firestore {
     fun handleAcceptFriend(
         context: Context,
         user: User,
-        friend: Friend,
+        friend: User,
         onUpdateUser: (User) -> Unit
     ) {
         acceptFriend(

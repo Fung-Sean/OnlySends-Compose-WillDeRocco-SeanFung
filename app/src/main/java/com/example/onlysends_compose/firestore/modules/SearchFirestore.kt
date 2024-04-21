@@ -1,8 +1,6 @@
 package com.example.onlysends_compose.firestore.modules
 
 import android.util.Log
-import com.example.onlysends_compose.firestore.Firestore
-import com.example.onlysends_compose.firestore.types.Friend
 import com.example.onlysends_compose.firestore.types.User
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -10,43 +8,40 @@ import com.google.firebase.firestore.toObject
 
 private const val TAG = "SearchFirestore"
 
-// userToFriend : function to convert a User document to a Friend object
-private fun userToFriend(userDoc: DocumentSnapshot): Friend {
-    return Friend(
-        userId = userDoc.id,
-        username = userDoc.getString("username") ?: "",
-        profilePictureUrl = userDoc.getString("profilePictureUrl"),
-        climbingStyle = userDoc.getString("climbingStyle") ?: "",
-        numFriends = (userDoc.get("friends") as? List<*>)?.size ?: 0
-    )
-}
+//// userToFriend : function to convert a User document to a Friend object
+//private fun userToFriend(userDoc: DocumentSnapshot): Friend {
+//    return Friend(
+//        userId = userDoc.id,
+//        username = userDoc.getString("username") ?: "",
+//        profilePictureUrl = userDoc.getString("profilePictureUrl"),
+//        climbingStyle = userDoc.getString("climbingStyle") ?: "",
+//        numFriends = (userDoc.get("friends") as? List<*>)?.size ?: 0
+//    )
+//}
 
-// searchAllFriends : returns a list of Friend objects for all POTENTIAL friends
+// searchAllFriends : updates a list of User objects for all POTENTIAL friends
 fun searchAllFriends(
     db: FirebaseFirestore,
     user: User,
-    onFriendsLoaded: (List<Friend>) -> Unit
+    onFriendsLoaded: (List<User>) -> Unit
 ) {
     val usersCollection = db.collection("users")
 
     usersCollection.get()
         .addOnSuccessListener { querySnapshot ->
-            val friendsList = mutableListOf<Friend>()
+            val friendsList = mutableListOf<User>()
 
             // iterate over every user document
             for (document in querySnapshot.documents) {
                 // obtain the list of friends this friend has
-                val friendUser = document.toObject<User>() ?: User()
-                val friends = friendUser.friends
+                val friend = document.toObject<User>() ?: User()
+                val friends = friend.friends
 
-                // TO-DO: filter out user and current friends
-                val friend = userToFriend(document)
 
                 Log.d(TAG, "friends of friend are $friends")
-                // Filter out the `user` `user.friends` and `friend.friends` for user
+                // Filter out the `user` and ensures user is not friends with `friend`
                 if (friend.userId != user.userId &&
-                    !user.friends.any { it.userId == friend.userId } &&
-                    !friends.any{ it.userId == user.userId }
+                    !friends.any{ it == user.userId }
                 ) {
                     friendsList.add(friend)
                 }
@@ -60,11 +55,12 @@ fun searchAllFriends(
         }
 }
 
-// searchUserFriends : returns a list of Friend objects for USER friends
+// ************************************ NOTE: COME BACK TO THIS FUNCTION (I think we can make it more efficient by only fetching all users -> instead of also fetching user) ************************************
+// searchUserFriends : returns a list of User objects for USER friends
 fun searchUserFriends(
     db: FirebaseFirestore,
     user: User,
-    onFriendsLoaded: (List<Friend>) -> Unit
+    onFriendsLoaded: (List<User>) -> Unit
 ) {
     // grab userCollection
     val usersCollection = db.collection("users")
@@ -77,31 +73,41 @@ fun searchUserFriends(
         .addOnSuccessListener { documentSnapshot ->
             if (documentSnapshot.exists()) {
                 // Extract the "friends" field from the user document
-                val friendsData = documentSnapshot.get("friends") as? List<Map<String, Any>>
+                val friendIds = documentSnapshot.get("friends") as? List<String> ?: emptyList()
 
-                // Convert the "friends" field to a list of Friend objects
-                val friendsList = friendsData?.map { friendData ->
-                    Friend(
-                        userId = friendData["userId"] as String,
-                        username = friendData["username"] as String,
-                        profilePictureUrl = friendData["profilePictureUrl"] as? String,
-                        climbingStyle = friendData["climbingStyle"] as String,
-                        numFriends = (friendData["numFriends"] as Long).toInt()
-                    )
-                } ?: emptyList() // If friendsData is null, return an empty list
+                // call get method on all users and check if userId of friend matches
+                usersCollection.get()
+                    .addOnSuccessListener { querySnapshot ->
+                        val friendsList = mutableListOf<User>()
 
-                // Invoke the callback with the list of friends
-                onFriendsLoaded(friendsList)
+                        // iterate over every user document
+                        for (document in querySnapshot.documents) {
+                            // obtain the list of friends this friend has
+                            val friend = document.toObject<User>() ?: User()
+
+                            Log.d(TAG, "considering user as friend: $friend")
+                            // Filter out the `user` and ensures `friend.userId` is in friendIds
+                            if (friend.userId != user.userId &&
+                                !friendIds.any { it == user.userId }
+                            ) {
+                                friendsList.add(friend)
+                            }
+                        }
+
+                        onFriendsLoaded(friendsList)
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e(TAG, "Error searching all friends", exception)
+                        onFriendsLoaded(emptyList()) // Return empty list in case of failure
+                    }
             } else {
                 // User document doesn't exist
                 Log.e(TAG, "User document does not exist")
-                onFriendsLoaded(emptyList()) // Return empty list
             }
         }
         .addOnFailureListener { exception ->
             // Error fetching user document
             Log.e(TAG, "Error fetching user document", exception)
-            onFriendsLoaded(emptyList()) // Return empty list in case of failure
         }
 
 }
