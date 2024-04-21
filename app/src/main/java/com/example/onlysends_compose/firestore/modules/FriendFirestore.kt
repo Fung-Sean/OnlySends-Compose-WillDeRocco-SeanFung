@@ -214,7 +214,8 @@ fun acceptFriend(
                                     // LAST STEP of 2) Update the friend document
                                     val userUpdates = hashMapOf<String, Any>(
                                         "friends" to updatedUserRefFriends + friend.userId,
-                                        "incomingFriends" to updatedUserRefIncoming
+                                        "incomingFriends" to updatedUserRefIncoming,
+                                        "numFriends" to userObject.numFriends + 1
                                     )
 
                                     // Update the friend document in Firestore
@@ -225,7 +226,8 @@ fun acceptFriend(
                                             // Update local user object with the new outgoingFriends list
                                             val updatedUser = user.copy(
                                                 friends = updatedUserRefFriends + friend.userId,
-                                                incomingFriends = updatedUserRefIncoming
+                                                incomingFriends = updatedUserRefIncoming,
+                                                numFriends = userObject.numFriends + 1,
                                             )
                                             onUpdateUser(updatedUser)
                                         }
