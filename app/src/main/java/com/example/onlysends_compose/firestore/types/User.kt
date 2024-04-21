@@ -6,9 +6,9 @@ data class User(
     val userId: String,
     val username: String,
     val profilePictureUrl: String?,
-    val friends: List<Friend> = listOf(),
-    val outgoingFriends: List<Friend> = listOf(),
-    val incomingFriends: List<Friend> = listOf(),
+    val friends: List<String> = listOf(),
+    val outgoingFriends: List<String> = listOf(),
+    val incomingFriends: List<String> = listOf(),
     val posts: List<Post> = listOf(),
     val favoriteMaps: List<GoogleMap> = listOf(),
     val climbingStyle: String = "",
@@ -16,14 +16,4 @@ data class User(
 ) {
     // No-argument constructor (able to initialize User without arguments -> allows Firestore to deserialize User object)
     constructor() : this("", "", "", listOf(), listOf(), listOf(), listOf(), listOf(), "", 0)
-
-//    companion object {
-//        fun fromUserData(userData: UserData): User {
-//            return User(
-//                userId = userData.userId,
-//                username = userData.username,
-//                profilePictureUrl = userData.profilePictureUrl
-//            )
-//        }
-//    }
 }

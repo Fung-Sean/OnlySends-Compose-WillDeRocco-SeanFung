@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.onlysends_compose.firestore.Firestore
-import com.example.onlysends_compose.firestore.types.Friend
 import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 import kotlin.reflect.KFunction1
@@ -48,7 +47,7 @@ fun FriendsScreen(
     val context = LocalContext.current
 
     // State to hold the list of friends
-    var friends by remember { mutableStateOf(emptyList<Friend>()) }
+    var friends by remember { mutableStateOf(emptyList<User>()) }
 
     // track loading state
     var isLoading by remember { mutableStateOf(false) }

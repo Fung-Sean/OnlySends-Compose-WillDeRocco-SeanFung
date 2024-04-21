@@ -6,13 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -29,14 +27,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.onlysends_compose.firestore.Firestore
-import com.example.onlysends_compose.firestore.types.Friend
 import com.example.onlysends_compose.firestore.types.User
-import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 import kotlin.reflect.KFunction1
 
@@ -52,7 +47,7 @@ fun SearchScreen(
     val context = LocalContext.current
 
     // State to hold the list of friends
-    var potentialFriends by remember { mutableStateOf(emptyList<Friend>()) }
+    var potentialFriends by remember { mutableStateOf(emptyList<User>()) }
     // track loading state
     var isLoading by remember { mutableStateOf(false) }
 
@@ -71,11 +66,11 @@ fun SearchScreen(
         }
     }
 
-    fun isFriendInOutgoingList(user: User, friend: Friend): Boolean {
-        return user.outgoingFriends.any { it.userId == friend.userId }
+    fun isFriendInOutgoingList(user: User, friend: User): Boolean {
+        return user.outgoingFriends.any { it == friend.userId }
     }
-    fun isFriendInIncoming(user: User, friend: Friend): Boolean {
-        return user.incomingFriends.any { it.userId == friend.userId }
+    fun isFriendInIncoming(user: User, friend: User): Boolean {
+        return user.incomingFriends.any { it == friend.userId }
     }
 
     // Render the UI using the list of potentialFriends
@@ -144,8 +139,8 @@ fun SearchScreen(
 
 
                         // button : either "Follow" or "Pending"
-                        // display button to add friend (or disabled button saying "pending")
                         if (isFriendInOutgoingList(user, friend)) {
+                            // display button saying "pending" (outgoing request)
                             Button(
                                 onClick = {},
                                 enabled = false,
@@ -161,6 +156,7 @@ fun SearchScreen(
                                 )
                             }
                         } else if (isFriendInIncoming(user, friend)){
+                            // display button saying "accept" (incoming request)
                             Button(
                                 colors = ButtonDefaults.buttonColors(buttonColor),
                                 onClick = {
@@ -183,6 +179,7 @@ fun SearchScreen(
                                 )
                             }
                         } else {
+                            // display button saying "follow" (potential new friend)
                             Button(
                                 colors = ButtonDefaults.buttonColors(buttonColor),
                                 onClick = {
