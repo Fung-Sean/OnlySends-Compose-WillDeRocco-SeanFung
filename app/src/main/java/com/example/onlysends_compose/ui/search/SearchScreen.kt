@@ -47,7 +47,7 @@ fun SearchScreen(
     val context = LocalContext.current
 
     // State to hold the list of friends
-    var potentialFriends by remember { mutableStateOf(emptyList<Friend>()) }
+    var potentialFriends by remember { mutableStateOf(emptyList<User>()) }
     // track loading state
     var isLoading by remember { mutableStateOf(false) }
 
@@ -66,11 +66,11 @@ fun SearchScreen(
         }
     }
 
-    fun isFriendInOutgoingList(user: User, friend: Friend): Boolean {
-        return user.outgoingFriends.any { it.userId == friend.userId }
+    fun isFriendInOutgoingList(user: User, friend: User): Boolean {
+        return user.outgoingFriends.any { it == friend.userId }
     }
-    fun isFriendInIncoming(user: User, friend: Friend): Boolean {
-        return user.incomingFriends.any { it.userId == friend.userId }
+    fun isFriendInIncoming(user: User, friend: User): Boolean {
+        return user.incomingFriends.any { it == friend.userId }
     }
 
     // Render the UI using the list of potentialFriends
@@ -139,8 +139,8 @@ fun SearchScreen(
 
 
                         // button : either "Follow" or "Pending"
-                        // display button to add friend (or disabled button saying "pending")
                         if (isFriendInOutgoingList(user, friend)) {
+                            // display button saying "pending" (outgoing request)
                             Button(
                                 onClick = {},
                                 enabled = false,
@@ -156,6 +156,7 @@ fun SearchScreen(
                                 )
                             }
                         } else if (isFriendInIncoming(user, friend)){
+                            // display button saying "accept" (incoming request)
                             Button(
                                 colors = ButtonDefaults.buttonColors(buttonColor),
                                 onClick = {
@@ -178,6 +179,7 @@ fun SearchScreen(
                                 )
                             }
                         } else {
+                            // display button saying "follow" (potential new friend)
                             Button(
                                 colors = ButtonDefaults.buttonColors(buttonColor),
                                 onClick = {

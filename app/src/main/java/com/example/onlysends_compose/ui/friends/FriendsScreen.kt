@@ -47,7 +47,7 @@ fun FriendsScreen(
     val context = LocalContext.current
 
     // State to hold the list of friends
-    var friends by remember { mutableStateOf(emptyList<Friend>()) }
+    var friends by remember { mutableStateOf(emptyList<User>()) }
 
     // track loading state
     var isLoading by remember { mutableStateOf(false) }
