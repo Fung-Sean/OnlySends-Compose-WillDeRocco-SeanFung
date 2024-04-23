@@ -2,6 +2,22 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
+    id ("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+
+}
+secrets {
+    // Optionally specify a different file name containing your secrets.
+    // The plugin defaults to "local.properties"
+    propertiesFileName = "secrets.properties"
+
+    // A properties file containing default secret values. This file can be
+    // checked in version control.
+    defaultPropertiesFileName = "local.defaults.properties"
+
+    // Configure which keys should be ignored by the plugin by providing regular expressions.
+    // "sdk.dir" is ignored by default.
+    ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
+    ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
 }
 
 android {
@@ -75,18 +91,18 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
     // compose dependencies
-    implementation ("androidx.activity:activity-compose:1.8.2")
-    implementation ("androidx.compose.foundation:foundation:1.6.5")
-    implementation ("androidx.compose.runtime:runtime:1.6.5")
-    implementation ("androidx.compose.ui:ui:1.6.5")
-    implementation ("androidx.compose.ui:ui-tooling:1.6.5")
-    implementation ("androidx.compose.material:material:1.6.5")
+    implementation ("androidx.activity:activity-compose:1.9.0")
+    implementation ("androidx.compose.foundation:foundation:1.6.6")
+    implementation ("androidx.compose.runtime:runtime:1.6.6")
+    implementation ("androidx.compose.ui:ui:1.6.6")
+    implementation ("androidx.compose.ui:ui-tooling:1.6.6")
+    implementation ("androidx.compose.material:material:1.6.6")
     val navVersion = "2.7.7"
     implementation("androidx.navigation:navigation-compose:$navVersion")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
 
     //Camera
-    implementation ("androidx.activity:activity-ktx:1.8.2")
+    implementation ("androidx.activity:activity-ktx:1.9.0")
     implementation ("androidx.fragment:fragment-ktx:1.6.2")
     // coil (image rendering) dependencies
     implementation("io.coil-kt:coil-compose:2.6.0")
@@ -94,8 +110,14 @@ dependencies {
     // m3 design toolkit
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
-    implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0-alpha05")
+    implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0-alpha06")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("io.coil-kt:coil-compose:2.6.0")
+    //Google Maps
+    implementation("androidx.compose.material:material-icons-extended:1.6.6")
+    implementation ("com.google.maps.android:maps-compose:4.3.3")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation ("com.google.maps.android:maps-compose-utils:4.4.1")
+    implementation ("com.google.maps.android:maps-compose-widgets:4.4.1")
 
 }
