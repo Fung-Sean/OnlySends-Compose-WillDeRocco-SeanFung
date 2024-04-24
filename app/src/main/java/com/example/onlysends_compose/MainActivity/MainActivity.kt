@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -59,6 +61,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.onlysends_compose.R
@@ -68,8 +71,10 @@ import com.example.onlysends_compose.ui.friends.FriendsScreen
 import com.example.onlysends_compose.ui.home.HomeScreen
 import com.example.onlysends_compose.ui.home.HomeScreenViewModel
 import com.example.onlysends_compose.ui.home.theme.buttonColor
+import com.example.onlysends_compose.ui.home.theme.signOutColor
 import com.example.onlysends_compose.ui.maps.MapScreen
 import com.example.onlysends_compose.ui.maps.defaultCameraPosition
+import com.example.onlysends_compose.ui.maps.new_height.AddHeightScreen
 import com.example.onlysends_compose.ui.search.SearchScreen
 import com.example.onlysends_compose.ui.sign_in.UserData
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -261,7 +266,19 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
-
+                    composable(route = "AddHeight") {
+                        val siteLocationText = remember {
+                            mutableStateOf("")
+                        }
+                        val notesText = remember {
+                            mutableStateOf("")
+                        }
+                        AddHeightScreen(
+                            siteLocationText = siteLocationText,
+                            notesText = notesText,
+                            onLocationAdded = { /* Handle navigation or other actions */ }
+                        )
+                    }
                     // add more routes other composable functions
                     // ----------------------- route 1) "home" -----------------------
                     composable(route = getString(R.string.home)) {
@@ -328,13 +345,30 @@ class MainActivity : AppCompatActivity() {
                         Column(
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            Text(
-                                text = "New Heights",
-                                style = MaterialTheme.typography.displayMedium,
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .align(Alignment.CenterHorizontally)// Adjust padding as needed
-                            )
+                            Row (
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            ){
+                                Text(
+                                    text = "New Heights",
+                                    style = MaterialTheme.typography.displayMedium,
+                                    modifier = Modifier
+                                        .padding(16.dp)
+
+                                )
+                                Spacer(modifier = Modifier.weight(1f)) // Add a spacer to occupy the available space
+                                Button(
+                                    onClick = { navController.navigate("AddHeight") },
+                                    modifier = Modifier.align(Alignment.CenterVertically),
+                                    shape = CircleShape,
+                                    colors = ButtonDefaults.buttonColors(signOutColor)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = android.R.drawable.ic_input_add),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+
                             MapScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -358,7 +392,7 @@ class MainActivity : AppCompatActivity() {
                                 )
 
                                 // TextField for search input
-                                TextField(
+                                OutlinedTextField(
                                     value = searchText,
                                     onValueChange = { searchText = it },
                                     modifier = Modifier
