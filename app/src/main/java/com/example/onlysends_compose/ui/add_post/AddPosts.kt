@@ -1,4 +1,5 @@
 package com.example.onlysends_compose.ui.add_post
+import android.content.Context
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -50,10 +51,10 @@ import com.example.onlysends_compose.ui.home.theme.signOutColor
 //USED CHATGPT FOR LAYOUT IN THAT IT WASN'T BEING LAYED OUT CORRECTLY
 @Composable
 fun AddPostScreen(
-    modifier: Modifier = Modifier,
-    onPostAdded: (Post) -> Unit,
-    postText: MutableState<String>
+    context: Context? = null,
 ) {
+    val postText = remember { mutableStateOf("") } // Initialize postText state
+
     var selectedImageByUri by remember {
         mutableStateOf<Uri?>(null)
     }
@@ -66,7 +67,7 @@ fun AddPostScreen(
     )
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
@@ -109,7 +110,7 @@ fun AddPostScreen(
                 )
             }
         }
-        Spacer(modifier = modifier.padding(30.dp))
+        Spacer(modifier = Modifier.padding(30.dp))
         AsyncImage(
             modifier = Modifier
                 .fillMaxWidth()
@@ -120,7 +121,7 @@ fun AddPostScreen(
             contentDescription = null,
             contentScale = ContentScale.FillBounds
         )
-        Spacer(modifier = modifier.padding(40.dp))
+        Spacer(modifier = Modifier.padding(40.dp))
         OutlinedTextField(
             value = postText.value,
             onValueChange = { newValue -> postText.value = newValue },
@@ -135,10 +136,7 @@ fun AddPostScreen(
             colors = ButtonDefaults.buttonColors(
                 signOutColor,
             ),
-            onClick = {
-                // TODO: Create new post and pass it to onPostAdded
-                Toast.makeText(null, "Post added!", Toast.LENGTH_SHORT).show()
-                      },
+            onClick = { makePost(context) },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .align(Alignment.CenterHorizontally)
@@ -158,21 +156,20 @@ fun AddPostScreen(
     }
 }
 
+private fun makePost(context: Context?) {
+    Toast.makeText(context, "Post added!", Toast.LENGTH_SHORT).show()
+}
 
 
+// AddPostScreenPreview : not used for page logic (only to preview layout)
 @Preview
 @Composable
 fun AddPostScreenPreview() {
-    val postText = remember { mutableStateOf("") }
 
     OnlySendsTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            AddPostScreen(
-                onPostAdded = { /* Dummy onPostAdded function */ },
-                postText = postText
-            )
+            AddPostScreen()
         }
     }
 }
-
 

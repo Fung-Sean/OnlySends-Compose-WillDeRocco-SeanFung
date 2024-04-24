@@ -303,11 +303,7 @@ class MainActivity : AppCompatActivity() {
                         // Update the currentRoute when navigating to "post" (or any other page)
                         updateCurrentRoute(navController = navController)
                         AddPostScreen(
-                            modifier = Modifier.fillMaxSize(), // Adjust the modifier as needed
-                            onPostAdded = { post -> /*TODO*/
-                                // Handle the new post, e.g., add it to the list of posts
-                            },
-                            postText = remember { mutableStateOf("") } // Initialize postText state
+                            context = applicationContext,
                         )
                     }
 
