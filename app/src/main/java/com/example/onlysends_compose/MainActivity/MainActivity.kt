@@ -358,13 +358,13 @@ class MainActivity : AppCompatActivity() {
                                 Spacer(modifier = Modifier.weight(1f)) // Add a spacer to occupy the available space
                                 Button(
                                     onClick = { navController.navigate("AddHeight") },
-                                    modifier = Modifier.align(Alignment.CenterVertically),
+                                    modifier = Modifier.align(Alignment.CenterVertically).padding(2.dp),
                                     shape = CircleShape,
                                     colors = ButtonDefaults.buttonColors(signOutColor)
                                 ) {
                                     Icon(
                                         painter = painterResource(id = android.R.drawable.ic_input_add),
-                                        contentDescription = null
+                                        contentDescription = null,
                                     )
                                 }
                             }
