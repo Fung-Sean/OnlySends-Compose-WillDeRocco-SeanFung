@@ -51,7 +51,7 @@ fun AddHeightScreen(
                 .padding(40.dp)
         )
         Text(
-            text = "Site Location                                             ",
+            text = "Site Location:                                             ",
             style = MaterialTheme.typography.bodyLarge,
             modifier = modifier
                 .padding(2.dp)
