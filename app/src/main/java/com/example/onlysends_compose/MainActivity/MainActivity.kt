@@ -8,12 +8,21 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material.Scaffold
+import androidx.compose.material.TextField
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -21,6 +30,11 @@ import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -42,7 +56,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.onlysends_compose.R
@@ -51,8 +67,12 @@ import com.example.onlysends_compose.ui.components.CustomTopAppBar
 import com.example.onlysends_compose.ui.friends.FriendsScreen
 import com.example.onlysends_compose.ui.home.HomeScreen
 import com.example.onlysends_compose.ui.home.HomeScreenViewModel
+import com.example.onlysends_compose.ui.home.theme.buttonColor
+import com.example.onlysends_compose.ui.maps.MapScreen
+import com.example.onlysends_compose.ui.maps.defaultCameraPosition
 import com.example.onlysends_compose.ui.search.SearchScreen
 import com.example.onlysends_compose.ui.sign_in.UserData
+import com.google.maps.android.compose.rememberCameraPositionState
 
 
 private const val TAG = "MainActivity"
@@ -295,6 +315,69 @@ class MainActivity : AppCompatActivity() {
                     composable(route = getString(R.string.maps)) {
                         // Update the currentRoute when navigating to "maps" (or any other page)
                         updateCurrentRoute(navController = navController)
+                        val cameraPositionState = rememberCameraPositionState{
+                            position = defaultCameraPosition
+                        }
+                        var isMapLoaded by remember {
+                            mutableStateOf(false)
+                        }
+
+                        var searchText by remember {
+                            mutableStateOf("Search a place")
+                        }
+                        Column(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            Text(
+                                text = "New Heights",
+                                style = MaterialTheme.typography.displayMedium,
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .align(Alignment.CenterHorizontally)// Adjust padding as needed
+                            )
+                            MapScreen(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(550.dp),
+                                cameraPositionState = cameraPositionState,
+                                onMapLoaded = {
+                                    isMapLoaded = true
+                                }
+                            )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp), // Adjust padding as needed
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                // Icon
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = "Search",
+                                    modifier = Modifier.size(24.dp)
+                                )
+
+                                // TextField for search input
+                                TextField(
+                                    value = searchText,
+                                    onValueChange = { searchText = it },
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(start = 8.dp)
+                                )
+
+                                // Button for search action
+                                Button(
+                                    onClick = { /* Handle search action */ },
+                                    modifier = Modifier.padding(start = 8.dp),
+                                    colors = ButtonDefaults.buttonColors(buttonColor)
+                                ) {
+                                    Text(text = "Search")
+                                }
+                            }
+                        }
+
+
 
                     }
 
