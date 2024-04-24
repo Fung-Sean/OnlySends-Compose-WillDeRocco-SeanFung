@@ -6,10 +6,13 @@ import android.location.Location
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -38,6 +41,8 @@ fun AddHeightScreen(
 ){
     Column (
         modifier = modifier
+            .wrapContentSize(Alignment.Center)
+            .fillMaxSize()
     ){
         Text(text = "Add New Height",
             style = MaterialTheme.typography.displaySmall,
@@ -61,7 +66,7 @@ fun AddHeightScreen(
         )
         Spacer(modifier = modifier.padding(20.dp))
         Text(
-            text = "Notes:                                                       ",
+            text = "Notes:                                                          ",
             style = MaterialTheme.typography.bodyLarge,
             modifier = modifier
                 .padding(2.dp)
@@ -74,6 +79,7 @@ fun AddHeightScreen(
             label = { Text("Add a Note") },
             modifier = Modifier.width(300.dp)
                 .align(Alignment.CenterHorizontally)
+                .height(150.dp)
         )
         Spacer(modifier = modifier.padding(100.dp))
         Button(
