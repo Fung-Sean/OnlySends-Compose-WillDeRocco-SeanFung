@@ -29,7 +29,7 @@ class Map {
 
 }
 @Composable
-fun MapScreen(
+fun MapDisplay(
     modifier: Modifier = Modifier,
     cameraPositionState: CameraPositionState,
     onMapLoaded: () -> Unit
