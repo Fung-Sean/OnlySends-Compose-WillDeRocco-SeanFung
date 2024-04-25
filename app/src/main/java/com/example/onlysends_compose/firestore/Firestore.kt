@@ -2,6 +2,7 @@ package com.example.onlysends_compose.firestore
 
 import android.content.Context
 import android.net.Uri
+import androidx.navigation.NavHostController
 import com.example.onlysends_compose.firestore.modules.acceptFriend
 import com.example.onlysends_compose.firestore.modules.createPost
 import com.example.onlysends_compose.firestore.modules.createUserDocument
@@ -113,14 +114,16 @@ object Firestore {
         context: Context?,
         user: User,
         caption: String,
-        postPictureUri: Uri?
+        postPictureUri: Uri?,
+        navController: NavHostController
     ) {
         createPost(
             db = db,
             context = context,
             user = user,
             caption = caption,
-            postPictureUri = postPictureUri
+            postPictureUri = postPictureUri,
+            navController = navController
         )
     }
 
