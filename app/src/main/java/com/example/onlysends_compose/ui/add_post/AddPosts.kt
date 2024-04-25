@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.onlysends_compose.R
+import com.example.onlysends_compose.firestore.Firestore
 import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.home.fake_data.Post
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
@@ -55,7 +56,7 @@ fun AddPostScreen(
     context: Context? = null,
     user: User
 ) {
-    val postText = remember { mutableStateOf("") } // Initialize postText state
+    val caption = remember { mutableStateOf("") } // Initialize caption state
 
     var selectedImageByUri by remember {
         mutableStateOf<Uri?>(null)
@@ -125,8 +126,8 @@ fun AddPostScreen(
         )
         Spacer(modifier = Modifier.padding(40.dp))
         OutlinedTextField(
-            value = postText.value,
-            onValueChange = { newValue -> postText.value = newValue },
+            value = caption.value,
+            onValueChange = { newValue -> caption.value = newValue },
             label = { Text("Caption") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -138,7 +139,13 @@ fun AddPostScreen(
             colors = ButtonDefaults.buttonColors(
                 signOutColor,
             ),
-            onClick = { makePost(context, user) },
+            onClick = {
+                Firestore.handleCreatePost(
+                    context = context,
+                    user = user,
+                    caption = caption.value,
+                    postPictureUri = selectedImageByUri.toString() )
+                      },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .align(Alignment.CenterHorizontally)
@@ -157,15 +164,6 @@ fun AddPostScreen(
         }
     }
 }
-
-private fun makePost(
-    context: Context?,
-    user: User
-) {
-
-    Toast.makeText(context, "Post added!", Toast.LENGTH_SHORT).show()
-}
-
 
 // AddPostScreenPreview : not used for page logic (only to preview layout)
 @Preview
