@@ -106,4 +106,12 @@ object Firestore {
         )
     }
 
+    // handleCreatePost : creates a post for a user
+    fun handleCreatePost(
+        context: Context,
+        user: User
+    ) {
+
+    }
+
 }

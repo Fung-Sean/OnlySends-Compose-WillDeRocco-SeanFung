@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.onlysends_compose.R
+import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.home.fake_data.Post
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
 import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
@@ -52,6 +53,7 @@ import com.example.onlysends_compose.ui.home.theme.signOutColor
 @Composable
 fun AddPostScreen(
     context: Context? = null,
+    user: User
 ) {
     val postText = remember { mutableStateOf("") } // Initialize postText state
 
@@ -136,7 +138,7 @@ fun AddPostScreen(
             colors = ButtonDefaults.buttonColors(
                 signOutColor,
             ),
-            onClick = { makePost(context) },
+            onClick = { makePost(context, user) },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .align(Alignment.CenterHorizontally)
@@ -156,7 +158,11 @@ fun AddPostScreen(
     }
 }
 
-private fun makePost(context: Context?) {
+private fun makePost(
+    context: Context?,
+    user: User
+) {
+
     Toast.makeText(context, "Post added!", Toast.LENGTH_SHORT).show()
 }
 
@@ -165,10 +171,14 @@ private fun makePost(context: Context?) {
 @Preview
 @Composable
 fun AddPostScreenPreview() {
-
+    val user = User(
+        userId = "123",
+        username = "SampleUser",
+        profilePictureUrl = null, // Provide appropriate values for other fields as needed
+    )
     OnlySendsTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            AddPostScreen()
+            AddPostScreen(user = user)
         }
     }
 }
