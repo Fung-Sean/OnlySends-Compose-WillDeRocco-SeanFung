@@ -25,11 +25,11 @@ interface UploadCallback {
 // uploadToCloudStorage : helper function to createPost (uploads postPictureUrl to cloud and returns link)
 fun uploadToCloudStorage(
     context: Context?,
-    postPictureUri: String,
+    postPictureUri: Uri,
     callback: UploadCallback
 ) {
     // Convert URI to Bitmap
-    val inputStream = context?.contentResolver?.openInputStream(Uri.parse(postPictureUri))
+    val inputStream = context?.contentResolver?.openInputStream(postPictureUri)
     val bitmap = BitmapFactory.decodeStream(inputStream)
 
     // Upload Bitmap to Cloud Storage
@@ -61,10 +61,18 @@ fun createPost(
     context: Context?,
     user: User,
     caption: String,
-    postPictureUri: String
+    postPictureUri: Uri?
 ) {
     // extract current timestamp
     val currentTimeMillis = System.currentTimeMillis()
+
+    Log.d(TAG, "postPictureUri is $postPictureUri")
+    // validation (ensure postPictureUri is valid)
+    if (postPictureUri == null) {
+        Log.d(TAG, "postPictureUri not selected $postPictureUri")
+        Toast.makeText(context, "Select a photo to post", Toast.LENGTH_LONG).show()
+        return
+    }
 
     // Call uploadToCloudStorage and handle the URI in the callback
     uploadToCloudStorage(context, postPictureUri, object : UploadCallback {

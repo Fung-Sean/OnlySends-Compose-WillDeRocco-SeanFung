@@ -1,6 +1,7 @@
 package com.example.onlysends_compose.ui.add_post
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -50,6 +51,8 @@ import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 import com.example.onlysends_compose.ui.home.theme.signOutColor
 
+private const val TAG = "AddPostScreen"
+
 //USED CHATGPT FOR LAYOUT IN THAT IT WASN'T BEING LAYED OUT CORRECTLY
 @Composable
 fun AddPostScreen(
@@ -66,6 +69,7 @@ fun AddPostScreen(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = {
             selectedImageByUri = it
+            Log.d(TAG, "selected image is: $selectedImageByUri")
         }
     )
 
@@ -144,7 +148,7 @@ fun AddPostScreen(
                     context = context,
                     user = user,
                     caption = caption.value,
-                    postPictureUri = selectedImageByUri.toString() )
+                    postPictureUri = selectedImageByUri )
                       },
             modifier = Modifier
                 .padding(vertical = 16.dp)
