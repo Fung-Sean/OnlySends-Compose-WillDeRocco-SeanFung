@@ -1,6 +1,7 @@
 package com.example.onlysends_compose.firestore
 
 import android.content.Context
+import android.net.Uri
 import com.example.onlysends_compose.firestore.modules.acceptFriend
 import com.example.onlysends_compose.firestore.modules.createPost
 import com.example.onlysends_compose.firestore.modules.createUserDocument
@@ -112,7 +113,7 @@ object Firestore {
         context: Context?,
         user: User,
         caption: String,
-        postPictureUri: String
+        postPictureUri: Uri?
     ) {
         createPost(
             db = db,
