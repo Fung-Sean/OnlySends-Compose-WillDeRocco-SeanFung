@@ -321,7 +321,8 @@ class MainActivity : AppCompatActivity() {
                         updateCurrentRoute(navController = navController)
                         AddPostScreen(
                             context = applicationContext,
-                            user = user!!
+                            user = user!!,
+                            navController = navController,
                         )
                     }
 

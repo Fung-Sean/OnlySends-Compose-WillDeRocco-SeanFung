@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.navigation.NavHostController
+import com.example.onlysends_compose.R
 import com.example.onlysends_compose.firestore.types.Post
 import com.example.onlysends_compose.firestore.types.User
 import com.google.firebase.Firebase
@@ -61,15 +63,21 @@ fun createPost(
     context: Context?,
     user: User,
     caption: String,
-    postPictureUri: Uri?
+    postPictureUri: Uri?,
+    navController: NavHostController
 ) {
+    // perform context validation
+    if (context == null) {
+        Log.d(TAG, "context must be defined")
+        return
+    }
+
     // extract current timestamp
     val currentTimeMillis = System.currentTimeMillis()
 
-    Log.d(TAG, "postPictureUri is $postPictureUri")
     // validation (ensure postPictureUri is valid)
     if (postPictureUri == null) {
-        Log.d(TAG, "postPictureUri not selected $postPictureUri")
+        Log.d(TAG, "postPictureUri not selected")
         Toast.makeText(context, "Select a photo to post", Toast.LENGTH_LONG).show()
         return
     }
@@ -96,6 +104,9 @@ fun createPost(
                     // Handle success
                     Toast.makeText(context, "Created post successfully!", Toast.LENGTH_LONG).show()
                     Log.d(TAG, "Created post successfully: $documentReference")
+
+                    // navigate to home page
+                    navController.navigate(context.getString(R.string.home))
                 }
                 .addOnFailureListener { e ->
                     // Handle failure

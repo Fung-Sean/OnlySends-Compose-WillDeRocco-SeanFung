@@ -41,6 +41,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.onlysends_compose.R
 import com.example.onlysends_compose.firestore.Firestore
@@ -57,7 +59,8 @@ private const val TAG = "AddPostScreen"
 @Composable
 fun AddPostScreen(
     context: Context? = null,
-    user: User
+    user: User,
+    navController: NavHostController,
 ) {
     val caption = remember { mutableStateOf("") } // Initialize caption state
 
@@ -148,7 +151,9 @@ fun AddPostScreen(
                     context = context,
                     user = user,
                     caption = caption.value,
-                    postPictureUri = selectedImageByUri )
+                    postPictureUri = selectedImageByUri,
+                    navController = navController
+                )
                       },
             modifier = Modifier
                 .padding(vertical = 16.dp)
@@ -178,9 +183,11 @@ fun AddPostScreenPreview() {
         username = "SampleUser",
         profilePictureUrl = null, // Provide appropriate values for other fields as needed
     )
+    val navController = rememberNavController()
+
     OnlySendsTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            AddPostScreen(user = user)
+            AddPostScreen(user = user, navController = navController)
         }
     }
 }
