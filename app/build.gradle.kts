@@ -101,7 +101,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$navVersion")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
 
-    //Camera
+    // Camera
     implementation ("androidx.activity:activity-ktx:1.9.0")
     implementation ("androidx.fragment:fragment-ktx:1.6.2")
     // coil (image rendering) dependencies
@@ -112,10 +112,12 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
     implementation("androidx.compose.material3:material3-adaptive-navigation-suite:1.0.0-alpha06")
     implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation("io.coil-kt:coil-compose:2.6.0")
-    //Google Maps
+
+    // Google Maps
     implementation("androidx.compose.material:material-icons-extended:1.6.6")
     implementation ("com.google.maps.android:maps-compose:4.3.3")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
 
+    // cloud storage
+    implementation("com.google.firebase:firebase-storage")
 }
