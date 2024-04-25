@@ -1,4 +1,5 @@
 package com.example.onlysends_compose.ui.add_post
+import android.content.Context
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -41,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.onlysends_compose.R
+import com.example.onlysends_compose.firestore.Firestore
+import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.home.fake_data.Post
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
 import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
@@ -50,10 +53,11 @@ import com.example.onlysends_compose.ui.home.theme.signOutColor
 //USED CHATGPT FOR LAYOUT IN THAT IT WASN'T BEING LAYED OUT CORRECTLY
 @Composable
 fun AddPostScreen(
-    modifier: Modifier = Modifier,
-    onPostAdded: (Post) -> Unit,
-    postText: MutableState<String>
+    context: Context? = null,
+    user: User
 ) {
+    val caption = remember { mutableStateOf("") } // Initialize caption state
+
     var selectedImageByUri by remember {
         mutableStateOf<Uri?>(null)
     }
@@ -66,7 +70,7 @@ fun AddPostScreen(
     )
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
@@ -109,7 +113,7 @@ fun AddPostScreen(
                 )
             }
         }
-        Spacer(modifier = modifier.padding(30.dp))
+        Spacer(modifier = Modifier.padding(30.dp))
         AsyncImage(
             modifier = Modifier
                 .fillMaxWidth()
@@ -120,10 +124,10 @@ fun AddPostScreen(
             contentDescription = null,
             contentScale = ContentScale.FillBounds
         )
-        Spacer(modifier = modifier.padding(40.dp))
+        Spacer(modifier = Modifier.padding(40.dp))
         OutlinedTextField(
-            value = postText.value,
-            onValueChange = { newValue -> postText.value = newValue },
+            value = caption.value,
+            onValueChange = { newValue -> caption.value = newValue },
             label = { Text("Caption") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -136,8 +140,11 @@ fun AddPostScreen(
                 signOutColor,
             ),
             onClick = {
-                // TODO: Create new post and pass it to onPostAdded
-                Toast.makeText(null, "Post added!", Toast.LENGTH_SHORT).show()
+                Firestore.handleCreatePost(
+                    context = context,
+                    user = user,
+                    caption = caption.value,
+                    postPictureUri = selectedImageByUri.toString() )
                       },
             modifier = Modifier
                 .padding(vertical = 16.dp)
@@ -158,21 +165,19 @@ fun AddPostScreen(
     }
 }
 
-
-
+// AddPostScreenPreview : not used for page logic (only to preview layout)
 @Preview
 @Composable
 fun AddPostScreenPreview() {
-    val postText = remember { mutableStateOf("") }
-
+    val user = User(
+        userId = "123",
+        username = "SampleUser",
+        profilePictureUrl = null, // Provide appropriate values for other fields as needed
+    )
     OnlySendsTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            AddPostScreen(
-                onPostAdded = { /* Dummy onPostAdded function */ },
-                postText = postText
-            )
+            AddPostScreen(user = user)
         }
     }
 }
-
 

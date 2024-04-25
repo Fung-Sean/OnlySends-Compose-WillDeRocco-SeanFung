@@ -2,6 +2,7 @@ package com.example.onlysends_compose.firestore
 
 import android.content.Context
 import com.example.onlysends_compose.firestore.modules.acceptFriend
+import com.example.onlysends_compose.firestore.modules.createPost
 import com.example.onlysends_compose.firestore.modules.createUserDocument
 import com.example.onlysends_compose.firestore.modules.followFriend
 import com.example.onlysends_compose.firestore.modules.searchAllFriends
@@ -103,6 +104,22 @@ object Firestore {
             user = user,
             friend = friend,
             onUpdateUser = onUpdateUser
+        )
+    }
+
+    // handleCreatePost : creates a post for a user
+    fun handleCreatePost(
+        context: Context?,
+        user: User,
+        caption: String,
+        postPictureUri: String
+    ) {
+        createPost(
+            db = db,
+            context = context,
+            user = user,
+            caption = caption,
+            postPictureUri = postPictureUri
         )
     }
 
