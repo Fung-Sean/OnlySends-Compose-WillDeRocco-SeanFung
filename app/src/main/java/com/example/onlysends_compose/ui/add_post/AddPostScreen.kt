@@ -52,6 +52,7 @@ import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
 import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 import com.example.onlysends_compose.ui.home.theme.signOutColor
+import kotlin.reflect.KFunction1
 
 private const val TAG = "AddPostScreen"
 
@@ -152,7 +153,7 @@ fun AddPostScreen(
                     user = user,
                     caption = caption.value,
                     postPictureUri = selectedImageByUri,
-                    navController = navController
+                    navController = navController,
                 )
                       },
             modifier = Modifier
@@ -174,21 +175,21 @@ fun AddPostScreen(
     }
 }
 
-// AddPostScreenPreview : not used for page logic (only to preview layout)
-@Preview
-@Composable
-fun AddPostScreenPreview() {
-    val user = User(
-        userId = "123",
-        username = "SampleUser",
-        profilePictureUrl = null, // Provide appropriate values for other fields as needed
-    )
-    val navController = rememberNavController()
-
-    OnlySendsTheme {
-        Surface(color = MaterialTheme.colorScheme.background) {
-            AddPostScreen(user = user, navController = navController)
-        }
-    }
-}
+//// AddPostScreenPreview : not used for page logic (only to preview layout)
+//@Preview
+//@Composable
+//fun AddPostScreenPreview() {
+//    val user = User(
+//        userId = "123",
+//        username = "SampleUser",
+//        profilePictureUrl = null, // Provide appropriate values for other fields as needed
+//    )
+//    val navController = rememberNavController()
+//
+//    OnlySendsTheme {
+//        Surface(color = MaterialTheme.colorScheme.background) {
+//            AddPostScreen(user = user, navController = navController)
+//        }
+//    }
+//}
 
