@@ -285,20 +285,11 @@ class MainActivity : AppCompatActivity() {
                         // Update the currentRoute when navigating to "home" (or any other page)
 
                         updateCurrentRoute(navController = navController)
-                        val viewModel: HomeScreenViewModel = viewModel()
+                        val viewModel = HomeScreenViewModel(application, user!!)
 
                         HomeScreen(
-                            onBoardingUiState = viewModel.onBoardingUiState,
-                            postsUiState = viewModel.postsUiState,
-                            onPostClick = {},
-                            onProfileClick = {},
-                            onLikeClick = {},
-                            onCommentClick = {},
-                            onFollowButtonClick = {_, _ ->},
-                            onBoardingFinish = {},
-                            fetchMoreData = {
-                                viewModel.fetchData()
-                            }
+                            user = user!!,
+                            application = application,
                         )
                     }
 
@@ -321,7 +312,8 @@ class MainActivity : AppCompatActivity() {
                         updateCurrentRoute(navController = navController)
                         AddPostScreen(
                             context = applicationContext,
-                            user = user!!
+                            user = user!!,
+                            navController = navController,
                         )
                     }
 
@@ -355,7 +347,9 @@ class MainActivity : AppCompatActivity() {
                                 Spacer(modifier = Modifier.weight(1f)) // Add a spacer to occupy the available space
                                 Button(
                                     onClick = { navController.navigate("AddHeight") },
-                                    modifier = Modifier.align(Alignment.CenterVertically).padding(2.dp),
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .padding(2.dp),
                                     shape = CircleShape,
                                     colors = ButtonDefaults.buttonColors(signOutColor)
                                 ) {
