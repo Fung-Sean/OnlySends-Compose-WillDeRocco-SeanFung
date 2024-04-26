@@ -12,9 +12,12 @@ import com.example.onlysends_compose.firestore.types.Post
 import com.example.onlysends_compose.firestore.types.User
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.storage
+import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
 import java.util.UUID
+import kotlin.reflect.KFunction1
 
 private const val TAG = "PostFirestore"
 
@@ -64,7 +67,7 @@ fun createPost(
     user: User,
     caption: String,
     postPictureUri: Uri?,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     // perform context validation
     if (context == null) {
@@ -122,4 +125,41 @@ fun createPost(
         }
 
     })
+}
+
+// getFriendPosts : returns a list of posts for a user's friends (and the user)
+suspend fun getFriendPosts(
+    db: FirebaseFirestore,
+    context: Context,
+    user: User,
+): List<Post> {
+    // define list of Posts to return
+    val posts = mutableListOf<Post>()
+
+    try {
+        // Reference to the "posts" collection
+        val postsCollection = db.collection("posts")
+
+        // Fetch all posts in the collection
+        val querySnapshot = postsCollection.get().await()
+
+        // Iterate over each document in the query snapshot
+        for (document in querySnapshot.documents) {
+            // Convert Firestore document to a Post object
+            val post = document.toObject<Post>() ?: Post()
+
+            // check if post userId is either current user OR friend
+            if (post.userId == user.userId || user.friends.contains(post.userId)) {
+                // Add the Post object to the list of posts
+                posts.add(post)
+            }
+        }
+    } catch (e: Exception) {
+        // Handle any potential errors, such as network issues or Firestore exceptions
+        Toast.makeText(context, "Error fetching posts", Toast.LENGTH_LONG).show()
+        e.printStackTrace()
+    }
+
+    Log.d(TAG,"Finished finding posts: $posts")
+    return posts
 }

@@ -7,20 +7,26 @@ import com.example.onlysends_compose.firestore.modules.acceptFriend
 import com.example.onlysends_compose.firestore.modules.createPost
 import com.example.onlysends_compose.firestore.modules.createUserDocument
 import com.example.onlysends_compose.firestore.modules.followFriend
+import com.example.onlysends_compose.firestore.modules.getFriendPosts
 import com.example.onlysends_compose.firestore.modules.searchAllFriends
 import com.example.onlysends_compose.firestore.modules.searchUserFriends
 import com.example.onlysends_compose.firestore.modules.updateUserProfile
+import com.example.onlysends_compose.firestore.types.Post
 import com.example.onlysends_compose.firestore.types.User
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import kotlin.reflect.KFunction1
 
+// Firestore : object contains a series of functions serving as endpoints to the actual functions
+// (actual functions located in modules folder)
 object Firestore {
 
     private val db: FirebaseFirestore by lazy {
         Firebase.firestore
     }
 
+    /* ------------------------------ UserFirestore functions ------------------------------ */
     // handleCreateUserDocument : creates and updates user (calls onUpdateUser when successful)
     fun handleCreateUserDocument(
         user: User,
@@ -52,6 +58,7 @@ object Firestore {
         )
     }
 
+    /* ------------------------------ SearchFirestore functions ------------------------------ */
     fun handleSearchAllFriends(
         user: User,
         onFriendsLoaded: (List<User>) -> Unit
@@ -75,6 +82,7 @@ object Firestore {
         )
     }
 
+    /* ------------------------------ FriendFirestore functions ------------------------------ */
     // handleFollowFriend : adds friend to `outgoingFriends` for user and `incomingFriends` for friend
     fun handleFollowFriend(
         context: Context,
@@ -109,13 +117,14 @@ object Firestore {
         )
     }
 
+    /* ------------------------------ PostFirestore functions ------------------------------ */
     // handleCreatePost : creates a post for a user
     fun handleCreatePost(
         context: Context?,
         user: User,
         caption: String,
         postPictureUri: Uri?,
-        navController: NavHostController
+        navController: NavHostController,
     ) {
         createPost(
             db = db,
@@ -123,7 +132,19 @@ object Firestore {
             user = user,
             caption = caption,
             postPictureUri = postPictureUri,
-            navController = navController
+            navController = navController,
+        )
+    }
+
+    // handleGetFriendPosts : returns a list of Post objects for this User's friends
+    suspend fun handleGetFriendPosts(
+        context: Context,
+        user: User,
+    ): List<Post> {
+        return getFriendPosts(
+            db = db,
+            context = context,
+            user = user,
         )
     }
 
