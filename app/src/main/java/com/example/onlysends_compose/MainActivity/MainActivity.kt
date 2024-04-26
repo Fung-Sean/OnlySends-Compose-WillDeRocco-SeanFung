@@ -289,7 +289,7 @@ class MainActivity : AppCompatActivity() {
 
                         HomeScreen(
                             user = user!!,
-                            postsUiState = viewModel.postsUiState,
+                            postsUiState = viewModel.postsUiState.value,
                             fetchMoreData = {
                                 viewModel.fetchData()
                             }
