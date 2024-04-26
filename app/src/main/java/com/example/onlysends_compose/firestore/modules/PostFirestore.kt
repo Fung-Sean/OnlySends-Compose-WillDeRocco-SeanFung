@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation.NavHostController
 import com.example.onlysends_compose.R
 import com.example.onlysends_compose.firestore.types.Post
@@ -132,9 +134,9 @@ suspend fun getFriendPosts(
     db: FirebaseFirestore,
     context: Context,
     user: User,
-): List<Post> {
+): SnapshotStateList<Post> {
     // define list of Posts to return
-    val posts = mutableListOf<Post>()
+    val posts = mutableStateListOf<Post>()
 
     try {
         // Reference to the "posts" collection

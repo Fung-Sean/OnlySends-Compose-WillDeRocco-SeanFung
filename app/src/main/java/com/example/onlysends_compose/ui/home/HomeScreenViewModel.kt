@@ -3,8 +3,10 @@ import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.onlysends_compose.firestore.Firestore
@@ -38,18 +40,16 @@ class HomeScreenViewModel(
 
             Log.d(TAG, "finished fetching posts: $postsFromFirestore")
 
-//            // Update UI state on the main/UI thread
-//            withContext(Dispatchers.Main) {
-                postsUiState.value.isLoading = false
-                postsUiState.value.posts = postsFromFirestore
-                Log.d(TAG, "updated postUiState ${postsUiState.value.isLoading} ${postsUiState.value.posts}")
-//            }
+            postsUiState.value.isLoading = false
+            postsUiState.value.posts.clear()
+            postsUiState.value.posts.addAll(postsFromFirestore)
+            Log.d(TAG, "updated postUiState ${postsUiState.value.isLoading} ${postsUiState.value.posts}")
         }
     }
 }
 
 data class PostsUiState(
     var isLoading: Boolean = false,
-    var posts: List<Post> = listOf(),
+    var posts: SnapshotStateList<Post> = mutableStateListOf(),
     val error: String? = null
 )
