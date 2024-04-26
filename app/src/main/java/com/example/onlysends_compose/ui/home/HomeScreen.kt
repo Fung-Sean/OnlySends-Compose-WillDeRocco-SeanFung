@@ -37,12 +37,13 @@ fun HomeScreen(
         onRefresh = { fetchMoreData() })
 
 
-    // Use LaunchedEffect to trigger a side effect whenever isLoading changes
-    LaunchedEffect(postsUiState.isLoading) {
-        // Log the new value of isLoading
-        Log.d(TAG, "isLoading: ${postsUiState.isLoading}")
-        // Update the previousIsLoading value
-    }
+    Log.d(TAG, "isLoading: ${postsUiState.isLoading}")
+//    // Use LaunchedEffect to trigger a side effect whenever isLoading changes
+//    LaunchedEffect(postsUiState.isLoading) {
+//        // Log the new value of isLoading
+//        Log.d(TAG, "isLoading: ${postsUiState.isLoading}")
+//        // Update the previousIsLoading value
+//    }
 
     Box (
         modifier = modifier

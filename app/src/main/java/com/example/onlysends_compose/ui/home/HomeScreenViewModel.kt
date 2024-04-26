@@ -1,6 +1,7 @@
 package com.example.onlysends_compose.ui.home
 import android.app.Application
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -21,7 +22,7 @@ class HomeScreenViewModel(
 ) : AndroidViewModel(application) {
 
     // Define MutableState properties directly
-    val postsUiState by mutableStateOf(PostsUiState())
+    val postsUiState: MutableState<PostsUiState> =  mutableStateOf(PostsUiState())
 
     init {
         Log.d(TAG, "VIEWMODEL INTIALIZED")
@@ -29,7 +30,7 @@ class HomeScreenViewModel(
     }
 
     fun fetchData() {
-        postsUiState.isLoading = true
+        postsUiState.value.isLoading = true
 
         viewModelScope.launch {
             // Fetch data from Firestore using application context
@@ -37,12 +38,12 @@ class HomeScreenViewModel(
 
             Log.d(TAG, "finished fetching posts: $postsFromFirestore")
 
-            // Update UI state on the main/UI thread
-            withContext(Dispatchers.Main) {
-                postsUiState.isLoading = false
-                postsUiState.posts = postsFromFirestore
-                Log.d(TAG, "updated postUiState ${postsUiState.isLoading}")
-            }
+//            // Update UI state on the main/UI thread
+//            withContext(Dispatchers.Main) {
+                postsUiState.value.isLoading = false
+                postsUiState.value.posts = postsFromFirestore
+                Log.d(TAG, "updated postUiState ${postsUiState.value.isLoading}")
+//            }
         }
     }
 }
