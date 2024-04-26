@@ -1,5 +1,6 @@
 package com.example.onlysends_compose.ui.home
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,11 +12,15 @@ import androidx.compose.material.Surface
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerIcon.Companion.Text
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.onlysends_compose.firestore.types.User
@@ -28,22 +33,26 @@ private const val TAG = "HomeScreen"
 fun HomeScreen(
     user: User,
     modifier: Modifier = Modifier,
-    postsUiState: PostsUiState,
-    fetchMoreData: () -> Unit
+    application: Application,
 ){
+    // Initialize the ViewModel
+    val viewModel: HomeScreenViewModel = remember {
+        HomeScreenViewModel(
+            application = application,
+            user = user
+        )
+    }
+
+    // Retrieve postsUiState from the ViewModel
+    val postsUiState by viewModel.postsUiState
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = postsUiState.isLoading,
-        onRefresh = { fetchMoreData() })
+        onRefresh = { viewModel.fetchData() })
 
 
-    Log.d(TAG, "isLoading: ${postsUiState.isLoading}")
-//    // Use LaunchedEffect to trigger a side effect whenever isLoading changes
-//    LaunchedEffect(postsUiState.isLoading) {
-//        // Log the new value of isLoading
-//        Log.d(TAG, "isLoading: ${postsUiState.isLoading}")
-//        // Update the previousIsLoading value
-//    }
+    Log.d(TAG, "isLoading: ${postsUiState.isLoading} posts: ${postsUiState.posts}")
+
 
     Box (
         modifier = modifier
@@ -55,12 +64,18 @@ fun HomeScreen(
                 .fillMaxSize()
         ){
            items(items = postsUiState.posts){
+               Log.d(TAG, "posts are ${postsUiState.posts}")
                PostListItem(
                    post = it,
                )
            }
         }
-
+//        // display "Full Name" text
+//        Text(
+//            text = "posts area" + postsUiState.posts.toString(),
+//            textAlign = TextAlign.Left,
+//            fontSize = 18.sp
+//        )
         PullRefreshIndicator(refreshing = postsUiState.isLoading,
             state = pullRefreshState,
             modifier = modifier.align(Alignment.TopCenter))
@@ -74,8 +89,7 @@ private fun HomeScreenPreview() {
         Surface(color = MaterialTheme.colors.background) {
             HomeScreen(
                 user = User(),
-                postsUiState = PostsUiState(posts = listOf()), // Provide appropriate PostsUiState here
-                fetchMoreData = {},
+                application = Application()
             )
         }
     }

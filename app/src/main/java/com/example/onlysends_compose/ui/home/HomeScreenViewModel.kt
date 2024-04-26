@@ -42,7 +42,7 @@ class HomeScreenViewModel(
 //            withContext(Dispatchers.Main) {
                 postsUiState.value.isLoading = false
                 postsUiState.value.posts = postsFromFirestore
-                Log.d(TAG, "updated postUiState ${postsUiState.value.isLoading}")
+                Log.d(TAG, "updated postUiState ${postsUiState.value.isLoading} ${postsUiState.value.posts}")
 //            }
         }
     }
