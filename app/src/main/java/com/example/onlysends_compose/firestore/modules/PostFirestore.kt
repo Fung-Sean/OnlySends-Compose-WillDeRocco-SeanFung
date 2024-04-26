@@ -6,13 +6,20 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.navigation.NavHostController
+import com.example.onlysends_compose.R
 import com.example.onlysends_compose.firestore.types.Post
 import com.example.onlysends_compose.firestore.types.User
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.storage
+import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
 import java.util.UUID
+import kotlin.reflect.KFunction1
 
 private const val TAG = "PostFirestore"
 
@@ -61,15 +68,21 @@ fun createPost(
     context: Context?,
     user: User,
     caption: String,
-    postPictureUri: Uri?
+    postPictureUri: Uri?,
+    navController: NavHostController,
 ) {
+    // perform context validation
+    if (context == null) {
+        Log.d(TAG, "context must be defined")
+        return
+    }
+
     // extract current timestamp
     val currentTimeMillis = System.currentTimeMillis()
 
-    Log.d(TAG, "postPictureUri is $postPictureUri")
     // validation (ensure postPictureUri is valid)
     if (postPictureUri == null) {
-        Log.d(TAG, "postPictureUri not selected $postPictureUri")
+        Log.d(TAG, "postPictureUri not selected")
         Toast.makeText(context, "Select a photo to post", Toast.LENGTH_LONG).show()
         return
     }
@@ -96,6 +109,9 @@ fun createPost(
                     // Handle success
                     Toast.makeText(context, "Created post successfully!", Toast.LENGTH_LONG).show()
                     Log.d(TAG, "Created post successfully: $documentReference")
+
+                    // navigate to home page
+                    navController.navigate(context.getString(R.string.home))
                 }
                 .addOnFailureListener { e ->
                     // Handle failure
@@ -111,4 +127,41 @@ fun createPost(
         }
 
     })
+}
+
+// getFriendPosts : returns a list of posts for a user's friends (and the user)
+suspend fun getFriendPosts(
+    db: FirebaseFirestore,
+    context: Context,
+    user: User,
+): SnapshotStateList<Post> {
+    // define list of Posts to return
+    val posts = mutableStateListOf<Post>()
+
+    try {
+        // Reference to the "posts" collection
+        val postsCollection = db.collection("posts")
+
+        // Fetch all posts in the collection
+        val querySnapshot = postsCollection.get().await()
+
+        // Iterate over each document in the query snapshot
+        for (document in querySnapshot.documents) {
+            // Convert Firestore document to a Post object
+            val post = document.toObject<Post>() ?: Post()
+
+            // check if post userId is either current user OR friend
+            if (post.userId == user.userId || user.friends.contains(post.userId)) {
+                // Add the Post object to the list of posts
+                posts.add(post)
+            }
+        }
+    } catch (e: Exception) {
+        // Handle any potential errors, such as network issues or Firestore exceptions
+        Toast.makeText(context, "Error fetching posts", Toast.LENGTH_LONG).show()
+        e.printStackTrace()
+    }
+
+    Log.d(TAG,"Finished finding posts: $posts")
+    return posts
 }
