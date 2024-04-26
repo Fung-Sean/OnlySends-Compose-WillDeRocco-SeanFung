@@ -2,6 +2,7 @@ package com.example.onlysends_compose.firestore
 
 import android.content.Context
 import android.net.Uri
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation.NavHostController
 import com.example.onlysends_compose.firestore.modules.acceptFriend
 import com.example.onlysends_compose.firestore.modules.createPost
@@ -140,7 +141,7 @@ object Firestore {
     suspend fun handleGetFriendPosts(
         context: Context,
         user: User,
-    ): List<Post> {
+    ): SnapshotStateList<Post> {
         return getFriendPosts(
             db = db,
             context = context,

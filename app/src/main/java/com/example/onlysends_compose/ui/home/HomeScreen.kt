@@ -51,7 +51,7 @@ fun HomeScreen(
         onRefresh = { viewModel.fetchData() })
 
 
-    Log.d(TAG, "isLoading: ${postsUiState.isLoading} posts: ${postsUiState.posts}")
+    Log.d(TAG, "isLoading: ${postsUiState.isLoading} posts: ${postsUiState.posts.toList()}")
 
 
     Box (
@@ -63,7 +63,9 @@ fun HomeScreen(
             modifier = modifier
                 .fillMaxSize()
         ){
-           items(items = postsUiState.posts){
+           items(
+               items = postsUiState.posts,
+           ){
                Log.d(TAG, "posts are ${postsUiState.posts}")
                PostListItem(
                    post = it,
