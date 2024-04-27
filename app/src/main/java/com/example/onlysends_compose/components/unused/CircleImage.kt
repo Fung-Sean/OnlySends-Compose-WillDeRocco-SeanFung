@@ -1,4 +1,4 @@
-package com.example.onlysends_compose.ui.components
+package com.example.onlysends_compose.components.unused
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape

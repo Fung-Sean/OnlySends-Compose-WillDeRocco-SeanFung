@@ -8,7 +8,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,14 +16,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material.Scaffold
-import androidx.compose.material.TextField
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -34,7 +31,6 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -60,13 +56,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.onlysends_compose.R
 import com.example.onlysends_compose.ui.add_post.AddPostScreen
-import com.example.onlysends_compose.ui.components.CustomTopAppBar
+import com.example.onlysends_compose.components.navigation.CustomTopAppBar
 import com.example.onlysends_compose.ui.friends.FriendsScreen
 import com.example.onlysends_compose.ui.home.HomeScreen
 import com.example.onlysends_compose.ui.home.HomeScreenViewModel
@@ -98,15 +93,24 @@ class MainActivity : AppCompatActivity() {
             // navigation bar elements
             val navController = rememberNavController()
             val scaffoldState = rememberScaffoldState()
-            val items = listOf("home", "search", "post", "maps", "friends")
-            // Define icons map
-            val icons = mapOf(
-                "home" to Icons.Filled.Home,
-                "search" to Icons.Filled.Search,
-                "post" to Icons.Filled.AddCircle,
-                "maps" to Icons.Filled.LocationOn,
-                "friends" to Icons.Filled.Face
+            val navItems = listOf(
+                getString(R.string.home),
+                getString(R.string.search),
+                getString(R.string.post),
+                getString(R.string.maps),
+                getString(R.string.friends)
             )
+            // Define icons map dynamically
+            val icons = navItems.associateWith { item ->
+                when (item) {
+                    getString(R.string.home) -> Icons.Filled.Home
+                    getString(R.string.search) -> Icons.Filled.Search
+                    getString(R.string.post) -> Icons.Filled.AddCircle
+                    getString(R.string.maps) -> Icons.Filled.LocationOn
+                    getString(R.string.friends) -> Icons.Filled.Face
+                    else -> error("Unsupported navigation item: $item")
+                }
+            }
 
             // should not have any item selected on navBar at first
             var selectedItem by remember { mutableIntStateOf(-1) }
@@ -122,6 +126,11 @@ class MainActivity : AppCompatActivity() {
             fun updateCurrentRoute(navController: NavHostController) {
                 LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
                     currentRoute = navController.currentBackStackEntry?.destination?.route ?: ""
+
+                    // if currentRoute profile, selectedItem is -1
+                    if (currentRoute == getString(R.string.profile)) {
+                        selectedItem = -1
+                    }
                 }
             }
 
@@ -137,7 +146,6 @@ class MainActivity : AppCompatActivity() {
                         userId = it.userId,
                         username = it.username,
                         profilePictureUrl = it.profilePictureUrl,
-                        // Add other attributes as needed
                     )
                 }
                 // call createUserDocument function (this will UPDATE the `user` state variable automatically)
@@ -145,11 +153,16 @@ class MainActivity : AppCompatActivity() {
                 user?.let { Firestore.handleCreateUserDocument(it, ::updateUser) }
             }
 
+            // Function to check if navigation topBar/bottomBar should be displayed
+            fun showBar(): Boolean {
+                return !(currentRoute.isEmpty() || currentRoute == getString(R.string.sign_in))
+            }
+
             Scaffold(
                 scaffoldState = scaffoldState,
                 topBar = {
                     // If route is not yet defined (aka on sign_in page) -> don't show navigation bar
-                    if (!(currentRoute.isEmpty() || currentRoute == "sign_in")) {
+                    if (showBar()) {
                         CustomTopAppBar(
                             user = user,
                             navController = navController,
@@ -160,7 +173,7 @@ class MainActivity : AppCompatActivity() {
                 bottomBar = {
                     Log.d(TAG, "route ${currentRoute.isEmpty()}")
                     // If route is not yet defined (aka on sign_in page) -> don't show navigation bar
-                    if (!(currentRoute.isEmpty() || currentRoute == "sign_in")) {
+                    if (showBar()) {
                         NavigationBar(
                             modifier = Modifier
                                 .height(60.dp)
@@ -168,9 +181,9 @@ class MainActivity : AppCompatActivity() {
                             NavigationBar(
                                 modifier = Modifier.fillMaxSize()
                             ) {
-                                items.forEachIndexed { index, item ->
+                                navItems.forEachIndexed { index, item ->
                                     NavigationBarItem(
-                                        icon = {
+                                         icon = {
                                             icons[item]?.let { Icon(it, contentDescription = item) }
                                         },
                                         selected = selectedItem == index,
