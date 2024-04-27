@@ -16,14 +16,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material.Scaffold
-import androidx.compose.material.TextField
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -63,7 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.onlysends_compose.R
 import com.example.onlysends_compose.ui.add_post.AddPostScreen
-import com.example.onlysends_compose.components.CustomTopAppBar
+import com.example.onlysends_compose.components.navigation.CustomTopAppBar
 import com.example.onlysends_compose.ui.friends.FriendsScreen
 import com.example.onlysends_compose.ui.home.HomeScreen
 import com.example.onlysends_compose.ui.home.HomeScreenViewModel
