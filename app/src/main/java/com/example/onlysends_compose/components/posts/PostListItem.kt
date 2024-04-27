@@ -1,4 +1,4 @@
-package com.example.onlysends_compose.ui.components
+package com.example.onlysends_compose.components.posts
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.onlysends_compose.components.unused.CircleImage
 import com.example.onlysends_compose.firestore.types.Post
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
 import java.text.SimpleDateFormat

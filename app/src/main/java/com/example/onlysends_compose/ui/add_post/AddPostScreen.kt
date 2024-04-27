@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -45,6 +46,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.onlysends_compose.R
+import com.example.onlysends_compose.components.navigation.PageHeaderText
 import com.example.onlysends_compose.firestore.Firestore
 import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.home.fake_data.Post
@@ -77,102 +79,106 @@ fun AddPostScreen(
         }
     )
 
-    Column(
-        modifier = Modifier
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
     ) {
-        Text(
-            text = "Add a Post",
-            style = MaterialTheme.typography.displaySmall
-        )
+        PageHeaderText(text = "Add a Post")
 
-        Button(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(
-                signOutColor,
-                contentColor = Color.White
-            ),
-            onClick = {
-                photoPickerLauncher.launch(
-                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                )
-            }
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    signOutColor,
+                    contentColor = Color.White
+                ),
+                onClick = {
+                    photoPickerLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                }
             ) {
-                Text(
-                    text = "Pick A Photo To Post",
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        fontSize = 18.sp,
-                    ),
-                    modifier = Modifier.weight(1f)
-                )
-                Spacer(modifier = Modifier.padding(4.dp))
-                Icon(
-                    painter = painterResource(id = R.drawable.add_photo),
-                    contentDescription = "Add image",
-                    modifier = Modifier.size(24.dp)
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Pick A Photo To Post",
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            fontSize = 18.sp,
+                        ),
+                        modifier = Modifier.weight(1f)
+                    )
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Icon(
+                        painter = painterResource(id = R.drawable.add_photo),
+                        contentDescription = "Add image",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
-        }
-        Spacer(modifier = Modifier.padding(30.dp))
-        AsyncImage(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(240.dp)
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape()),
-            model = selectedImageByUri,
-            contentDescription = null,
-            contentScale = ContentScale.FillBounds
-        )
-        Spacer(modifier = Modifier.padding(40.dp))
-        OutlinedTextField(
-            value = caption.value,
-            onValueChange = { newValue -> caption.value = newValue },
-            label = { Text("Caption") },
-            modifier = Modifier.fillMaxWidth()
-        )
+            Spacer(modifier = Modifier.padding(30.dp))
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(240.dp)
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape()),
+                model = selectedImageByUri,
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds
+            )
+            Spacer(modifier = Modifier.padding(40.dp))
+            OutlinedTextField(
+                value = caption.value,
+                onValueChange = { newValue -> caption.value = newValue },
+                label = { Text("Caption") },
+                modifier = Modifier.fillMaxWidth()
+            )
 
-        Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-        Button(
-            shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(
-                signOutColor,
-            ),
-            onClick = {
-                Firestore.handleCreatePost(
-                    context = context,
-                    user = user,
-                    caption = caption.value,
-                    postPictureUri = selectedImageByUri,
-                    navController = navController,
-                )
-                      },
-            modifier = Modifier
-                .padding(vertical = 16.dp)
-                .align(Alignment.CenterHorizontally)
-                .fillMaxWidth()
-        ) {
-            Row {
-                Icon(
-                    painter = painterResource(id = android.R.drawable.ic_input_add),
-                    contentDescription = null
-                )
-                Text(
-                    "Add Post",
-                    style = MaterialTheme.typography.bodyLarge
-                )
+            Button(
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    signOutColor,
+                ),
+                onClick = {
+                    Firestore.handleCreatePost(
+                        context = context,
+                        user = user,
+                        caption = caption.value,
+                        postPictureUri = selectedImageByUri,
+                        navController = navController,
+                    )
+                },
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .fillMaxWidth()
+            ) {
+                Row {
+                    Icon(
+                        painter = painterResource(id = android.R.drawable.ic_input_add),
+                        contentDescription = null
+                    )
+                    Text(
+                        "Add Post",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
             }
         }
     }
+
 }
 
 //// AddPostScreenPreview : not used for page logic (only to preview layout)

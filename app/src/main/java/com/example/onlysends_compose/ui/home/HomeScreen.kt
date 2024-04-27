@@ -1,6 +1,5 @@
 package com.example.onlysends_compose.ui.home
 
-import android.app.Application
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,19 +11,12 @@ import androidx.compose.material.Surface
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.PointerIcon.Companion.Text
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
-import com.example.onlysends_compose.firestore.types.User
-import com.example.onlysends_compose.ui.components.PostListItem
+import com.example.onlysends_compose.components.navigation.PageHeaderText
+import com.example.onlysends_compose.components.posts.PostListItem
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
 
 private const val TAG = "HomeScreen"
@@ -50,6 +42,8 @@ fun HomeScreen(
             .fillMaxSize()
             .pullRefresh(state = pullRefreshState)
     ){
+        PageHeaderText(text = "Explore")
+
         LazyColumn(
             modifier = modifier
                 .fillMaxSize()
