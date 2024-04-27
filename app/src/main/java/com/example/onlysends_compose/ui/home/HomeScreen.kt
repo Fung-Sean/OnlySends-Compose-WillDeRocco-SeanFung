@@ -31,24 +31,15 @@ private const val TAG = "HomeScreen"
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
-    user: User,
     modifier: Modifier = Modifier,
-    application: Application,
+    postsUiState: PostsUiState,
+    fetchMoreData: () -> Unit
 ){
-    // Initialize the ViewModel
-    val viewModel: HomeScreenViewModel = remember {
-        HomeScreenViewModel(
-            application = application,
-            user = user
-        )
-    }
 
-    // Retrieve postsUiState from the ViewModel
-    val postsUiState by viewModel.postsUiState
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = postsUiState.isLoading,
-        onRefresh = { viewModel.fetchData() })
+        onRefresh = { fetchMoreData() })
 
 
     Log.d(TAG, "isLoading: ${postsUiState.isLoading} posts: ${postsUiState.posts.toList()}")
@@ -85,8 +76,8 @@ private fun HomeScreenPreview() {
     OnlySendsTheme {
         Surface(color = MaterialTheme.colors.background) {
             HomeScreen(
-                user = User(),
-                application = Application()
+                postsUiState = PostsUiState(),
+                fetchMoreData = { }
             )
         }
     }

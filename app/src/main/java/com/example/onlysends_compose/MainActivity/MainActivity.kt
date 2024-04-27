@@ -90,8 +90,6 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "MainActivity loaded")
@@ -279,17 +277,23 @@ class MainActivity : AppCompatActivity() {
                             onLocationAdded = { /* Handle navigation or other actions */ }
                         )
                     }
+
                     // add more routes other composable functions
                     // ----------------------- route 1) "home" -----------------------
                     composable(route = getString(R.string.home)) {
-                        // Update the currentRoute when navigating to "home" (or any other page)
+                        Log.d(TAG, "entering home page, user is: $user")
 
+                        // Update the currentRoute when navigating to "home" (or any other page)
                         updateCurrentRoute(navController = navController)
-                        val viewModel = HomeScreenViewModel(application, user!!)
+                        val viewModel: HomeScreenViewModel = remember {
+                            HomeScreenViewModel(application, user!!)
+                        }
 
                         HomeScreen(
-                            user = user!!,
-                            application = application,
+                            postsUiState = viewModel.postsUiState.value,
+                            fetchMoreData = {
+                                viewModel.fetchData()
+                            }
                         )
                     }
 
