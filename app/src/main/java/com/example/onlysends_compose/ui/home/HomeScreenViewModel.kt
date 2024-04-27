@@ -27,7 +27,7 @@ class HomeScreenViewModel(
     val postsUiState: MutableState<PostsUiState> =  mutableStateOf(PostsUiState())
 
     init {
-        Log.d(TAG, "VIEWMODEL INTIALIZED")
+        Log.d(TAG, "init method (fetching data)")
         fetchData()
     }
 
@@ -37,8 +37,6 @@ class HomeScreenViewModel(
         viewModelScope.launch {
             // Fetch data from Firestore using application context
             val postsFromFirestore = Firestore.handleGetFriendPosts(getApplication(), user)
-
-            Log.d(TAG, "finished fetching posts: $postsFromFirestore")
 
             postsUiState.value.isLoading = false
             postsUiState.value.posts.clear()
