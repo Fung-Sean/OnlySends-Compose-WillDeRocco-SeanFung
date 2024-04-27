@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.onlysends_compose.components.navigation.PageHeaderText
 import com.example.onlysends_compose.firestore.Firestore
 import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.home.theme.buttonColor
@@ -78,6 +79,8 @@ fun SearchScreen(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
     ) {
+        PageHeaderText(text = "Find Friends")
+
         Column(
             modifier = Modifier
                 .padding(30.dp) // Add some padding for better spacing

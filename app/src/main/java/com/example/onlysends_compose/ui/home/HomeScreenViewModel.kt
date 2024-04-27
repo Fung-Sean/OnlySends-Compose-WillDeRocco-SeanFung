@@ -1,50 +1,53 @@
 package com.example.onlysends_compose.ui.home
+import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.onlysends_compose.ui.home.fake_data.Post
-import com.example.onlysends_compose.ui.home.fake_data.samplePosts
-import com.example.onlysends_compose.ui.home.fake_data.sampleUsers
-import com.example.onlysends_compose.ui.home.onboarding.OnBoardingUiState
-import kotlinx.coroutines.delay
+import com.example.onlysends_compose.firestore.Firestore
+import com.example.onlysends_compose.firestore.types.Post
+import com.example.onlysends_compose.firestore.types.User
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class HomeScreenViewModel : ViewModel() {
+private const val TAG = "HomeScreenViewModel"
+
+class HomeScreenViewModel(
+    application: Application,
+    private val user: User
+) : AndroidViewModel(application) {
+
     // Define MutableState properties directly
-    var onBoardingUiState by mutableStateOf(OnBoardingUiState())
-        private set
+    val postsUiState: MutableState<PostsUiState> =  mutableStateOf(PostsUiState())
 
-    var postsUiState by mutableStateOf(PostsUiState())
-        private set
-
-    init{
+    init {
+        Log.d(TAG, "init method (fetching data)")
         fetchData()
     }
-    fun fetchData(){
-        onBoardingUiState = onBoardingUiState.copy(isLoading = true)
-        postsUiState = postsUiState.copy(isLoading = true)
+
+    fun fetchData() {
+        postsUiState.value.isLoading = true
+
         viewModelScope.launch {
-            delay(1000)
+            // Fetch data from Firestore using application context
+            val postsFromFirestore = Firestore.handleGetFriendPosts(getApplication(), user)
 
-            onBoardingUiState=onBoardingUiState.copy(
-                isLoading = false,
-                users = sampleUsers,
-                shouldShowOnBoarding = true
-            )
-            postsUiState=postsUiState.copy(
-                isLoading = false,
-                posts = samplePosts,
-
-            )
+            postsUiState.value.isLoading = false
+            postsUiState.value.posts.clear()
+            postsUiState.value.posts.addAll(postsFromFirestore)
+            Log.d(TAG, "updated postUiState ${postsUiState.value.isLoading} ${postsUiState.value.posts}")
         }
     }
 }
 
 data class PostsUiState(
-    val isLoading: Boolean = false,
-    val posts: List<Post> = listOf(), //CHANGE TO FIRESTORE
+    var isLoading: Boolean = false,
+    var posts: SnapshotStateList<Post> = mutableStateListOf(),
     val error: String? = null
 )

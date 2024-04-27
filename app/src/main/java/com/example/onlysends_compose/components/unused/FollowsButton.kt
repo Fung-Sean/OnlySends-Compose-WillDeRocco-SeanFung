@@ -1,4 +1,4 @@
-package com.example.onlysends_compose.ui.components
+package com.example.onlysends_compose.components.unused
 
 import androidx.annotation.StringRes
 import androidx.compose.material.Button
