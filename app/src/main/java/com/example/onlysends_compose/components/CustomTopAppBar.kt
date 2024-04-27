@@ -1,4 +1,4 @@
-package com.example.onlysends_compose.ui.components
+package com.example.onlysends_compose.components
 
 import android.content.Context
 import android.provider.Settings.Global.getString

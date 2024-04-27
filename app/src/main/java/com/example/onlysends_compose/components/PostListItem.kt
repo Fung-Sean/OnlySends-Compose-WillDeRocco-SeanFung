@@ -1,4 +1,4 @@
-package com.example.onlysends_compose.ui.components
+package com.example.onlysends_compose.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

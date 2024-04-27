@@ -63,7 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.onlysends_compose.R
 import com.example.onlysends_compose.ui.add_post.AddPostScreen
-import com.example.onlysends_compose.ui.components.CustomTopAppBar
+import com.example.onlysends_compose.components.CustomTopAppBar
 import com.example.onlysends_compose.ui.friends.FriendsScreen
 import com.example.onlysends_compose.ui.home.HomeScreen
 import com.example.onlysends_compose.ui.home.HomeScreenViewModel
@@ -102,7 +102,6 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.maps),
                 getString(R.string.friends)
             )
-            // Define icons map
             // Define icons map dynamically
             val icons = navItems.associateWith { item ->
                 when (item) {
@@ -130,8 +129,8 @@ class MainActivity : AppCompatActivity() {
                 LaunchedEffect(navController.currentBackStackEntry?.destination?.route) {
                     currentRoute = navController.currentBackStackEntry?.destination?.route ?: ""
 
-                    // if currentRoute is not in navBar navItems, selectedItem is -1
-                    if (!navItems.contains(currentRoute)) {
+                    // if currentRoute profile, selectedItem is -1
+                    if (currentRoute == getString(R.string.profile)) {
                         selectedItem = -1
                     }
                 }
