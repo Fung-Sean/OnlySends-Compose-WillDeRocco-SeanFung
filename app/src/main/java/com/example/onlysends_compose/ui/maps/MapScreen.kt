@@ -97,7 +97,7 @@ fun MapScreen(
                     Text(text = "Search")
                 }
             }
-            Spacer(modifier = modifier.padding(30.dp))
+            Spacer(modifier = modifier.padding(200.dp))
         }
     ) {
         Column(
