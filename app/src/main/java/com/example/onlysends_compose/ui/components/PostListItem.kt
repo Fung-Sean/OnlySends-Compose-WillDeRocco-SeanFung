@@ -49,7 +49,7 @@ fun PostListItem(
     Column (
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(ratio = 0.7f)
+            .aspectRatio(ratio = 0.75f)
             .background(color = MaterialTheme.colorScheme.surface)
     ){
         PostHeader(
@@ -71,7 +71,9 @@ fun PostListItem(
         )
         Text(
             text = post.caption,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                color = Color.DarkGray
+            ),
             modifier = modifier
                 .padding(horizontal = 16.dp),
             maxLines = if (isDetailScreen){
