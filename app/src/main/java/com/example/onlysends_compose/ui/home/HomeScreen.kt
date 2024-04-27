@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.onlysends_compose.components.navigation.PageHeaderText
 import com.example.onlysends_compose.components.posts.PostListItem
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
 
@@ -41,6 +42,8 @@ fun HomeScreen(
             .fillMaxSize()
             .pullRefresh(state = pullRefreshState)
     ){
+        PageHeaderText(text = "Explore")
+
         LazyColumn(
             modifier = modifier
                 .fillMaxSize()
