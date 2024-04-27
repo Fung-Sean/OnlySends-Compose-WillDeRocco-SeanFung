@@ -60,7 +60,8 @@ fun HomeScreen(
 
         PullRefreshIndicator(refreshing = postsUiState.isLoading,
             state = pullRefreshState,
-            modifier = modifier.align(Alignment.TopCenter))
+            modifier = modifier.align(Alignment.TopCenter)
+        )
     }
 }
 

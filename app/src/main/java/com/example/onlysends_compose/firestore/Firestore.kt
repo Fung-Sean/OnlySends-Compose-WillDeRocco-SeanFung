@@ -12,6 +12,7 @@ import com.example.onlysends_compose.firestore.modules.getFriendPosts
 import com.example.onlysends_compose.firestore.modules.searchAllFriends
 import com.example.onlysends_compose.firestore.modules.searchUserFriends
 import com.example.onlysends_compose.firestore.modules.updateUserProfile
+import com.example.onlysends_compose.firestore.types.FriendRequest
 import com.example.onlysends_compose.firestore.types.Post
 import com.example.onlysends_compose.firestore.types.User
 import com.google.firebase.Firebase
@@ -62,12 +63,10 @@ object Firestore {
     /* ------------------------------ SearchFirestore functions ------------------------------ */
     fun handleSearchAllFriends(
         user: User,
-        onFriendsLoaded: (List<User>) -> Unit
-    ) {
-        searchAllFriends(
+    ): SnapshotStateList<FriendRequest> {
+        return searchAllFriends(
             db = db,
             user = user,
-            onFriendsLoaded = onFriendsLoaded
         )
     }
 
@@ -107,7 +106,7 @@ object Firestore {
         context: Context,
         user: User,
         friend: User,
-        onUpdateUser: (User) -> Unit
+        fetchMoreData: () -> Unit
     ) {
         acceptFriend(
             db = db,

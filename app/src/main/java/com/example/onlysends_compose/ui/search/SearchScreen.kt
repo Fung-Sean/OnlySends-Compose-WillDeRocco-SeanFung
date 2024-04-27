@@ -9,7 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -30,184 +36,57 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.onlysends_compose.components.friends.SearchFriendItem
 import com.example.onlysends_compose.components.navigation.PageHeaderText
+import com.example.onlysends_compose.components.posts.PostListItem
 import com.example.onlysends_compose.firestore.Firestore
 import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 import kotlin.reflect.KFunction1
 
-const val TAG = "SearchScreen"
+private const val TAG = "SearchScreen"
 
 // SearchScreen : composable function that allows user to search for friends and accept/delete requests
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SearchScreen(
-    user: User,
-    onUpdateUser: KFunction1<User, Unit>
+    modifier: Modifier = Modifier,
+    searchUiState: SearhUiState,
+    fetchMoreData: () -> Unit
 ) {
-    // Get the current context
-    val context = LocalContext.current
 
-    // State to hold the list of friends
-    var potentialFriends by remember { mutableStateOf(emptyList<User>()) }
-    // track loading state
-    var isLoading by remember { mutableStateOf(false) }
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = searchUiState.isLoading,
+        onRefresh = { fetchMoreData() })
 
-    LaunchedEffect(key1 = user) {
-        // update state variables every time user object is altered
 
-        // start loading the loader
-        isLoading = true
-
-        // fetch potentialFriends from db
-        Firestore.handleSearchAllFriends(user) { loadedFriends ->
-            // update potentialFriends with db results
-            potentialFriends = loadedFriends
-            Log.d(TAG, "loaded potential friends $potentialFriends")
-            isLoading = false
-        }
-    }
-
-    fun isFriendInOutgoingList(user: User, friend: User): Boolean {
-        return user.outgoingFriends.any { it == friend.userId }
-    }
-    fun isFriendInIncoming(user: User, friend: User): Boolean {
-        return user.incomingFriends.any { it == friend.userId }
-    }
 
     // Render the UI using the list of potentialFriends
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+        modifier = modifier
+            .fillMaxSize()
+            .pullRefresh(state = pullRefreshState)
     ) {
         PageHeaderText(text = "Find Friends")
 
-        Column(
-            modifier = Modifier
-                .padding(30.dp) // Add some padding for better spacing
-        ) {
-            // Show loading indicator if potentialFriends is empty and loading is true
-            if (isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.width(64.dp),
-                    color = MaterialTheme.colorScheme.secondary,
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+        ){
+            items(
+                items = searchUiState.potentialFriends,
+            ){
+                SearchFriendItem(
+                    friendRequest = it,
+                    fetchMoreData = fetchMoreData
                 )
-
-            } else {
-                potentialFriends.forEach { friend ->
-                    // pic, username (plus info underneath), button (follow or pending)
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(bottom = 30.dp)
-                    ) {
-                        // display profile picture
-                        if (friend.profilePictureUrl != null) {
-                            AsyncImage(
-                                model = friend.profilePictureUrl,
-                                contentDescription = "User profile picture",
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .clip(CircleShape),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(10.dp))
-
-                        // display column of username (plus info)
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = friend.username,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Row() {
-                                val numFriendsText = if (friend.numFriends == 1) {
-                                    "${friend.numFriends} friend, "
-                                } else {
-                                    "${friend.numFriends} friends, "
-                                }
-
-                                Text(
-                                    text = numFriendsText,
-                                    fontSize = 12.sp,
-                                )
-                                Text(
-                                    text = friend.climbingStyle,
-                                    fontSize = 12.sp,
-                                )
-                            }
-                        }
-
-
-                        // button : either "Follow" or "Pending"
-                        if (isFriendInOutgoingList(user, friend)) {
-                            // display button saying "pending" (outgoing request)
-                            Button(
-                                onClick = {},
-                                enabled = false,
-                                modifier = Modifier
-                                    .size(
-                                        width = 85.dp,
-                                        height = 35.dp
-                                    )
-                            ) {
-                                Text(
-                                    text = "Pending",
-                                    fontSize = 9.sp
-                                )
-                            }
-                        } else if (isFriendInIncoming(user, friend)){
-                            // display button saying "accept" (incoming request)
-                            Button(
-                                colors = ButtonDefaults.buttonColors(buttonColor),
-                                onClick = {
-                                          Firestore.handleAcceptFriend(
-                                              context = context,
-                                              user = user,
-                                              friend = friend,
-                                              onUpdateUser = onUpdateUser
-                                          )
-                                },
-                                modifier = Modifier
-                                    .size(
-                                        width = 85.dp,
-                                        height = 35.dp
-                                    )
-                            ) {
-                                Text(
-                                    text = "Accept",
-                                    fontSize = 10.sp
-                                )
-                            }
-                        } else {
-                            // display button saying "follow" (potential new friend)
-                            Button(
-                                colors = ButtonDefaults.buttonColors(buttonColor),
-                                onClick = {
-                                    Firestore.handleFollowFriend(
-                                        context = context,
-                                        user = user,
-                                        friend = friend,
-                                        onUpdateUser = onUpdateUser)
-                                },
-                                modifier = Modifier
-                                    .size(
-                                        width = 85.dp,
-                                        height = 35.dp
-                                    ),
-                            ) {
-                                Text(
-                                    text = "Follow",
-                                    fontSize = 12.sp
-                                )
-                            }
-                        }
-                    }
-                }
             }
         }
+
+        PullRefreshIndicator(refreshing = searchUiState.isLoading,
+            state = pullRefreshState,
+            modifier = modifier.align(Alignment.TopCenter)
+        )
     }
 }
 

@@ -112,7 +112,7 @@ fun acceptFriend(
     context: Context,
     user: User,
     friend: User,
-    onUpdateUser: (User) -> Unit
+    fetchMoreData: () -> Unit
 ) {
     // Get references to the user and friend documents
     val userRef = db.collection("users").document(user.userId)
