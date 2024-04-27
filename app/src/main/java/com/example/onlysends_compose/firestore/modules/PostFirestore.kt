@@ -162,6 +162,9 @@ suspend fun getFriendPosts(
         e.printStackTrace()
     }
 
+    // Sort the posts by timestamp (assuming Post has a timestamp property)
+    posts.sortByDescending { it.timestamp }
+
     Log.d(TAG,"Finished finding posts: $posts")
     return posts
 }

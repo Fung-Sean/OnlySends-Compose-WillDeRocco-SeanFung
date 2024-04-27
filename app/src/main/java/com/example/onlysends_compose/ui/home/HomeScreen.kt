@@ -72,12 +72,7 @@ fun HomeScreen(
                )
            }
         }
-//        // display "Full Name" text
-//        Text(
-//            text = "posts area" + postsUiState.posts.toString(),
-//            textAlign = TextAlign.Left,
-//            fontSize = 18.sp
-//        )
+
         PullRefreshIndicator(refreshing = postsUiState.isLoading,
             state = pullRefreshState,
             modifier = modifier.align(Alignment.TopCenter))
