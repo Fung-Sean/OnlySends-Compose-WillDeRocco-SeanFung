@@ -1,17 +1,18 @@
 package com.example.onlysends_compose.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Surface
+import androidx.compose.material3.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,6 +30,15 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.onlysends_compose.firestore.types.Post
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+fun formatDate(timestamp: Long): String {
+    val sdf = SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault())
+    val date = Date(timestamp)
+    return sdf.format(date)
+}
 
 @Composable
 fun PostListItem(
@@ -45,7 +55,7 @@ fun PostListItem(
         PostHeader(
             name = post.username,
             profileURL = post.profilePictureUrl,
-            date = post.timestamp.toString(),
+            date = formatDate(post.timestamp),
         )
         AsyncImage(model = post.postPictureUrl,
             contentDescription = null,
@@ -94,7 +104,12 @@ fun PostHeader(
     ){
         CircleImage(imageUrl = profileURL, modifier = modifier.size(30.dp)) {
         }
+
+        Spacer(modifier = Modifier.width(10.dp))
+
         Text(text = name, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurface)
+
+        Spacer(modifier = Modifier.width(10.dp))
 
         Box(modifier = modifier
             .size(4.dp)
@@ -103,6 +118,9 @@ fun PostHeader(
                 color = Color.LightGray
             )
         )
+
+        Spacer(modifier = Modifier.width(10.dp))
+
         Text(
             text = date,
             style = MaterialTheme.typography.labelSmall.copy(
