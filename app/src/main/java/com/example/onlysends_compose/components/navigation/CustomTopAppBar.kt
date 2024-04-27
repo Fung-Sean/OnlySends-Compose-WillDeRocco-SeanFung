@@ -1,7 +1,6 @@
-package com.example.onlysends_compose.components
+package com.example.onlysends_compose.components.navigation
 
 import android.content.Context
-import android.provider.Settings.Global.getString
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
