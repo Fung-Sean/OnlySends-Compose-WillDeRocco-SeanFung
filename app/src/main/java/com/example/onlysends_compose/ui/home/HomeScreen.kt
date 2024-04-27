@@ -24,7 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.onlysends_compose.firestore.types.User
-import com.example.onlysends_compose.ui.components.PostListItem
+import com.example.onlysends_compose.components.PostListItem
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
 
 private const val TAG = "HomeScreen"

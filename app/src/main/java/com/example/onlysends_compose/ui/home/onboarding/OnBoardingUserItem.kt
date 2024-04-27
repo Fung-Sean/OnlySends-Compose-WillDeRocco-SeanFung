@@ -21,8 +21,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.onlysends_compose.R
-import com.example.onlysends_compose.ui.components.CircleImage
-import com.example.onlysends_compose.ui.components.FollowsButton
+import com.example.onlysends_compose.components.CircleImage
+import com.example.onlysends_compose.components.FollowsButton
 import com.example.onlysends_compose.ui.home.fake_data.FollowsUser
 import com.example.onlysends_compose.ui.home.fake_data.sampleUsers
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
