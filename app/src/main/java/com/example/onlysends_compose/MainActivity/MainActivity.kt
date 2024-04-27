@@ -64,13 +64,14 @@ import com.example.onlysends_compose.ui.add_post.AddPostScreen
 import com.example.onlysends_compose.components.navigation.CustomTopAppBar
 import com.example.onlysends_compose.ui.friends.FriendsScreen
 import com.example.onlysends_compose.ui.home.HomeScreen
-import com.example.onlysends_compose.ui.home.HomeScreenViewModel
+import com.example.onlysends_compose.ui.home.HomeViewModel
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 import com.example.onlysends_compose.ui.home.theme.signOutColor
 import com.example.onlysends_compose.ui.maps.MapScreen
 import com.example.onlysends_compose.ui.maps.defaultCameraPosition
 import com.example.onlysends_compose.ui.maps.new_height.AddHeightScreen
 import com.example.onlysends_compose.ui.search.SearchScreen
+import com.example.onlysends_compose.ui.search.SearchViewModel
 import com.example.onlysends_compose.ui.sign_in.UserData
 import com.google.maps.android.compose.rememberCameraPositionState
 
@@ -298,15 +299,16 @@ class MainActivity : AppCompatActivity() {
 
                         // Update the currentRoute when navigating to "home" (or any other page)
                         updateCurrentRoute(navController = navController)
-                        val viewModel: HomeScreenViewModel = remember {
-                            HomeScreenViewModel(application, user!!)
+
+                        // initialize viewModel
+                        val viewModel: HomeViewModel = remember {
+                            HomeViewModel(application, user!!)
                         }
 
+                        // render composable (pass-in fetchData from viewModel)
                         HomeScreen(
                             postsUiState = viewModel.postsUiState.value,
-                            fetchMoreData = {
-                                viewModel.fetchData()
-                            }
+                            fetchMoreData = viewModel::fetchData
                         )
                     }
 
@@ -315,12 +317,16 @@ class MainActivity : AppCompatActivity() {
                         // Update the currentRoute when navigating to "search" (or any other page)
                         updateCurrentRoute(navController = navController)
 
-                        // render SearchScreen composable
-                        SearchScreen(
-                            user = user!!,
-                            onUpdateUser = ::updateUser
-                        )
+                        // initialize viewModel
+                        val viewModel: SearchViewModel = remember {
+                            SearchViewModel(application, user!!)
+                        }
 
+                        // render composable (pass-in fetchData from viewModel)
+                        SearchScreen(
+                            searchUiState = viewModel.searchUiState.value,
+                            fetchMoreData = viewModel::fetchData
+                        )
                     }
 
                     // ----------------------- route 3) "post" -----------------------
