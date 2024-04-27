@@ -67,6 +67,7 @@ import com.example.onlysends_compose.ui.home.HomeScreen
 import com.example.onlysends_compose.ui.home.HomeScreenViewModel
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 import com.example.onlysends_compose.ui.home.theme.signOutColor
+import com.example.onlysends_compose.ui.maps.MapDisplay
 import com.example.onlysends_compose.ui.maps.MapScreen
 import com.example.onlysends_compose.ui.maps.defaultCameraPosition
 import com.example.onlysends_compose.ui.maps.new_height.AddHeightScreen
@@ -338,86 +339,11 @@ class MainActivity : AppCompatActivity() {
                     composable(route = getString(R.string.maps)) {
                         // Update the currentRoute when navigating to "maps" (or any other page)
                         updateCurrentRoute(navController = navController)
-                        val cameraPositionState = rememberCameraPositionState{
-                            position = defaultCameraPosition
-                        }
-                        var isMapLoaded by remember {
-                            mutableStateOf(false)
-                        }
 
-                        var searchText by remember {
-                            mutableStateOf("Search a place")
-                        }
-                        Column(
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            Row (
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                            ){
-                                Text(
-                                    text = "New Heights",
-                                    style = MaterialTheme.typography.displayMedium,
-                                    modifier = Modifier
-                                        .padding(16.dp)
+                        MapScreen(
+                            navController
+                        )
 
-                                )
-                                Spacer(modifier = Modifier.weight(1f)) // Add a spacer to occupy the available space
-                                Button(
-                                    onClick = { navController.navigate("AddHeight") },
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .padding(2.dp),
-                                    shape = CircleShape,
-                                    colors = ButtonDefaults.buttonColors(signOutColor)
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = android.R.drawable.ic_input_add),
-                                        contentDescription = null,
-                                    )
-                                }
-                            }
-
-                            MapScreen(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(550.dp),
-                                cameraPositionState = cameraPositionState,
-                                onMapLoaded = {
-                                    isMapLoaded = true
-                                }
-                            )
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp), // Adjust padding as needed
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                // Icon
-                                Icon(
-                                    imageVector = Icons.Default.Search,
-                                    contentDescription = "Search",
-                                    modifier = Modifier.size(24.dp)
-                                )
-
-                                // TextField for search input
-                                OutlinedTextField(
-                                    value = searchText,
-                                    onValueChange = { searchText = it },
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .padding(start = 8.dp)
-                                )
-
-                                // Button for search action
-                                Button(
-                                    onClick = { /* Handle search action */ },
-                                    modifier = Modifier.padding(start = 8.dp),
-                                    colors = ButtonDefaults.buttonColors(buttonColor)
-                                ) {
-                                    Text(text = "Search")
-                                }
-                            }
-                        }
 
 
 
