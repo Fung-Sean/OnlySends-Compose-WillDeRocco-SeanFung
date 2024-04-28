@@ -88,12 +88,14 @@ object Firestore {
         context: Context,
         user: User,
         friend: User,
+        onSuccess: () -> Unit
     ) {
         followFriend(
             db = db,
             context = context,
             user = user,
             friend = friend,
+            onSuccess = onSuccess
         )
     }
 

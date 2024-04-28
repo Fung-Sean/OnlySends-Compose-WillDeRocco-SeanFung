@@ -15,6 +15,7 @@ fun followFriend(
     context: Context,
     user: User,
     friend: User,
+    onSuccess: () -> Unit
 ) {
     // Get references to the user and friend documents
     val userRef = db.collection("users").document(user.userId)
@@ -73,8 +74,11 @@ fun followFriend(
 
                                 Toast.makeText(context, "Added friend successfully", Toast.LENGTH_SHORT).show()
 
-                                // Update local user object with the new outgoingFriends list
-                                val updatedUser = user.copy(outgoingFriends = updatedUserOutgoingFriends)
+//                                // Update local user object with the new outgoingFriends list
+//                                val updatedUser = user.copy(outgoingFriends = updatedUserOutgoingFriends)
+
+                                // invoke function call to re-render users
+                                onSuccess()
                             }
                             .addOnFailureListener { exception ->
                                 // Failed to update user document
