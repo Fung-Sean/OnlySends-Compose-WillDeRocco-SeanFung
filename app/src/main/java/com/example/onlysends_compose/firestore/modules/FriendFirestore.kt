@@ -15,7 +15,6 @@ fun followFriend(
     context: Context,
     user: User,
     friend: User,
-    onUpdateUser: (User) -> Unit
 ) {
     // Get references to the user and friend documents
     val userRef = db.collection("users").document(user.userId)
@@ -76,7 +75,6 @@ fun followFriend(
 
                                 // Update local user object with the new outgoingFriends list
                                 val updatedUser = user.copy(outgoingFriends = updatedUserOutgoingFriends)
-                                onUpdateUser(updatedUser)
                             }
                             .addOnFailureListener { exception ->
                                 // Failed to update user document
@@ -103,16 +101,11 @@ fun followFriend(
 // acceptFriend : two stage process
 // 1) add user to `friendUserRef.friends` AND remove user from `friendUserRef.outgoingFriends`
 // 2) adds friend to `userRef.friends` AND remove friend from `userRef.incomingFriends`
-
-// this was the old approach below (let's simplify it to the one above FOR NOW ^^)
-// 1) a) adds user to friendUserRef.friends b) deletes `user` from `friendUserRef.outgoingFriends`
-// 2) c) adds friend to userRef.friends d) deletes `friend` from `userRef.incomingFriends`
 fun acceptFriend(
     db: FirebaseFirestore,
     context: Context,
     user: User,
     friend: User,
-    fetchMoreData: () -> Unit
 ) {
     // Get references to the user and friend documents
     val userRef = db.collection("users").document(user.userId)
@@ -229,7 +222,6 @@ fun acceptFriend(
                                                 incomingFriends = updatedUserRefIncoming,
                                                 numFriends = userObject.numFriends + 1,
                                             )
-                                            onUpdateUser(updatedUser)
                                         }
                                         .addOnFailureListener { exception ->
                                             // Failed to update friend document

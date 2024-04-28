@@ -52,7 +52,9 @@ private const val TAG = "SearchScreen"
 fun SearchScreen(
     modifier: Modifier = Modifier,
     searchUiState: SearhUiState,
-    fetchMoreData: () -> Unit
+    fetchMoreData: () -> Unit,
+    onFollowFriend: (User) -> Unit,
+    onAcceptFriend: (User) -> Unit
 ) {
 
     val pullRefreshState = rememberPullRefreshState(
@@ -78,7 +80,8 @@ fun SearchScreen(
             ){
                 SearchFriendItem(
                     friendRequest = it,
-                    fetchMoreData = fetchMoreData
+                    onFollowFriend = onFollowFriend,
+                    onAcceptFriend = onAcceptFriend
                 )
             }
         }

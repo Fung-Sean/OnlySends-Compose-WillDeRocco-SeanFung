@@ -26,10 +26,10 @@ class SearchViewModel(
     val searchUiState: MutableState<SearhUiState> =  mutableStateOf(SearhUiState())
 
     init {
-        Log.d(TAG, "init method (fetching data)")
         fetchData()
     }
 
+    // fetchData : updates searchUiState with list of potential friends
     fun fetchData() {
         searchUiState.value.isLoading = true
 
@@ -40,9 +40,44 @@ class SearchViewModel(
             searchUiState.value.isLoading = false
             searchUiState.value.potentialFriends.clear()
             searchUiState.value.potentialFriends.addAll(usersFromFirestore)
-            Log.d(TAG, "updated searchUiState ${searchUiState.value.isLoading} ${searchUiState.value.potentialFriends}")
+            Log.d(TAG, "updated searchUiState ${searchUiState.value.isLoading} ${searchUiState.value.potentialFriends.toList()}")
         }
     }
+
+    // followFriend : follows friend and calls fetchData when done
+    fun followFriend(
+        friend: User
+    ) {
+        viewModelScope.launch {
+            // call helper function from Firestore using application context
+            Firestore.handleFollowFriend(
+                context = context,
+                user = user,
+                friend = friend
+            )
+
+            // when complete, call fetchData to get updated list of friends
+            fetchData()
+        }
+    }
+
+    // followFriend : accepts friend and calls fetchData when done
+    fun acceptFriend(
+        friend: User
+    ) {
+        viewModelScope.launch {
+            // call helper function from Firestore using application context
+            Firestore.handleAcceptFriend(
+                context = context,
+                user = user,
+                friend = friend
+            )
+
+            // when complete, call fetchData to get updated list of friends
+            fetchData()
+        }
+    }
+
 }
 
 data class SearhUiState(

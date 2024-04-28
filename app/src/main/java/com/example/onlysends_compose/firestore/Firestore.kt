@@ -61,9 +61,9 @@ object Firestore {
     }
 
     /* ------------------------------ SearchFirestore functions ------------------------------ */
-    fun handleSearchAllFriends(
+    suspend fun handleSearchAllFriends(
         user: User,
-    ): SnapshotStateList<FriendRequest> {
+    ): List<FriendRequest> {
         return searchAllFriends(
             db = db,
             user = user,
@@ -88,32 +88,28 @@ object Firestore {
         context: Context,
         user: User,
         friend: User,
-        onUpdateUser: (User) -> Unit
     ) {
         followFriend(
             db = db,
             context = context,
             user = user,
             friend = friend,
-            onUpdateUser = onUpdateUser,
         )
     }
 
     // handleAcceptFriend : two stage process
-    // 1) add user to friendUserRef.friends
-    // 2) adds friend to userRef.friends
+    // 1) add user to `friendUserRef.friends` AND remove user from `friendUserRef.outgoingFriends`
+    // 2) adds friend to `userRef.friends` AND remove friend from `userRef.incomingFriends`
     fun handleAcceptFriend(
         context: Context,
         user: User,
         friend: User,
-        fetchMoreData: () -> Unit
     ) {
         acceptFriend(
             db = db,
             context = context,
             user = user,
             friend = friend,
-            onUpdateUser = onUpdateUser
         )
     }
 

@@ -26,7 +26,6 @@ class HomeViewModel(
     val postsUiState: MutableState<PostsUiState> =  mutableStateOf(PostsUiState())
 
     init {
-        Log.d(TAG, "init method (fetching data)")
         fetchData()
     }
 

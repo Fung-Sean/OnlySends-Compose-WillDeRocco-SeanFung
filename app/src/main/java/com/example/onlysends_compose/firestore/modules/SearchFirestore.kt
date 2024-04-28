@@ -8,6 +8,8 @@ import com.example.onlysends_compose.firestore.types.Post
 import com.example.onlysends_compose.firestore.types.User
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.tasks.await
 
 private const val TAG = "SearchFirestore"
 
@@ -20,50 +22,38 @@ fun isFriendInIncoming(user: User, friend: User): Boolean {
 }
 
 // searchAllFriends : updates a list of User objects for all POTENTIAL friends
-fun searchAllFriends(
+suspend fun searchAllFriends(
     db: FirebaseFirestore,
     user: User,
-): SnapshotStateList<FriendRequest> {
+): List<FriendRequest> = coroutineScope {
     val usersCollection = db.collection("users")
 
-    // define list of Posts to return
-    val potentialFriends = mutableStateListOf<FriendRequest>()
+    val potentialFriends = mutableListOf<FriendRequest>()
 
-    usersCollection.get()
-        .addOnSuccessListener { querySnapshot ->
-            // iterate over every user document
-            for (document in querySnapshot.documents) {
-                // obtain the list of friends this friend has
-                val friend = document.toObject<User>() ?: User()
-                val friends = friend.friends
+    try {
+        usersCollection.get().await().documents.forEach { document ->
+            val friend = document.toObject<User>() ?: User()
+            val friends = friend.friends
 
-                Log.d(TAG, "friends of friend are $friends")
+            if (friend.userId != user.userId &&
+                !friends.any { it == user.userId }
+            ) {
+                val friendRequest = FriendRequest(friend = friend)
 
-                // Filter out the `user` and ensures user is not friends with `friend`
-                if (friend.userId != user.userId &&
-                    !friends.any{ it == user.userId }
-                ) {
-                    // initialize friendRequest object
-                    var friendRequest = FriendRequest(friend = friend)
-
-                    // check if friend is in incoming or outgoing friends
-                    if (isFriendInIncoming(user, friend)) {
-                        friendRequest.isIncomingFriend = true
-                    } else if (isFriendInOutgoingList(user, friend)) {
-                        friendRequest.isOutgoingFriend = true
-                    }
-
-                    // add this friendRequest to potential friends list
-                    potentialFriends.add(friendRequest)
+                if (isFriendInIncoming(user, friend)) {
+                    friendRequest.isIncomingFriend = true
+                } else if (isFriendInOutgoingList(user, friend)) {
+                    friendRequest.isOutgoingFriend = true
                 }
+
+                potentialFriends.add(friendRequest)
             }
-
         }
-        .addOnFailureListener { exception ->
-            Log.e(TAG, "Error searching all friends", exception)
-        }
-
-    return potentialFriends
+    } catch (e: Exception) {
+        Log.e(TAG, "Error searching all friends", e)
+    }
+    Log.d(TAG, "collected potentialFriends: ${potentialFriends.toList()}")
+    return@coroutineScope potentialFriends
 }
 
 // searchUserFriends : returns a list of User objects for USER friends
