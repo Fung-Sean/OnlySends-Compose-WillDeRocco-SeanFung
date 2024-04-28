@@ -23,7 +23,7 @@ class SearchViewModel(
     val context = getApplication<Application>()
 
     // Define MutableState properties directly
-    val searchUiState: MutableState<SearhUiState> =  mutableStateOf(SearhUiState())
+    val searchUiState: MutableState<SearchUiState> =  mutableStateOf(SearchUiState())
 
     init {
         fetchData()
@@ -77,7 +77,7 @@ class SearchViewModel(
 
 }
 
-data class SearhUiState(
+data class SearchUiState(
     var isLoading: Boolean = false,
     var potentialFriends: SnapshotStateList<FriendRequest> = mutableStateListOf(),
     val error: String? = null
