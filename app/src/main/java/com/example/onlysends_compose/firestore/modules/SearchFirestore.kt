@@ -15,10 +15,10 @@ private const val TAG = "SearchFirestore"
 
 // define helper functions for searchAllFriends
 fun isFriendInOutgoingList(user: User, friend: User): Boolean {
-    return user.outgoingFriends.any { it == friend.userId }
+    return friend.incomingFriends.any { it == user.userId }
 }
 fun isFriendInIncoming(user: User, friend: User): Boolean {
-    return user.incomingFriends.any { it == friend.userId }
+    return friend.outgoingFriends.any { it == user.userId }
 }
 
 // searchAllFriends : updates a list of User objects for all POTENTIAL friends

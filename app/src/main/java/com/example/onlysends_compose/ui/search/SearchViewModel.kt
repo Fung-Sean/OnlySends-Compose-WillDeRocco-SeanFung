@@ -53,11 +53,9 @@ class SearchViewModel(
             Firestore.handleFollowFriend(
                 context = context,
                 user = user,
-                friend = friend
+                friend = friend,
+                onSuccess = ::fetchData
             )
-
-            // when complete, call fetchData to get updated list of friends
-            fetchData()
         }
     }
 
