@@ -12,6 +12,7 @@ import com.example.onlysends_compose.firestore.modules.getFriendPosts
 import com.example.onlysends_compose.firestore.modules.searchAllFriends
 import com.example.onlysends_compose.firestore.modules.searchUserFriends
 import com.example.onlysends_compose.firestore.modules.updateUserProfile
+import com.example.onlysends_compose.firestore.types.FriendRequest
 import com.example.onlysends_compose.firestore.types.Post
 import com.example.onlysends_compose.firestore.types.User
 import com.google.firebase.Firebase
@@ -60,14 +61,12 @@ object Firestore {
     }
 
     /* ------------------------------ SearchFirestore functions ------------------------------ */
-    fun handleSearchAllFriends(
+    suspend fun handleSearchAllFriends(
         user: User,
-        onFriendsLoaded: (List<User>) -> Unit
-    ) {
-        searchAllFriends(
+    ): List<FriendRequest> {
+        return searchAllFriends(
             db = db,
             user = user,
-            onFriendsLoaded = onFriendsLoaded
         )
     }
 
@@ -89,32 +88,32 @@ object Firestore {
         context: Context,
         user: User,
         friend: User,
-        onUpdateUser: (User) -> Unit
+        onSuccess: () -> Unit
     ) {
         followFriend(
             db = db,
             context = context,
             user = user,
             friend = friend,
-            onUpdateUser = onUpdateUser,
+            onSuccess = onSuccess
         )
     }
 
     // handleAcceptFriend : two stage process
-    // 1) add user to friendUserRef.friends
-    // 2) adds friend to userRef.friends
+    // 1) add user to `friendUserRef.friends` AND remove user from `friendUserRef.outgoingFriends`
+    // 2) adds friend to `userRef.friends` AND remove friend from `userRef.incomingFriends`
     fun handleAcceptFriend(
         context: Context,
         user: User,
         friend: User,
-        onUpdateUser: (User) -> Unit
+        onSuccess: () -> Unit
     ) {
         acceptFriend(
             db = db,
             context = context,
             user = user,
             friend = friend,
-            onUpdateUser = onUpdateUser
+            onSuccess = onSuccess
         )
     }
 
