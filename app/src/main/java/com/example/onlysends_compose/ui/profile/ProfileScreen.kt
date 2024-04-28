@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -45,35 +48,36 @@ import kotlin.reflect.KFunction1
 private const val TAG = "Profile Screen"
 
 // ProfileScreen : renders Profile page and allows users to update their info
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun ProfileScreen(
-    user: User,
+    profileUiState: ProfileUiState,
     onSignOut: () -> Unit,
-    onUpdateUser: KFunction1<User, Unit>
+    updateProfile: (username: String, climbStyle: String) -> Unit,
 ) {
-    // Get the current context
-    val context = LocalContext.current
+    // used to render loader
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = profileUiState.isLoading,
+        onRefresh = { })
 
+    // extract user from profileUiState
+    val user = profileUiState.user
 
-    // variable to keep track of username
+    // extract username from user
     var username by remember { mutableStateOf(user.username) }
 
-    // variables for dropdown menu of climbing styles
+// extract climbStyle from user
     var climbStyle by remember { mutableStateOf(user.climbingStyle) }
+
+    // variables for dropdown menu of climbing styles
     var expanded by remember { mutableStateOf(false) }
     val climbStyles = listOf("Bouldering", "Sport Climbing", "Trad Climbing", "Lead Climbing", "Top-rope Climbing", "Ice Climbing")
 
-    LaunchedEffect(user) {
-        climbStyle = user.climbingStyle.ifEmpty {
-            "pick a style"
-        }
-        username = user.username
-    }
-
     Log.d(TAG, "current user is $username || ${user.climbingStyle} || $climbStyle sussy")
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .pullRefresh(state = pullRefreshState),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -137,7 +141,7 @@ fun ProfileScreen(
 
             ) {
                 TextField(
-                    value = climbStyle ?: "pick a climbing style",
+                    value = climbStyle,
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = {
@@ -171,14 +175,7 @@ fun ProfileScreen(
         // button to let user update the user in Firestore db
         Button(
             colors = ButtonDefaults.buttonColors(buttonColor),
-            onClick = {
-                Firestore.handleUpdateUserProfile(
-                    context,
-                    user.userId,
-                    username,
-                    climbStyle,
-                    onUpdateUser
-                )},
+            onClick = { updateProfile(username, climbStyle) },
             modifier = Modifier
                 .padding(top = 20.dp)
         ) {

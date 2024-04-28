@@ -34,7 +34,7 @@ object Firestore {
         user: User,
         onUpdateUser: (User) -> Unit
     ) {
-        // call UserFirestore's creatUserDocument
+        // call UserFirestore's createUserDocument
         createUserDocument(
             db = db,
             user = user,

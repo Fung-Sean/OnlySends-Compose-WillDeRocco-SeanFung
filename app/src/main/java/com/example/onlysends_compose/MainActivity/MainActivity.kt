@@ -72,6 +72,7 @@ import com.example.onlysends_compose.ui.maps.MapDisplay
 import com.example.onlysends_compose.ui.maps.MapScreen
 import com.example.onlysends_compose.ui.maps.defaultCameraPosition
 import com.example.onlysends_compose.ui.maps.new_height.AddHeightScreen
+import com.example.onlysends_compose.ui.profile.ProfileViewModel
 import com.example.onlysends_compose.ui.search.SearchScreen
 import com.example.onlysends_compose.ui.search.SearchViewModel
 import com.example.onlysends_compose.ui.sign_in.UserData
@@ -141,6 +142,7 @@ class MainActivity : AppCompatActivity() {
             // NOTE: i'm thinking to veer away from this approach (not really necessary if using ViewModels)
             fun updateUser(newUser: User) {
                 user = newUser
+                Log.d(TAG, "create 3 $user")
             }
 
             // Function to create user and call createUserDocument
@@ -152,9 +154,11 @@ class MainActivity : AppCompatActivity() {
                         profilePictureUrl = it.profilePictureUrl,
                     )
                 }
+                Log.d(TAG, "create 1")
                 // call createUserDocument function (this will UPDATE the `user` state variable automatically)
                 // with the updateUser callback function
                 user?.let { Firestore.handleCreateUserDocument(it, ::updateUser) }
+                Log.d(TAG, "create 2")
             }
 
             // Function to check if navigation topBar/bottomBar should be displayed
@@ -221,6 +225,8 @@ class MainActivity : AppCompatActivity() {
                             if (userData != null) {
                                 // perform appropriate db operation (create user if not in db)
                                 createUserAndDocument(userData)
+
+                                Log.d(TAG, "create 4")
 
                                 // navigate to profile page on successful login
                                 navController.navigate(getString(R.string.profile))
@@ -379,9 +385,18 @@ class MainActivity : AppCompatActivity() {
                         // Update the currentRoute when navigating to "profile" (or any other page)
                         updateCurrentRoute(navController = navController)
 
+                        // initialize viewModel
+                        val viewModel: ProfileViewModel = remember {
+                            ProfileViewModel(
+                                application = application,
+                                user = user!!,
+                                onUpdateUser = ::updateUser
+                            )
+                        }
+
                         // render ProfileScreen composable
                         ProfileScreen(
-                            user = user!!,
+                            profileUiState = viewModel.profileUiState.value,
                             onSignOut = {
                                 lifecycleScope.launch {
                                     googleAuthUiClient.signOut()
@@ -395,7 +410,7 @@ class MainActivity : AppCompatActivity() {
                                     navController.navigate(getString(R.string.sign_in))
                                 }
                             },
-                            onUpdateUser = ::updateUser
+                            updateProfile = viewModel::updateProfile
                         )
                     }
 
