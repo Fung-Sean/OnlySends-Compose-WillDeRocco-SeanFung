@@ -27,9 +27,9 @@ import com.example.onlysends_compose.ui.home.theme.buttonColor
 
 @Composable
 fun SearchFriendItem(
-    user: User,
     friendRequest: FriendRequest,
-    fetchMoreData: () -> Unit
+    onFollowFriend: (User) -> Unit,
+    onAcceptFriend: (User) -> Unit
 ) {
     val friend = friendRequest.friend
 
@@ -100,14 +100,7 @@ fun SearchFriendItem(
             // display button saying "accept" (incoming request)
             Button(
                 colors = ButtonDefaults.buttonColors(buttonColor),
-                onClick = {
-                    Firestore.handleAcceptFriend(
-                        context = context,
-                        user = user,
-                        friend = friend,
-                        fetchMoreData = fetchMoreData
-                    )
-                },
+                onClick = { onAcceptFriend(friend) },
                 modifier = Modifier
                     .size(
                         width = 85.dp,
@@ -123,13 +116,7 @@ fun SearchFriendItem(
             // display button saying "follow" (potential new friend)
             Button(
                 colors = ButtonDefaults.buttonColors(buttonColor),
-                onClick = {
-                    Firestore.handleFollowFriend(
-                        context = context,
-                        user = user,
-                        friend = friend,
-                        onUpdateUser = onUpdateUser)
-                },
+                onClick = { onFollowFriend(friend) },
                 modifier = Modifier
                     .size(
                         width = 85.dp,
