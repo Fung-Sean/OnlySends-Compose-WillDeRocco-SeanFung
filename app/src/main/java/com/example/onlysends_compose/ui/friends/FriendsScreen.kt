@@ -9,7 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -30,136 +36,52 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.onlysends_compose.components.friends.FriendItem
+import com.example.onlysends_compose.components.friends.SearchFriendItem
 import com.example.onlysends_compose.components.navigation.PageHeaderText
 import com.example.onlysends_compose.firestore.Firestore
 import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.home.theme.buttonColor
+import com.example.onlysends_compose.ui.search.SearchUiState
 import kotlin.reflect.KFunction1
 
-const val TAG = "FriendsScreen"
+private const val TAG = "FriendsScreen"
 
-// FriendsScreen : composable function that allows user to view all current frineds
+// FriendsScreen : composable function that allows user to view all current friends
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FriendsScreen(
-    user: User,
-    onUpdateUser: KFunction1<User, Unit>
+    modifier: Modifier = Modifier,
+    friendsUiState: FriendsUiState,
+    fetchMoreData: () -> Unit,
 ) {
-    // Get the current context
-    val context = LocalContext.current
-
-    // State to hold the list of friends
-    var friends by remember { mutableStateOf(emptyList<User>()) }
-
-    // track loading state
-    var isLoading by remember { mutableStateOf(false) }
-
-    LaunchedEffect(key1 = user) {
-        // update state variables every time user object is altered
-
-        // start loading the loader
-        isLoading = true
-
-        // fetch potentialFriends from db
-        Firestore.handleSearchUserFriends(user) { loadedFriends ->
-            // update potentialFriends with db results
-            friends = loadedFriends
-            Log.d(TAG, "loaded friends $friends")
-            isLoading = false
-        }
-    }
-//
-//    fun isFriendInOutgoingList(user: User, friend: Friend): Boolean {
-//        return user.outgoingFriends.any { it.userId == friend.userId }
-//    }
-//    fun isFriendInIncoming(user: User, friend: Friend): Boolean {
-//        return user.incomingFriends.any { it.userId == friend.userId }
-//    }
-
-    // Render the UI using the list of friends
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = friendsUiState.isLoading,
+        onRefresh = { fetchMoreData() })
+    
+    // Render the UI using the list of potentialFriends
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+        modifier = modifier
+            .fillMaxSize()
+            .pullRefresh(state = pullRefreshState)
     ) {
-        PageHeaderText(text = "Your Friends")
+        PageHeaderText(text = "Find Friends")
 
-        Column(
-            modifier = Modifier
-                .padding(30.dp) // Add some padding for better spacing
-        ) {
-            // Show loading indicator if friends is empty and loading is true
-            if (isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.width(64.dp),
-                    color = MaterialTheme.colorScheme.secondary,
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                )
-
-            } else {
-                friends.forEach { friend ->
-                    // pic, username (plus info underneath), button (follow or pending)
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(bottom = 30.dp)
-                    ) {
-                        // display profile picture
-                        if (friend.profilePictureUrl != null) {
-                            AsyncImage(
-                                model = friend.profilePictureUrl,
-                                contentDescription = "User profile picture",
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .clip(CircleShape),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(10.dp))
-
-                        // display column of username (plus info)
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = friend.username,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Row() {
-                                val numFriendsText = if (friend.numFriends == 1) {
-                                    "${friend.numFriends} friend, "
-                                } else {
-                                    "${friend.numFriends} friends, "
-                                }
-
-                                Text(
-                                    text = numFriendsText,
-                                    fontSize = 12.sp,
-                                )
-                                Text(
-                                    text = friend.climbingStyle,
-                                    fontSize = 12.sp,
-                                )
-                            }
-                        }
-
-                        Button(
-                            colors = ButtonDefaults.buttonColors(buttonColor),
-                            enabled = false,
-                            onClick = { },
-                            modifier = Modifier
-                                .size(
-                                    width = 95.dp,
-                                    height = 35.dp
-                                ),
-                        ) {
-                            Text(
-                                text = "Remove",
-                                fontSize = 12.sp
-                            )
-                        }
-                    }
-                }
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+        ){
+            items(
+                items = friendsUiState.friends,
+            ){
+                FriendItem(friend = it)
             }
         }
+
+        PullRefreshIndicator(refreshing = friendsUiState.isLoading,
+            state = pullRefreshState,
+            modifier = modifier.align(Alignment.TopCenter)
+        )
     }
 }
 
