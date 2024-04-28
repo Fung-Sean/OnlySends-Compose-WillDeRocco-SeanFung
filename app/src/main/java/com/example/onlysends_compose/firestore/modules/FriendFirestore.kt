@@ -77,7 +77,7 @@ fun followFriend(
 //                                // Update local user object with the new outgoingFriends list
 //                                val updatedUser = user.copy(outgoingFriends = updatedUserOutgoingFriends)
 
-                                // invoke function call to re-render users
+                                // SUCCESS: invoke function call to re-render users
                                 onSuccess()
                             }
                             .addOnFailureListener { exception ->
@@ -110,6 +110,7 @@ fun acceptFriend(
     context: Context,
     user: User,
     friend: User,
+    onSuccess: () -> Unit
 ) {
     // Get references to the user and friend documents
     val userRef = db.collection("users").document(user.userId)
@@ -221,11 +222,15 @@ fun acceptFriend(
                                             // Successfully updated friend document
                                             Log.d(TAG, "User document updated successfully (accepted friend: $friend)")
                                             // Update local user object with the new outgoingFriends list
-                                            val updatedUser = user.copy(
-                                                friends = updatedUserRefFriends + friend.userId,
-                                                incomingFriends = updatedUserRefIncoming,
-                                                numFriends = userObject.numFriends + 1,
-                                            )
+//                                            val updatedUser = user.copy(
+//                                                friends = updatedUserRefFriends + friend.userId,
+//                                                incomingFriends = updatedUserRefIncoming,
+//                                                numFriends = userObject.numFriends + 1,
+//                                            )
+
+                                            // SUCCESS: invoke function call to re-render users
+                                            onSuccess()
+
                                         }
                                         .addOnFailureListener { exception ->
                                             // Failed to update friend document

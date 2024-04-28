@@ -106,12 +106,14 @@ object Firestore {
         context: Context,
         user: User,
         friend: User,
+        onSuccess: () -> Unit
     ) {
         acceptFriend(
             db = db,
             context = context,
             user = user,
             friend = friend,
+            onSuccess = onSuccess
         )
     }
 
