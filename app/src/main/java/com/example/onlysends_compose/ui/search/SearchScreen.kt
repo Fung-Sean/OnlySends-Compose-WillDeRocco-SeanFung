@@ -52,7 +52,7 @@ private const val TAG = "SearchScreen"
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier,
-    searchUiState: SearhUiState,
+    searchUiState: SearchUiState,
     fetchMoreData: () -> Unit,
     onFollowFriend: (User) -> Unit,
     onAcceptFriend: (User) -> Unit

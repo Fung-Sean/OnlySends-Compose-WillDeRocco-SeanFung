@@ -63,6 +63,7 @@ import com.example.onlysends_compose.R
 import com.example.onlysends_compose.ui.add_post.AddPostScreen
 import com.example.onlysends_compose.components.navigation.CustomTopAppBar
 import com.example.onlysends_compose.ui.friends.FriendsScreen
+import com.example.onlysends_compose.ui.friends.FriendsViewModel
 import com.example.onlysends_compose.ui.home.HomeScreen
 import com.example.onlysends_compose.ui.home.HomeViewModel
 import com.example.onlysends_compose.ui.home.theme.buttonColor
@@ -137,6 +138,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             // IMPORTANT: Function to update the user state variable (call this any time you update `user` within a composable)
+            // NOTE: i'm thinking to veer away from this approach (not really necessary if using ViewModels)
             fun updateUser(newUser: User) {
                 user = newUser
             }
@@ -351,10 +353,6 @@ class MainActivity : AppCompatActivity() {
                         MapScreen(
                             navController
                         )
-
-
-
-
                     }
 
                     // ----------------------- route 5) "friends" -----------------------
@@ -362,9 +360,14 @@ class MainActivity : AppCompatActivity() {
                         // Update the currentRoute when navigating to "friends" (or any other page)
                         updateCurrentRoute(navController = navController)
 
+                        // initialize viewModel
+                        val viewModel: FriendsViewModel = remember {
+                            FriendsViewModel(application, user!!)
+                        }
+
                         FriendsScreen(
-                            user = user!!,
-                            onUpdateUser = ::updateUser
+                            friendsUiState = viewModel.friendsUiState.value,
+                            fetchMoreData = viewModel::fetchData
                         )
 
                     }
