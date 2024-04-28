@@ -57,37 +57,30 @@ suspend fun searchAllFriends(
 }
 
 // searchUserFriends : returns a list of User objects for USER friends
-fun searchUserFriends(
+suspend fun searchUserFriends(
     db: FirebaseFirestore,
     user: User,
-    onFriendsLoaded: (List<User>) -> Unit
-) {
-    // grab userCollection
+): List<User> = coroutineScope {
     val usersCollection = db.collection("users")
 
-    // call get method on all users and check if userId of friend matches
-    usersCollection.get()
-        .addOnSuccessListener { querySnapshot ->
-            val friendsList = mutableListOf<User>()
+    val potentialFriends = mutableListOf<User>()
 
-            // iterate over every user document
-            for (document in querySnapshot.documents) {
-                // obtain the list of friends this friend has
-                val friend = document.toObject<User>() ?: User()
+    try {
+        usersCollection.get().await().documents.forEach { document ->
+            val friend = document.toObject<User>() ?: User()
+            val friends = friend.friends
 
-                Log.d(TAG, "considering user as friend: $friend")
-                // Filter out the `user` and ensures `userId` is within the friends.friends
-                if (friend.userId != user.userId &&
-                    friend.friends.any { it == user.userId }
-                ) {
-                    friendsList.add(friend)
-                }
+            // Filter out the `user` and ensures `userId` is within the friends.friends
+            if (friend.userId != user.userId &&
+                !friends.any { it == user.userId }
+            ) {
+
+                potentialFriends.add(friend)
             }
-
-            onFriendsLoaded(friendsList)
         }
-        .addOnFailureListener { exception ->
-            Log.e(TAG, "Error searching all friends", exception)
-            onFriendsLoaded(emptyList()) // Return empty list in case of failure
-        }
+    } catch (e: Exception) {
+        Log.e(TAG, "Error searching all friends", e)
+    }
+    Log.d(TAG, "collected potentialFriends: ${potentialFriends.toList()}")
+    return@coroutineScope potentialFriends
 }

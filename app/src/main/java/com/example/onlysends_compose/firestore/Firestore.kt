@@ -71,14 +71,12 @@ object Firestore {
     }
 
     // searchUserFriends : returns a list of Friend objects for the current USER
-    fun handleSearchUserFriends(
+    suspend fun handleSearchUserFriends(
         user: User,
-        onFriendsLoaded: (List<User>) -> Unit
-    ) {
-        searchUserFriends(
+    ): List<User> {
+        return searchUserFriends(
             db = db,
             user = user,
-            onFriendsLoaded = onFriendsLoaded
         )
     }
 
