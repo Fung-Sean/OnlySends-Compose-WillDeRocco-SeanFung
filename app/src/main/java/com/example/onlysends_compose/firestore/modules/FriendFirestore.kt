@@ -15,7 +15,7 @@ fun followFriend(
     context: Context,
     user: User,
     friend: User,
-    onUpdateUser: (User) -> Unit
+    onSuccess: () -> Unit
 ) {
     // Get references to the user and friend documents
     val userRef = db.collection("users").document(user.userId)
@@ -74,9 +74,11 @@ fun followFriend(
 
                                 Toast.makeText(context, "Added friend successfully", Toast.LENGTH_SHORT).show()
 
-                                // Update local user object with the new outgoingFriends list
-                                val updatedUser = user.copy(outgoingFriends = updatedUserOutgoingFriends)
-                                onUpdateUser(updatedUser)
+//                                // Update local user object with the new outgoingFriends list
+//                                val updatedUser = user.copy(outgoingFriends = updatedUserOutgoingFriends)
+
+                                // SUCCESS: invoke function call to re-render users
+                                onSuccess()
                             }
                             .addOnFailureListener { exception ->
                                 // Failed to update user document
@@ -87,15 +89,18 @@ fun followFriend(
                     }
                     .addOnFailureListener { exception ->
                         // Failed to update friend document
+                        Toast.makeText(context, "Error adding friend", Toast.LENGTH_SHORT).show()
                         Log.e(TAG, "Error updating friend document", exception)
                     }
             } else {
                 // Friend document doesn't exist
+                Toast.makeText(context, "Error adding friend", Toast.LENGTH_SHORT).show()
                 Log.e(TAG, "Friend document does not exist")
             }
         }
         .addOnFailureListener { exception ->
             // Error fetching friend document
+            Toast.makeText(context, "Error adding friend", Toast.LENGTH_SHORT).show()
             Log.e(TAG, "Error fetching friend document", exception)
         }
 }
@@ -103,16 +108,12 @@ fun followFriend(
 // acceptFriend : two stage process
 // 1) add user to `friendUserRef.friends` AND remove user from `friendUserRef.outgoingFriends`
 // 2) adds friend to `userRef.friends` AND remove friend from `userRef.incomingFriends`
-
-// this was the old approach below (let's simplify it to the one above FOR NOW ^^)
-// 1) a) adds user to friendUserRef.friends b) deletes `user` from `friendUserRef.outgoingFriends`
-// 2) c) adds friend to userRef.friends d) deletes `friend` from `userRef.incomingFriends`
 fun acceptFriend(
     db: FirebaseFirestore,
     context: Context,
     user: User,
     friend: User,
-    onUpdateUser: (User) -> Unit
+    onSuccess: () -> Unit
 ) {
     // Get references to the user and friend documents
     val userRef = db.collection("users").document(user.userId)
@@ -224,38 +225,50 @@ fun acceptFriend(
                                             // Successfully updated friend document
                                             Log.d(TAG, "User document updated successfully (accepted friend: $friend)")
                                             // Update local user object with the new outgoingFriends list
-                                            val updatedUser = user.copy(
-                                                friends = updatedUserRefFriends + friend.userId,
-                                                incomingFriends = updatedUserRefIncoming,
-                                                numFriends = userObject.numFriends + 1,
-                                            )
-                                            onUpdateUser(updatedUser)
+//                                            val updatedUser = user.copy(
+//                                                friends = updatedUserRefFriends + friend.userId,
+//                                                incomingFriends = updatedUserRefIncoming,
+//                                                numFriends = userObject.numFriends + 1,
+//                                            )
+
+                                            // display Toast for user
+                                            Toast.makeText(context, "Accepted friend successfully", Toast.LENGTH_SHORT).show()
+
+                                            // SUCCESS: invoke function call to re-render users
+                                            onSuccess()
+
                                         }
                                         .addOnFailureListener { exception ->
                                             // Failed to update friend document
+                                            Toast.makeText(context, "Error accepting friend", Toast.LENGTH_SHORT).show()
                                             Log.e(TAG, "Error updating user document", exception)
                                         }
                                 } else {
+                                    Toast.makeText(context, "Error accepting friend", Toast.LENGTH_SHORT).show()
                                     // Friend document doesn't exist
                                     Log.e(TAG, "User document does not exist")
                                 }
                             }
                             .addOnFailureListener { exception ->
+                                Toast.makeText(context, "Error accepting friend", Toast.LENGTH_SHORT).show()
                                 // Error fetching friend document
                                 Log.e(TAG, "Error fetching user document", exception)
                             }
 
                     }
                     .addOnFailureListener { exception ->
+                        Toast.makeText(context, "Error accepting friend", Toast.LENGTH_SHORT).show()
                         // Failed to update friend document
                         Log.e(TAG, "Error updating friend document", exception)
                     }
             } else {
+                Toast.makeText(context, "Error accepting friend", Toast.LENGTH_SHORT).show()
                 // Friend document doesn't exist
                 Log.e(TAG, "Friend document does not exist")
             }
         }
         .addOnFailureListener { exception ->
+            Toast.makeText(context, "Error accepting friend", Toast.LENGTH_SHORT).show()
             // Error fetching friend document
             Log.e(TAG, "Error fetching friend document", exception)
         }
