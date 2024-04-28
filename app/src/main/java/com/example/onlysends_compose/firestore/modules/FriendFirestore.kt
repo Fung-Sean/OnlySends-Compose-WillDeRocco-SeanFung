@@ -89,15 +89,18 @@ fun followFriend(
                     }
                     .addOnFailureListener { exception ->
                         // Failed to update friend document
+                        Toast.makeText(context, "Error adding friend", Toast.LENGTH_SHORT).show()
                         Log.e(TAG, "Error updating friend document", exception)
                     }
             } else {
                 // Friend document doesn't exist
+                Toast.makeText(context, "Error adding friend", Toast.LENGTH_SHORT).show()
                 Log.e(TAG, "Friend document does not exist")
             }
         }
         .addOnFailureListener { exception ->
             // Error fetching friend document
+            Toast.makeText(context, "Error adding friend", Toast.LENGTH_SHORT).show()
             Log.e(TAG, "Error fetching friend document", exception)
         }
 }
@@ -228,35 +231,44 @@ fun acceptFriend(
 //                                                numFriends = userObject.numFriends + 1,
 //                                            )
 
+                                            // display Toast for user
+                                            Toast.makeText(context, "Accepted friend successfully", Toast.LENGTH_SHORT).show()
+
                                             // SUCCESS: invoke function call to re-render users
                                             onSuccess()
 
                                         }
                                         .addOnFailureListener { exception ->
                                             // Failed to update friend document
+                                            Toast.makeText(context, "Error accepting friend", Toast.LENGTH_SHORT).show()
                                             Log.e(TAG, "Error updating user document", exception)
                                         }
                                 } else {
+                                    Toast.makeText(context, "Error accepting friend", Toast.LENGTH_SHORT).show()
                                     // Friend document doesn't exist
                                     Log.e(TAG, "User document does not exist")
                                 }
                             }
                             .addOnFailureListener { exception ->
+                                Toast.makeText(context, "Error accepting friend", Toast.LENGTH_SHORT).show()
                                 // Error fetching friend document
                                 Log.e(TAG, "Error fetching user document", exception)
                             }
 
                     }
                     .addOnFailureListener { exception ->
+                        Toast.makeText(context, "Error accepting friend", Toast.LENGTH_SHORT).show()
                         // Failed to update friend document
                         Log.e(TAG, "Error updating friend document", exception)
                     }
             } else {
+                Toast.makeText(context, "Error accepting friend", Toast.LENGTH_SHORT).show()
                 // Friend document doesn't exist
                 Log.e(TAG, "Friend document does not exist")
             }
         }
         .addOnFailureListener { exception ->
+            Toast.makeText(context, "Error accepting friend", Toast.LENGTH_SHORT).show()
             // Error fetching friend document
             Log.e(TAG, "Error fetching friend document", exception)
         }
