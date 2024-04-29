@@ -2,8 +2,15 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Theme colors -->
     <color name="onlySends">#FF308AB4</color>
     <color name="onlySendsBlue">#6CC4D3</color>
 <!--    <color name="onlySendsWhite">#DDEEF0</color>-->
+
+    <!-- Button Colors -->
+    <color name="actionButton">#6CC4D3</color>
+    <color name="successButton">#7de49d</color>
+    <color name="deleteButton">#f94444</color>
 
 </resources>
