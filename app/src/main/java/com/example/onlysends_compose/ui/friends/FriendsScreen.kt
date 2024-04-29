@@ -54,6 +54,7 @@ fun FriendsScreen(
     modifier: Modifier = Modifier,
     friendsUiState: FriendsUiState,
     fetchMoreData: () -> Unit,
+    onRemoveFriend: (User) -> Unit,
 ) {
     val pullRefreshState = rememberPullRefreshState(
         refreshing = friendsUiState.isLoading,
@@ -74,7 +75,10 @@ fun FriendsScreen(
             items(
                 items = friendsUiState.friends,
             ){
-                FriendItem(friend = it)
+                FriendItem(
+                    friend = it,
+                    onRemoveFriend = onRemoveFriend
+                )
             }
         }
 

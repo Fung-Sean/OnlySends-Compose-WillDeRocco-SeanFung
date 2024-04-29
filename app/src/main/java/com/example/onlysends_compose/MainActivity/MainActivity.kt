@@ -367,7 +367,8 @@ class MainActivity : AppCompatActivity() {
 
                         FriendsScreen(
                             friendsUiState = viewModel.friendsUiState.value,
-                            fetchMoreData = viewModel::fetchData
+                            fetchMoreData = viewModel::fetchData,
+                            onRemoveFriend = viewModel::removeFriend
                         )
 
                     }

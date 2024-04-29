@@ -14,17 +14,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.onlysends_compose.R
 import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 
 @Composable
 fun FriendItem(
     friend: User,
+    onRemoveFriend: (User) -> Unit,
 ) {
     // pic, username (plus info underneath), button (follow or pending)
     Row(
@@ -72,9 +76,8 @@ fun FriendItem(
         }
 
         Button(
-            colors = ButtonDefaults.buttonColors(buttonColor),
-            enabled = false,
-            onClick = { },
+            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.deleteButton)),
+            onClick = { onRemoveFriend(friend) },
             modifier = Modifier
                 .size(
                     width = 95.dp,
