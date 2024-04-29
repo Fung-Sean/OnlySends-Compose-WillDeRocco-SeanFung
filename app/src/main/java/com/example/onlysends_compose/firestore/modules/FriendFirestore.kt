@@ -291,6 +291,18 @@ suspend fun removeFriend(
         val userRef = db.collection("users").document(user.userId)
         val friendRef = db.collection("users").document(friend.userId)
 
+        // VALIDATION: ensure user/friend are still friends
+        val userSnapshot = userRef.get().await()
+
+        // convert to an object
+        val userObject = userSnapshot.toObject<User>() ?: User()
+
+        // if user doesn't contain friend, exit function early
+        if (!userObject.friends.contains(friend.userId)) {
+            Log.d(TAG, "User already removed friend $friend")
+            return
+        }
+
         // Remove friend from user's friends list and decrement numFriends
         userRef.update(
             mapOf(
