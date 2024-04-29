@@ -291,12 +291,21 @@ suspend fun removeFriend(
         val userRef = db.collection("users").document(user.userId)
         val friendRef = db.collection("users").document(friend.userId)
 
-        // Remove friend from user's friends list
-        userRef.update("friends", FieldValue.arrayRemove(friend.userId)).await()
+        // Remove friend from user's friends list and decrement numFriends
+        userRef.update(
+            mapOf(
+                "friends" to FieldValue.arrayRemove(friend.userId),
+                "numFriends" to FieldValue.increment(-1)
+            )
+        ).await()
 
-        // Remove user from friend's friends list
-        friendRef.update("friends", FieldValue.arrayRemove(user.userId)).await()
-
+        // Remove user from friend's friends list and decrement numFriends
+        friendRef.update(
+            mapOf(
+                "friends" to FieldValue.arrayRemove(user.userId),
+                "numFriends" to FieldValue.increment(-1)
+            )
+        ).await()
         // Call onSuccess callback
         onSuccess()
 
