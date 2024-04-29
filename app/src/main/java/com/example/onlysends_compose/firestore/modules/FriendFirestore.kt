@@ -4,8 +4,10 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import com.example.onlysends_compose.firestore.types.User
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
+import kotlinx.coroutines.tasks.await
 
 private const val TAG = "FriendFirestore"
 
@@ -272,4 +274,39 @@ fun acceptFriend(
             // Error fetching friend document
             Log.e(TAG, "Error fetching friend document", exception)
         }
+}
+
+// removeFriend : two stage process
+// 1) removes user from friend.friends
+// 2) removes friend from user.friends
+suspend fun removeFriend(
+    db: FirebaseFirestore,
+    context: Context,
+    user: User,
+    friend: User,
+    onSuccess: () -> Unit
+) {
+    try {
+        // Get references to the user and friend documents
+        val userRef = db.collection("users").document(user.userId)
+        val friendRef = db.collection("users").document(friend.userId)
+
+        // Remove friend from user's friends list
+        userRef.update("friends", FieldValue.arrayRemove(friend.userId)).await()
+
+        // Remove user from friend's friends list
+        friendRef.update("friends", FieldValue.arrayRemove(user.userId)).await()
+
+        // Call onSuccess callback
+        onSuccess()
+
+        Toast.makeText(context, "Successfully removed friend", Toast.LENGTH_LONG).show()
+        Log.d(TAG, "User (${user.userId} ${user.username}) successfully removed friend (${friend.userId} ${friend.username})")
+
+    } catch (e: Exception) {
+        // Handle any potential errors, such as network issues or Firestore exceptions
+        Toast.makeText(context, "Error deleting friend", Toast.LENGTH_LONG).show()
+        Log.d(TAG, "ERROR: User (${user.userId} ${user.username}) failed to remove friend (${friend.userId} ${friend.username})")
+        e.printStackTrace()
+    }
 }

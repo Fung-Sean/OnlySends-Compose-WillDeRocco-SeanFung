@@ -42,6 +42,20 @@ class FriendsViewModel(
         }
     }
 
+    // removeFriend : calls handleRemoveFriend in Firestore and fetches new data
+    fun removeFriend(friend: User) {
+        viewModelScope.launch {
+            // call handleRemoveFriend with fetchData as callback function
+            Firestore.handleRemoveFriend(
+                context = context,
+                user = user,
+                friend = friend,
+                onSuccess = ::fetchData
+            )
+        }
+    }
+
+
 }
 
 
