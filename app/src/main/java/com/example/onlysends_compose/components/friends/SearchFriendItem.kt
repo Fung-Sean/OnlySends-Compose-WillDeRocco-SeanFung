@@ -15,10 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.onlysends_compose.R
 import com.example.onlysends_compose.firestore.Firestore
 import com.example.onlysends_compose.firestore.types.FriendRequest
 import com.example.onlysends_compose.firestore.types.User
@@ -99,7 +101,7 @@ fun SearchFriendItem(
         } else if (friendRequest.isIncomingFriend){
             // display button saying "accept" (incoming request)
             Button(
-                colors = ButtonDefaults.buttonColors(buttonColor),
+                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.successButton)),
                 onClick = { onAcceptFriend(friend) },
                 modifier = Modifier
                     .size(
@@ -115,7 +117,7 @@ fun SearchFriendItem(
         } else {
             // display button saying "follow" (potential new friend)
             Button(
-                colors = ButtonDefaults.buttonColors(buttonColor),
+                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.actionButton)),
                 onClick = { onFollowFriend(friend) },
                 modifier = Modifier
                     .size(

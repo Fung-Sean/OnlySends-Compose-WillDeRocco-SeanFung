@@ -72,7 +72,7 @@ suspend fun searchUserFriends(
 
             // Filter out the `user` and ensures `userId` is within the friends.friends
             if (friend.userId != user.userId &&
-                !friends.any { it == user.userId }
+                friends.any { it == user.userId }
             ) {
 
                 potentialFriends.add(friend)
