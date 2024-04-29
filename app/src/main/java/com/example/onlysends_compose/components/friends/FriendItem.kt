@@ -25,6 +25,7 @@ import com.example.onlysends_compose.ui.home.theme.buttonColor
 @Composable
 fun FriendItem(
     friend: User,
+    onRemoveFriend: (User) -> Unit,
 ) {
     // pic, username (plus info underneath), button (follow or pending)
     Row(
@@ -73,8 +74,7 @@ fun FriendItem(
 
         Button(
             colors = ButtonDefaults.buttonColors(buttonColor),
-            enabled = false,
-            onClick = { },
+            onClick = { onRemoveFriend(friend) },
             modifier = Modifier
                 .size(
                     width = 95.dp,

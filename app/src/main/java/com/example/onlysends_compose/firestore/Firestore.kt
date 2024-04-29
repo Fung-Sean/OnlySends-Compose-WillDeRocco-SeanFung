@@ -9,6 +9,7 @@ import com.example.onlysends_compose.firestore.modules.createPost
 import com.example.onlysends_compose.firestore.modules.createUserDocument
 import com.example.onlysends_compose.firestore.modules.followFriend
 import com.example.onlysends_compose.firestore.modules.getFriendPosts
+import com.example.onlysends_compose.firestore.modules.removeFriend
 import com.example.onlysends_compose.firestore.modules.searchAllFriends
 import com.example.onlysends_compose.firestore.modules.searchUserFriends
 import com.example.onlysends_compose.firestore.modules.updateUserProfile
@@ -34,7 +35,7 @@ object Firestore {
         user: User,
         onUpdateUser: (User) -> Unit
     ) {
-        // call UserFirestore's creatUserDocument
+        // call UserFirestore's createUserDocument
         createUserDocument(
             db = db,
             user = user,
@@ -107,6 +108,22 @@ object Firestore {
         onSuccess: () -> Unit
     ) {
         acceptFriend(
+            db = db,
+            context = context,
+            user = user,
+            friend = friend,
+            onSuccess = onSuccess
+        )
+    }
+
+    // handleRemoveFriend : removes user from friendUserRef.friends and friend from userRef.friends
+    suspend fun handleRemoveFriend(
+        context: Context,
+        user: User,
+        friend: User,
+        onSuccess: () -> Unit
+    ) {
+        removeFriend(
             db = db,
             context = context,
             user = user,
