@@ -1,8 +1,10 @@
 package com.example.onlysends_compose.ui.home
 
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
@@ -15,12 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.onlysends_compose.components.navigation.PageHeaderText
 import com.example.onlysends_compose.components.posts.PostListItem
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
 
 private const val TAG = "HomeScreen"
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -33,21 +36,27 @@ fun HomeScreen(
         refreshing = postsUiState.isLoading,
         onRefresh = { fetchMoreData() })
 
-
-    Log.d(TAG, "isLoading: ${postsUiState.isLoading} posts: ${postsUiState.posts.toList()}")
-
+//    Log.d(TAG, "isLoading: ${postsUiState.isLoading} posts: ${postsUiState.posts.toList()}")
 
     Box (
         modifier = modifier
             .fillMaxSize()
             .pullRefresh(state = pullRefreshState)
     ){
-        PageHeaderText(text = "Explore")
 
         LazyColumn(
             modifier = modifier
                 .fillMaxSize()
         ){
+            stickyHeader {
+                PageHeaderText(
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .padding(top = 10.dp),
+                    text = "Explore"
+                )
+            }
+
            items(
                items = postsUiState.posts,
            ){
