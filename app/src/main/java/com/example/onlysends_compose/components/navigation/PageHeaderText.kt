@@ -12,10 +12,11 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun PageHeaderText(
+    modifier: Modifier = Modifier,
     text: String
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(bottom = 30.dp)
     ) {
         Text(

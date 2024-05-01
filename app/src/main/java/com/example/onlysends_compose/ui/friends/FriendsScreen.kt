@@ -1,6 +1,7 @@
 package com.example.onlysends_compose.ui.friends
 
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,7 +49,7 @@ import kotlin.reflect.KFunction1
 private const val TAG = "FriendsScreen"
 
 // FriendsScreen : composable function that allows user to view all current friends
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun FriendsScreen(
     modifier: Modifier = Modifier,
@@ -66,12 +67,15 @@ fun FriendsScreen(
             .fillMaxSize()
             .pullRefresh(state = pullRefreshState)
     ) {
-        PageHeaderText(text = "Find Friends")
-
         LazyColumn(
             modifier = modifier
                 .fillMaxSize()
+                .padding(10.dp)
         ){
+            stickyHeader {
+                PageHeaderText(text = "Your Friends")
+            }
+
             items(
                 items = friendsUiState.friends,
             ){
