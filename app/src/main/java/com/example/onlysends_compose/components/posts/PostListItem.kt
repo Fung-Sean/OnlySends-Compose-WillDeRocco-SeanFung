@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -28,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.onlysends_compose.R
 import com.example.onlysends_compose.components.unused.CircleImage
 import com.example.onlysends_compose.firestore.types.Post
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
@@ -51,7 +53,7 @@ fun PostListItem(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(ratio = 0.75f)
-            .background(color = MaterialTheme.colorScheme.surface)
+            .background(colorResource(id = R.color.white))
     ){
         PostHeader(
             name = post.username,
@@ -65,9 +67,9 @@ fun PostListItem(
                 .aspectRatio(ratio = 1.0f),
             contentScale = ContentScale.Crop,
             placeholder = if(androidx.compose.material.MaterialTheme.colors.isLight){
-                painterResource(id = com.example.onlysends_compose.R.drawable.light_image_place_holder)
+                painterResource(id = R.drawable.light_image_place_holder)
             }else{
-                painterResource(id = com.example.onlysends_compose.R.drawable.dark_image_place_holder)
+                painterResource(id = R.drawable.dark_image_place_holder)
             }
         )
         Text(

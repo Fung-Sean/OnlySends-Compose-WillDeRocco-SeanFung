@@ -1,6 +1,7 @@
 package com.example.onlysends_compose.ui.search
 
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,7 +49,7 @@ import kotlin.reflect.KFunction1
 private const val TAG = "SearchScreen"
 
 // SearchScreen : composable function that allows user to search for friends and accept/delete requests
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier,
@@ -69,13 +70,17 @@ fun SearchScreen(
         modifier = modifier
             .fillMaxSize()
             .pullRefresh(state = pullRefreshState)
+            .padding(10.dp)
     ) {
-        PageHeaderText(text = "Find Friends")
+
 
         LazyColumn(
             modifier = modifier
-                .fillMaxSize()
+                .fillMaxSize(),
         ){
+            stickyHeader {
+                PageHeaderText(text = "Find Friends")
+            }
             items(
                 items = searchUiState.potentialFriends,
             ){

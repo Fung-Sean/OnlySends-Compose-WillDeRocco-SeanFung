@@ -223,7 +223,7 @@ class MainActivity : AppCompatActivity() {
                                 createUserAndDocument(userData)
 
                                 // navigate to profile page on successful login
-                                navController.navigate(getString(R.string.profile))
+                                navController.navigate(getString(R.string.home))
                             }
                         }
 
