@@ -71,25 +71,27 @@ suspend fun searchUserFriends(
 ): List<User> = coroutineScope {
     val usersCollection = db.collection("users")
 
-    val potentialFriends = mutableListOf<User>()
+    val friends = mutableListOf<User>()
 
     try {
         usersCollection.get().await().documents.forEach { document ->
             val friend = document.toObject<User>() ?: User()
-            val friends = friend.friends
+            val friendOfFriends = friend.friends
 
             // Filter out the `user` and ensures `userId` is within the friends.friends
             if (friend.userId != user.userId &&
-                friends.any { it == user.userId }
+                friendOfFriends.any { it == user.userId }
             ) {
 
-                potentialFriends.add(friend)
+                friends.add(friend)
             }
         }
     } catch (e: Exception) {
         Log.e(TAG, "Error searching all friends", e)
     }
-    Log.d(TAG, "collected potentialFriends: ${potentialFriends.toList()}")
 
-    return@coroutineScope potentialFriends
+    val sortedFriends = friends.sortedBy { it.username }
+
+    Log.d(TAG, "collected SORTED friends: ${sortedFriends.toList()}")
+    return@coroutineScope sortedFriends
 }
