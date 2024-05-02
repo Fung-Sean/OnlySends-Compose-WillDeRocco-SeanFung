@@ -39,7 +39,7 @@ class HomeViewModel(
             postsUiState.value.isLoading = false
             postsUiState.value.posts.clear()
             postsUiState.value.posts.addAll(postsFromFirestore)
-            Log.d(TAG, "updated postUiState ${postsUiState.value.isLoading} ${postsUiState.value.posts}")
+            Log.d(TAG, "updated postUiState ${postsUiState.value.isLoading} ${postsUiState.value.posts.toList()}")
         }
     }
 }
