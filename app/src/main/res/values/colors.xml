@@ -13,4 +13,7 @@
     <color name="successButton">#7de49d</color>
     <color name="deleteButton">#f94444</color>
 
+    <!-- Searchbar Colors -->
+    <color name="searchBarGray">#D9D9D9</color>
+
 </resources>
