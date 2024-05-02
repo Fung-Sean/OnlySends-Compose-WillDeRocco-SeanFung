@@ -52,8 +52,16 @@ suspend fun searchAllFriends(
     } catch (e: Exception) {
         Log.e(TAG, "Error searching all friends", e)
     }
-    Log.d(TAG, "collected potentialFriends: ${potentialFriends.toList()}")
-    return@coroutineScope potentialFriends
+
+    val sortedPotentialFriends = potentialFriends.sortedWith(compareBy(
+        // First, sort by isIncomingFriend in descending order (true comes before false)
+        { !it.isIncomingFriend },
+        // Then, for tie-breaks, sort by friend.username alphabetically
+        { it.friend.username }
+    ))
+
+    Log.d(TAG, "collected SORTED potentialFriends: ${sortedPotentialFriends.toList()}")
+    return@coroutineScope sortedPotentialFriends
 }
 
 // searchUserFriends : returns a list of User objects for USER friends
@@ -82,5 +90,6 @@ suspend fun searchUserFriends(
         Log.e(TAG, "Error searching all friends", e)
     }
     Log.d(TAG, "collected potentialFriends: ${potentialFriends.toList()}")
+
     return@coroutineScope potentialFriends
 }
