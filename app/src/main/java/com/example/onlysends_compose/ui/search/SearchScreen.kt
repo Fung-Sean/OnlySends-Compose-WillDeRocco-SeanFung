@@ -73,7 +73,7 @@ fun SearchScreen(
             LazyColumn(
                 modifier = modifier
                     .fillMaxSize()
-                    .padding(bottom = 60.dp),
+                    .padding(bottom = 30.dp),
             ){
                 items(
                     items = filteredFriends,
