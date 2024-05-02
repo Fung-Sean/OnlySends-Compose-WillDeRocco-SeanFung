@@ -327,6 +327,7 @@ class MainActivity : AppCompatActivity() {
 
                         // render composable (pass-in fetchData from viewModel)
                         SearchScreen(
+//                            modifier = Modifier.padding(innerPadding),
                             searchUiState = viewModel.searchUiState.value,
                             fetchMoreData = viewModel::fetchData,
                             onFollowFriend = viewModel::followFriend,

@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CustomSearchBar(
     searchQuery: String,
+    placeHolder: String,
     maxLength: Int,
     onUpdateSearch: (String) -> Unit
 ) {
@@ -35,6 +36,7 @@ fun CustomSearchBar(
         TextField(
             modifier = Modifier.fillMaxWidth(),
             value = searchQuery,
+            placeholder = { Text(text = placeHolder) },
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = lightBlue,
                 cursorColor = Color.Black,
