@@ -61,7 +61,8 @@ fun FriendsScreen(
     var searchQuery by remember { mutableStateOf("") } // Remember the search query
 
     val filteredFriends = friendsUiState.friends.filter {
-        it.username.contains(searchQuery, ignoreCase = true)
+        it.username.contains(searchQuery, ignoreCase = true) ||
+                it.climbingStyle.contains(searchQuery, ignoreCase = true)
     }
 
     // updateSearchQuery : passed into CustomSearchBar and updates searchQuery on keystroke change
@@ -86,7 +87,7 @@ fun FriendsScreen(
 
             CustomSearchBar(
                 searchQuery = searchQuery,
-                placeHolder = "Search your friends by name",
+                placeHolder = "Search your friends by name or climb-style",
                 maxLength = 50,
                 onUpdateSearch = updateSearchQuery
             )
