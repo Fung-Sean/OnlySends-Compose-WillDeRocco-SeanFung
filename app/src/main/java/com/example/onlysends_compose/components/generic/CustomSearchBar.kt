@@ -18,8 +18,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.onlysends_compose.R
 
 // NOTE: this custom search bar was inspired by https://stackoverflow.com/questions/64542659/jetpack-compose-custom-textfield-design
 @Composable
@@ -30,17 +32,17 @@ fun CustomSearchBar(
     onUpdateSearch: (String) -> Unit
 ) {
     Column {
-        val lightBlue = Color(0xffd8e6ff)
-        val blue = Color(0xff76a9ff)
+        val gray = colorResource(id = R.color.searchBarGray)
+        val blue = colorResource(id = R.color.onlySends)
 
         TextField(
             modifier = Modifier.fillMaxWidth(),
             value = searchQuery,
             placeholder = { Text(text = placeHolder) },
             colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = lightBlue,
+                backgroundColor = gray,
                 cursorColor = Color.Black,
-                disabledLabelColor = lightBlue,
+                disabledLabelColor = gray,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
