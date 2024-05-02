@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.onlysends_compose.components.friends.FriendItem
 import com.example.onlysends_compose.components.friends.SearchFriendItem
+import com.example.onlysends_compose.components.generic.CustomSearchBar
 import com.example.onlysends_compose.components.navigation.PageHeaderText
 import com.example.onlysends_compose.firestore.Firestore
 import com.example.onlysends_compose.firestore.types.User
@@ -57,6 +58,18 @@ fun FriendsScreen(
     fetchMoreData: () -> Unit,
     onRemoveFriend: (User) -> Unit,
 ) {
+    var searchQuery by remember { mutableStateOf("") } // Remember the search query
+
+    val filteredFriends = friendsUiState.friends.filter {
+        it.username.contains(searchQuery, ignoreCase = true)
+    }
+
+    // updateSearchQuery : passed into CustomSearchBar and updates searchQuery on keystroke change
+    val updateSearchQuery: (String) -> Unit = { newQuery ->
+        searchQuery = newQuery
+    }
+
+
     val pullRefreshState = rememberPullRefreshState(
         refreshing = friendsUiState.isLoading,
         onRefresh = { fetchMoreData() })
@@ -66,23 +79,31 @@ fun FriendsScreen(
         modifier = modifier
             .fillMaxSize()
             .pullRefresh(state = pullRefreshState)
+            .padding(10.dp)
     ) {
-        LazyColumn(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(10.dp)
-        ){
-            stickyHeader {
-                PageHeaderText(text = "Your Friends")
-            }
+        Column {
+//            PageHeaderText(text = "Your Friends")
 
-            items(
-                items = friendsUiState.friends,
+            CustomSearchBar(
+                searchQuery = searchQuery,
+                placeHolder = "Search your friends by name",
+                maxLength = 50,
+                onUpdateSearch = updateSearchQuery
+            )
+
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(bottom = 30.dp),
             ){
-                FriendItem(
-                    friend = it,
-                    onRemoveFriend = onRemoveFriend
-                )
+                items(
+                    items = filteredFriends,
+                ){
+                    FriendItem(
+                        friend = it,
+                        onRemoveFriend = onRemoveFriend
+                    )
+                }
             }
         }
 

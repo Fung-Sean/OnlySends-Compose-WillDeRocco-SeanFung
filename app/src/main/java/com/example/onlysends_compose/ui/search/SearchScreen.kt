@@ -61,11 +61,11 @@ fun SearchScreen(
             .padding(10.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            PageHeaderText(text = "Find Friends")
+//            PageHeaderText(text = "Find Friends")
 
             CustomSearchBar(
                 searchQuery = searchQuery,
-                placeHolder = "Search friends by name",
+                placeHolder = "Search for new friends by name",
                 maxLength = 50,
                 onUpdateSearch = updateSearchQuery
             )
