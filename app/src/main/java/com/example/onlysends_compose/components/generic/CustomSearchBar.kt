@@ -1,0 +1,70 @@
+package com.example.onlysends_compose.components.generic
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+
+// NOTE: this custom search bar was inspired by https://stackoverflow.com/questions/64542659/jetpack-compose-custom-textfield-design
+@Composable
+fun CustomSearchBar(
+    searchQuery: String,
+    maxLength: Int,
+    onUpdateSearch: (String) -> Unit
+) {
+    Column {
+        val lightBlue = Color(0xffd8e6ff)
+        val blue = Color(0xff76a9ff)
+
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = searchQuery,
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = lightBlue,
+                cursorColor = Color.Black,
+                disabledLabelColor = lightBlue,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            onValueChange = {
+                if (it.length <= maxLength) onUpdateSearch(it)
+            },
+            shape = RoundedCornerShape(8.dp),
+            singleLine = true,
+            trailingIcon = {
+                if (searchQuery.isNotEmpty()) {
+                    IconButton(onClick = { onUpdateSearch("") }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Close,
+                            contentDescription = null
+                        )
+                    }
+                }
+            }
+        )
+        Text(
+            text = "${searchQuery.length} / $maxLength",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp),
+            textAlign = TextAlign.End,
+            color = blue
+        )
+    }
+}
