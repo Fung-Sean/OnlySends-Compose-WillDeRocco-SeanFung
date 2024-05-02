@@ -139,6 +139,15 @@ suspend fun getFriendPosts(
     val posts = mutableStateListOf<Post>()
 
     try {
+        // Get reference to the user document
+        val userRef = db.collection("users").document(user.userId)
+
+        // get userSnapshot from db
+        val userSnapshot = userRef.get().await()
+
+        // convert to an object
+        val userObject = userSnapshot.toObject<User>() ?: User()
+
         // Reference to the "posts" collection
         val postsCollection = db.collection("posts")
 
@@ -151,7 +160,7 @@ suspend fun getFriendPosts(
             val post = document.toObject<Post>() ?: Post()
 
             // check if post userId is either current user OR friend
-            if (post.userId == user.userId || user.friends.contains(post.userId)) {
+            if (post.userId == userObject.userId || userObject.friends.contains(post.userId)) {
                 // Add the Post object to the list of posts
                 posts.add(post)
             }

@@ -1,6 +1,5 @@
 package com.example.onlysends_compose.ui.home
 
-import android.graphics.drawable.Icon
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -17,10 +16,8 @@ import androidx.compose.material.Surface
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.EmojiPeople
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Landscape
-import androidx.compose.material.icons.outlined.EmojiPeople
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material.icons.outlined.Landscape
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -41,13 +38,16 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.onlysends_compose.R
 import com.example.onlysends_compose.components.posts.PostListItem
+import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
+import okhttp3.internal.userAgent
 
 private const val TAG = "HomeScreen"
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    user: User,
     postsUiState: PostsUiState,
     fetchMoreData: () -> Unit
 ){
@@ -81,18 +81,14 @@ fun HomeScreen(
     LaunchedEffect(pagerState.currentPage) {
         selectedTabIndex = pagerState.currentPage
     }
-//    // update selectedTabIndex every time Horizontal pager changes
-//    LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
-//        // this doesn't matter much with only 2 tabs (but fixes swipe issues with > 2 tabs)
-//        if (!pagerState.isScrollInProgress) {
-//            selectedTabIndex = pagerState.currentPage
-//        }
-//    }
-
 
     // filter posts by either friends or just your own posts (i.e. "hangboard" or "wall")
+    val filteredPosts =postsUiState.posts.filter {
+        it.userId == user.userId
+    }
 
-    Log.d(TAG, "posts are ${postsUiState.posts.toList()}")
+
+//    Log.d(TAG, "posts are ${postsUiState.posts.toList()}")
 
     // pullRefreshState : keeps track of "refreshing" loading status and fetches data
     val pullRefreshState = rememberPullRefreshState(
@@ -137,9 +133,8 @@ fun HomeScreen(
                         .fillMaxSize()
                 ){
                    items(
-                       items = postsUiState.posts,
+                       items = if (selectedTabIndex == 0) { postsUiState.posts } else { filteredPosts },
                    ){
-                       Log.d(TAG, "posts are ${postsUiState.posts}")
                        PostListItem(
                            post = it,
                        )
@@ -169,6 +164,7 @@ private fun HomeScreenPreview() {
     OnlySendsTheme {
         Surface(color = MaterialTheme.colors.background) {
             HomeScreen(
+                user = User(),
                 postsUiState = PostsUiState(),
                 fetchMoreData = { }
             )
