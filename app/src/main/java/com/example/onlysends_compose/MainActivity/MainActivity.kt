@@ -310,6 +310,7 @@ class MainActivity : AppCompatActivity() {
 
                         // render composable (pass-in fetchData from viewModel)
                         HomeScreen(
+                            user = user!!,
                             postsUiState = viewModel.postsUiState.value,
                             fetchMoreData = viewModel::fetchData
                         )
