@@ -17,7 +17,6 @@ fun PageHeaderText(
 ) {
     Column(
         modifier = modifier
-            .padding(bottom = 30.dp)
     ) {
         Text(
             text = text,

@@ -3,6 +3,7 @@ package com.example.onlysends_compose.ui.home
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,29 +44,28 @@ fun HomeScreen(
             .fillMaxSize()
             .pullRefresh(state = pullRefreshState)
     ){
+        Column(modifier = Modifier.fillMaxSize()) {
+            PageHeaderText(
+                modifier = Modifier
+                    .padding(10.dp),
+                text = "Explore"
+            )
 
-        LazyColumn(
-            modifier = modifier
-                .fillMaxSize()
-        ){
-            stickyHeader {
-                PageHeaderText(
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp)
-                        .padding(top = 10.dp),
-                    text = "Explore"
-                )
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxSize()
+            ){
+               items(
+                   items = postsUiState.posts,
+               ){
+                   Log.d(TAG, "posts are ${postsUiState.posts}")
+                   PostListItem(
+                       post = it,
+                   )
+               }
             }
-
-           items(
-               items = postsUiState.posts,
-           ){
-               Log.d(TAG, "posts are ${postsUiState.posts}")
-               PostListItem(
-                   post = it,
-               )
-           }
         }
+
 
         PullRefreshIndicator(refreshing = postsUiState.isLoading,
             state = pullRefreshState,
