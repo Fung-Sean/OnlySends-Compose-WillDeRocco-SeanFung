@@ -32,8 +32,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 import com.example.onlysends_compose.ui.home.theme.signOutColor
@@ -136,7 +138,9 @@ fun MapScreen(
                 cameraPositionState = cameraPositionState,
                 onMapLoaded = {
                     isMapLoaded = true
-                }
+                },
+                viewModel = viewModel(), // Create a LocationViewModel instance using viewModel()
+                context = LocalContext.current // Obtain the Android context using LocalContext.current
             )
         }
 
