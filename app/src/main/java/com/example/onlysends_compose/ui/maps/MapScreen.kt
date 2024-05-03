@@ -113,7 +113,7 @@ fun MapScreen(
                     }
                 }
 
-                 Spacer(modifier = Modifier.padding(200.dp))
+
             }
 
             // Autofill suggestions
@@ -135,7 +135,9 @@ fun MapScreen(
                     }
                 }
             }
+            Spacer(modifier = Modifier.padding(200.dp))
         }
+
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
