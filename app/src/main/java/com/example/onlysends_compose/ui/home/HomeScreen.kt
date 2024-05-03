@@ -1,6 +1,9 @@
 package com.example.onlysends_compose.ui.home
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
@@ -30,6 +34,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,9 +42,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.onlysends_compose.R
+import com.example.onlysends_compose.components.generic.GoToTop
+import com.example.onlysends_compose.components.generic.isScrollingUp
 import com.example.onlysends_compose.components.posts.PostListItem
 import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
+import kotlinx.coroutines.launch
 import okhttp3.internal.userAgent
 
 private const val TAG = "HomeScreen"
@@ -51,6 +59,10 @@ fun HomeScreen(
     postsUiState: PostsUiState,
     fetchMoreData: () -> Unit
 ){
+    // used to run GoToTop
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+
     val tabItems = listOf(
         TabItem(
             title = "Hangboard",
@@ -130,7 +142,8 @@ fun HomeScreen(
             ) {index ->
                 LazyColumn(
                     modifier = modifier
-                        .fillMaxSize()
+                        .fillMaxSize(),
+                    state = listState
                 ){
                    items(
                        items = if (selectedTabIndex == 0) { postsUiState.posts } else { filteredPosts },
@@ -140,9 +153,20 @@ fun HomeScreen(
                        )
                    }
                 }
+
             }
+        }
 
-
+        AnimatedVisibility(
+            visible = !listState.isScrollingUp(),
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            GoToTop {
+                scope.launch {
+                    listState.animateScrollToItem(0)
+                }
+            }
         }
 
         PullRefreshIndicator(refreshing = postsUiState.isLoading,
