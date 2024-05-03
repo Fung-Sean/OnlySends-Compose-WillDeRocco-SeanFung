@@ -23,15 +23,19 @@ import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.type.LatLng
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 const val REQUEST_LOCATION_PERMISSIONS = 1001 // Define your desired request code
 
 class LocationViewModel(private val context: Context, private val activity: Activity) : ViewModel(){
-
+    lateinit var placesClient: PlacesClient
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(context)
     }
@@ -140,6 +144,20 @@ class LocationViewModel(private val context: Context, private val activity: Acti
                 // Log or display appropriate error messages
             }
         }
+    }
+
+    fun getCoordinates(result: AutocompleteResult) {
+        val placeFields = listOf(Place.Field.LAT_LNG)
+        val request = FetchPlaceRequest.newInstance(result.placeId, placeFields)
+        placesClient.fetchPlace(request)
+            .addOnSuccessListener {
+                if (it != null) {
+                    currentLatLong = it.place.latLng!!
+                }
+            }
+            .addOnFailureListener {
+                it.printStackTrace()
+            }
     }
 }
 
