@@ -11,13 +11,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Update
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -32,12 +40,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.example.onlysends_compose.R
+import com.example.onlysends_compose.components.generic.ButtonWithIcon
 import com.example.onlysends_compose.firestore.Firestore
 import com.example.onlysends_compose.firestore.types.User
+import com.example.onlysends_compose.ui.add_post.AddPostScreen
+import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 import com.example.onlysends_compose.ui.home.theme.signOutColor
 import kotlin.reflect.KFunction1
@@ -50,7 +65,7 @@ private const val TAG = "Profile Screen"
 fun ProfileScreen(
     user: User,
     onSignOut: () -> Unit,
-    onUpdateUser: KFunction1<User, Unit>
+    onUpdateUser: (User) -> Unit
 ) {
     // Get the current context
     val context = LocalContext.current
@@ -134,7 +149,6 @@ fun ProfileScreen(
                 expanded = expanded,
                 onExpandedChange = { expanded = it },
                 modifier = Modifier.background(Color.White)
-
             ) {
                 TextField(
                     value = climbStyle ?: "pick a climbing style",
@@ -149,7 +163,6 @@ fun ProfileScreen(
 
                 ExposedDropdownMenu(
                     expanded = expanded,
-
                     onDismissRequest = { expanded = false }
                 ) {
                     climbStyles.forEach { style ->
@@ -165,12 +178,23 @@ fun ProfileScreen(
                     }
                 }
             }
-
         }
 
+        Spacer(modifier = Modifier.height(30.dp))
+
         // button to let user update the user in Firestore db
-        Button(
-            colors = ButtonDefaults.buttonColors(buttonColor),
+        ButtonWithIcon(
+            modifier = Modifier
+                .size(
+                    width = 150.dp,
+                    height = 40.dp
+                ),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorResource(id = R.color.onlySendsBlue),
+                contentColor = colorResource(id = R.color.white)
+            ),
+            text = "Update",
+            icon = Icons.Default.Edit,
             onClick = {
                 Firestore.handleUpdateUserProfile(
                     context,
@@ -178,21 +202,48 @@ fun ProfileScreen(
                     username,
                     climbStyle,
                     onUpdateUser
-                )},
-            modifier = Modifier
-                .padding(top = 20.dp)
-        ) {
-            Text(text = "Update")
-        }
+                )
+            }
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         // button to let user sign out
-        Button(
-            onClick = onSignOut,
-            colors = ButtonDefaults.buttonColors(signOutColor),
+        ButtonWithIcon(
             modifier = Modifier
-                .padding(top = 20.dp)
-        ) {
-            Text(text = "Sign out")
+                .size(
+                    width = 150.dp,
+                    height = 40.dp
+                ),
+            text = "Sign out",
+            icon = Icons.AutoMirrored.Filled.Logout,
+            onClick = onSignOut
+        )
+    }
+}
+
+
+// ProfileScreenPreview : not used for page logic (only to preview layout)
+@Preview
+@Composable
+fun ProfileScreenPreview() {
+    val user = User(
+        userId = "123",
+        username = "SampleUser",
+        profilePictureUrl = null, // Provide appropriate values for other fields as needed
+    )
+    val navController = rememberNavController()
+
+    fun updateUser(newUser: User) {
+    }
+
+    OnlySendsTheme {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            ProfileScreen(
+                user = user,
+                onUpdateUser = { updateUser(user)  },
+                onSignOut = {}
+            )
         }
     }
 }
