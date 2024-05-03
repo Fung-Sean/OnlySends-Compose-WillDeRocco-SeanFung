@@ -1,6 +1,9 @@
 package com.example.onlysends_compose.ui.search
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,14 +11,17 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,8 +29,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.onlysends_compose.components.friends.SearchFriendItem
 import com.example.onlysends_compose.components.generic.CustomSearchBar
+import com.example.onlysends_compose.components.generic.GoToTop
+import com.example.onlysends_compose.components.generic.isScrollingUp
 import com.example.onlysends_compose.components.navigation.PageHeaderText
 import com.example.onlysends_compose.firestore.types.User
+import kotlinx.coroutines.launch
 
 private const val TAG = "SearchScreen"
 
@@ -50,6 +59,10 @@ fun SearchScreen(
         searchQuery = newQuery
     }
 
+    // used to run GoToTop
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+
     val pullRefreshState = rememberPullRefreshState(
         refreshing = searchUiState.isLoading,
         onRefresh = { fetchMoreData() })
@@ -62,8 +75,6 @@ fun SearchScreen(
             .padding(10.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-//            PageHeaderText(text = "Find Friends")
-
             CustomSearchBar(
                 searchQuery = searchQuery,
                 placeHolder = "Search new friends by name or climb-style",
@@ -75,6 +86,7 @@ fun SearchScreen(
                 modifier = modifier
                     .fillMaxSize()
                     .padding(bottom = 30.dp),
+                state = listState
             ){
                 items(
                     items = filteredFriends,
@@ -84,6 +96,15 @@ fun SearchScreen(
                         onFollowFriend = onFollowFriend,
                         onAcceptFriend = onAcceptFriend
                     )
+                }
+            }
+
+        }
+
+        AnimatedVisibility(visible = !listState.isScrollingUp(), enter = fadeIn(), exit = fadeOut()) {
+            GoToTop {
+                scope.launch {
+                    listState.animateScrollToItem(0)
                 }
             }
         }
