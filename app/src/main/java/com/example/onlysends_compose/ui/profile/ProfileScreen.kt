@@ -13,11 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.Update
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,11 +47,7 @@ import com.example.onlysends_compose.R
 import com.example.onlysends_compose.components.generic.ButtonWithIcon
 import com.example.onlysends_compose.firestore.Firestore
 import com.example.onlysends_compose.firestore.types.User
-import com.example.onlysends_compose.ui.add_post.AddPostScreen
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
-import com.example.onlysends_compose.ui.home.theme.buttonColor
-import com.example.onlysends_compose.ui.home.theme.signOutColor
-import kotlin.reflect.KFunction1
 
 private const val TAG = "Profile Screen"
 
@@ -69,7 +61,6 @@ fun ProfileScreen(
 ) {
     // Get the current context
     val context = LocalContext.current
-
 
     // variable to keep track of username
     var username by remember { mutableStateOf(user.username) }
@@ -87,6 +78,7 @@ fun ProfileScreen(
     }
 
     Log.d(TAG, "current user is $username || ${user.climbingStyle} || $climbStyle sussy")
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -217,9 +209,12 @@ fun ProfileScreen(
                 ),
             text = "Sign out",
             icon = Icons.AutoMirrored.Filled.Logout,
-            onClick = onSignOut
+            onClick = {
+                onSignOut()
+            }
         )
     }
+
 }
 
 
