@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -32,10 +33,13 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
+
+
 const val REQUEST_LOCATION_PERMISSIONS = 1001 // Define your desired request code
 
 class LocationViewModel(private val context: Context, private val activity: Activity) : ViewModel(){
     lateinit var placesClient: PlacesClient
+    lateinit var geoCoder: Geocoder
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(context)
     }
@@ -159,6 +163,18 @@ class LocationViewModel(private val context: Context, private val activity: Acti
                 it.printStackTrace()
             }
     }
+    var text by mutableStateOf("")
+
+    fun getAddress(latLng: LatLng) {
+        viewModelScope.launch {
+            val address = geoCoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            text = address?.get(0)?.getAddressLine(0).toString()
+        }
+    }
 }
+data class AutocompleteResult(
+    val address: String,
+    val placeId: String
+)
 
 
