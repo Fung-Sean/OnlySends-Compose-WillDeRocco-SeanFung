@@ -122,7 +122,7 @@ fun AddPostScreen(
                 .clip(RoundedCornerShape(topEnd = 8.dp , topStart = 8.dp, bottomEnd = 8.dp, bottomStart = 8.dp)),
             model = selectedImageByUri,
             contentDescription = null,
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.Crop,
         )
 
         Spacer(modifier = Modifier.padding(40.dp))
