@@ -3,6 +3,7 @@ package com.example.onlysends_compose.ui.maps
 import android.R
 import android.app.Activity
 import android.content.Context
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.OutlinedTextField
@@ -75,38 +77,59 @@ fun MapScreen(
         sheetPeekHeight = 100.dp,
         sheetContent = {
             // Your bottom sheet content here
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp), // Adjust padding as needed
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier.padding(16.dp) // Adjust padding as needed
             ) {
-                // Icon
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search",
-                    modifier = Modifier.size(24.dp)
-                )
-
-                // TextField for search input
-                OutlinedTextField(
-                    value = searchText,
-                    onValueChange = { searchText = it },
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = 8.dp)
-                )
-
-                // Button for search action
-                Button(
-                    onClick = { /* Handle search action */ },
-                    modifier = Modifier.padding(start = 8.dp),
-                    colors = ButtonDefaults.buttonColors(buttonColor)
+                // Icon, TextField, and Button for search input
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "Search")
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search",
+                        modifier = Modifier.size(24.dp)
+                    )
+
+                    OutlinedTextField(
+                        value = searchText,
+                        onValueChange = { searchText = it },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(start = 8.dp)
+                    )
+
+                    Button(
+                        onClick = { /* Handle search action */ },
+                        modifier = Modifier.padding(start = 8.dp),
+                        colors = ButtonDefaults.buttonColors(buttonColor)
+                    ) {
+                        Text(text = "Search")
+                    }
+                }
+
+                // Spacer(modifier = Modifier.padding(200.dp)) Remove the spacer
+            }
+
+            // Autofill suggestions
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(viewModel.locationAutofill) { autofillItem ->
+                    // Display autofill item here
+                    Text(
+                        text = autofillItem.address,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                searchText = autofillItem.address
+                                viewModel.locationAutofill.clear()
+                                viewModel.getCoordinates(autofillItem)
+                            }
+                            .padding(16.dp)
+                    )
                 }
             }
-            Spacer(modifier = modifier.padding(200.dp))
         }
     ) {
         Column(
