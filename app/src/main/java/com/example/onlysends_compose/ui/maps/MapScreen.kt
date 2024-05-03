@@ -95,7 +95,10 @@ fun MapScreen(
 
                     OutlinedTextField(
                         value = searchText,
-                        onValueChange = { searchText = it },
+                        onValueChange = { newValue ->
+                            searchText = newValue
+                            viewModel.searchPlaces(newValue) // Call the searchPlace function with the new value
+                        },
                         modifier = Modifier
                             .weight(1f)
                             .padding(start = 8.dp)
@@ -110,7 +113,7 @@ fun MapScreen(
                     }
                 }
 
-                // Spacer(modifier = Modifier.padding(200.dp)) Remove the spacer
+                 Spacer(modifier = Modifier.padding(200.dp))
             }
 
             // Autofill suggestions
