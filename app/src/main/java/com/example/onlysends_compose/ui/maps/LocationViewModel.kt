@@ -35,6 +35,7 @@ class LocationViewModel(private val context: Context, private val activity: Acti
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(context)
     }
+    var currentLatLong by mutableStateOf(com.google.android.gms.maps.model.LatLng(0.0, 0.0))
 
     var locationState by mutableStateOf<LocationState>(LocationState.NoPermission)
     fun requestLocationPermissions() {
