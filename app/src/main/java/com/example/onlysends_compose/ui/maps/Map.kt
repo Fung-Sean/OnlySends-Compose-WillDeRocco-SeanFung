@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,6 +24,7 @@ import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.MarkerInfoWindowContent
 import com.google.maps.android.compose.rememberMarkerState
 import androidx.compose.runtime.remember
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.api.Context
 import com.google.maps.android.compose.rememberCameraPositionState
 
@@ -62,6 +64,9 @@ fun MapDisplay(
 
     var showInfoWindow by remember {
         mutableStateOf(true)
+    }
+    LaunchedEffect(viewModel.currentLatLong) {
+        cameraPositionState.animate(CameraUpdateFactory.newLatLng(viewModel.currentLatLong))
     }
 
     AnimatedContent(

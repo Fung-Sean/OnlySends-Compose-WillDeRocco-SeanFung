@@ -4,7 +4,10 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Geocoder
+import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.app.ActivityCompat
@@ -12,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider.Factory
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -21,15 +25,31 @@ import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.FetchPlaceRequest
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.type.LatLng
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+
+
 
 const val REQUEST_LOCATION_PERMISSIONS = 1001 // Define your desired request code
+const val TAG = "LocationViewModel"
 
 class LocationViewModel(private val context: Context, private val activity: Activity) : ViewModel(){
-
+    lateinit var placesClient: PlacesClient
+    init {
+        placesClient = Places.createClient(context)
+    }
+    lateinit var geoCoder: Geocoder
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(context)
     }
+    var currentLatLong by mutableStateOf(com.google.android.gms.maps.model.LatLng(0.0, 0.0))
 
     var locationState by mutableStateOf<LocationState>(LocationState.NoPermission)
     fun requestLocationPermissions() {
@@ -102,6 +122,67 @@ class LocationViewModel(private val context: Context, private val activity: Acti
                 }
             }
     }
+
+    //HANDLES ALL THE STUFF FOR THE PLACES API
+    val locationAutofill = mutableStateListOf<AutocompleteResult>()
+    private var searchJob: Job? = null // Renamed job to searchJob for clarity
+
+    fun searchPlaces(query: String) {
+        searchJob?.cancel() // Cancel the previous search job if it exists
+        locationAutofill.clear() // Clear the autofill list before populating with new suggestions
+
+        searchJob = viewModelScope.launch {
+            val request = FindAutocompletePredictionsRequest
+                .builder()
+                .setQuery(query)
+                .build()
+
+            try {
+                Log.d(TAG, "Querying places API with query: $query")
+                // Perform the API call to find autocomplete predictions
+                val response = placesClient.findAutocompletePredictions(request).await()
+
+                // Map the response to AutocompleteResult objects and add them to locationAutofill
+                locationAutofill.addAll(response.autocompletePredictions.map {
+                    AutocompleteResult(
+                        it.getFullText(null).toString(),
+                        it.placeId
+                    )
+                })
+                Log.d(TAG, "Autocomplete predictions: $locationAutofill")
+            } catch (e: Exception) {
+                // Handle any exceptions that may occur during the API call
+                e.printStackTrace()
+                // Log or display appropriate error messages
+            }
+        }
+    }
+
+    fun getCoordinates(result: AutocompleteResult) {
+        val placeFields = listOf(Place.Field.LAT_LNG)
+        val request = FetchPlaceRequest.newInstance(result.placeId, placeFields)
+        placesClient.fetchPlace(request)
+            .addOnSuccessListener {
+                if (it != null) {
+                    currentLatLong = it.place.latLng!!
+                }
+            }
+            .addOnFailureListener {
+                it.printStackTrace()
+            }
+    }
+    var text by mutableStateOf("")
+
+    fun getAddress(latLng: LatLng) {
+        viewModelScope.launch {
+            val address = geoCoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            text = address?.get(0)?.getAddressLine(0).toString()
+        }
+    }
 }
+data class AutocompleteResult(
+    val address: String,
+    val placeId: String
+)
 
 
