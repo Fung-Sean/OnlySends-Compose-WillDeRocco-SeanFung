@@ -1,5 +1,9 @@
 package com.example.onlysends_compose.ui.maps
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,6 +22,10 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.MarkerInfoWindowContent
 import com.google.maps.android.compose.rememberMarkerState
+import androidx.compose.runtime.remember
+import com.google.api.Context
+import com.google.maps.android.compose.rememberCameraPositionState
+
 
 val bostonState = LatLng(
     42.3601,
@@ -32,8 +40,15 @@ class Map {
 fun MapDisplay(
     modifier: Modifier = Modifier,
     cameraPositionState: CameraPositionState,
-    onMapLoaded: () -> Unit
-){
+    onMapLoaded: () -> Unit,
+    viewModel: LocationViewModel, // Add LocationViewModel parameter
+    context: android.content.Context
+) {
+    LocationPermissionHandler(
+        viewModel = viewModel,
+        context = context
+    ) // Call LocationPermissionHandler composable
+
     val locationState = rememberMarkerState(
         position = bostonState
     )
@@ -49,51 +64,54 @@ fun MapDisplay(
         mutableStateOf(true)
     }
 
-    GoogleMap (
-        modifier = modifier,
-        onMapLoaded = onMapLoaded,
-        cameraPositionState = cameraPositionState,
-        uiSettings = mapUiSettings,
-        properties = mapProperties,
-    ){
-        MarkerInfoWindow {
-
-        }
-
-//        Marker(
-//            state = locationState,
-//            draggable = true,
-//            onClick = {
-//                if (showInfoWindow){
-//                    locationState.showInfoWindow()
-//                }else{
-//                    locationState.hideInfoWindow()
-//                }
-//                showInfoWindow = !showInfoWindow
-//
-//                return@Marker false
-//
-//            },
-//            title = "Boston Map title"
-//        )
-        MarkerInfoWindowContent(
-            state = locationState,
-            draggable = true,
-            onClick = {
-                if (showInfoWindow){
-                    locationState.showInfoWindow()
-                }else{
-                    locationState.hideInfoWindow()
+    AnimatedContent(
+        viewModel.locationState, label = "Map"
+    ) { state ->
+        when (state) {
+            is LocationState.NoPermission -> {
+                Column {
+                    Text("We need location permission to continue")
+                    Button(onClick = { viewModel.requestLocationPermissions() }) {
+                        Text("Request permission")
+                    }
                 }
-                showInfoWindow = !showInfoWindow
+            }
+            is LocationState.LocationDisabled -> {
+                Column {
+                    Text("We need location to continue")
+                    Button(onClick = { viewModel.enableLocationServices() }) {
+                        Text("Enable location")
+                    }
+                }
+            }
 
-                return@MarkerInfoWindowContent false
+            is LocationState.LocationLoading -> {
+                Text("Loading Map")
+            }
 
-            },
-            title = "Boston Map title"
-        ){
-            Text(text = "YOUR MOTHER")
+            is LocationState.Error -> {
+                Column {
+                    Text("Error fetching your location")
+                    Button(onClick = { viewModel.getCurrentLocation() }) {
+                        Text("Retry")
+                    }
+                }
+            }
+
+            is LocationState.LocationAvailable -> {
+                val cameraPositionState = rememberCameraPositionState {
+                    position = CameraPosition.fromLatLngZoom(state.location, 15f)
+                }
+                val mapUiSettings by remember { mutableStateOf(MapUiSettings()) }
+                val mapProperties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = true)) }
+
+                GoogleMap(
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState,
+                    uiSettings = mapUiSettings,
+                    properties = mapProperties
+                )
+            }
         }
-
     }
 }

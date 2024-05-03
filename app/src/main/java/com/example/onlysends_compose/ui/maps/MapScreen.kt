@@ -1,6 +1,8 @@
 package com.example.onlysends_compose.ui.maps
 
 import android.R
+import android.app.Activity
+import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,8 +34,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 import com.example.onlysends_compose.ui.home.theme.signOutColor
@@ -45,8 +49,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun MapScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    context: Context,
+    activity: Activity
 ){
+
     val cameraPositionState = rememberCameraPositionState{
         position = defaultCameraPosition
     }
@@ -60,7 +67,9 @@ fun MapScreen(
 
     val bottomSheetState = rememberBottomSheetScaffoldState()
     val scope = rememberCoroutineScope()
-
+    val viewModel = remember {
+        LocationViewModel(context, activity ) // Pass both context and activity
+    }
     androidx.compose.material3.BottomSheetScaffold(
         scaffoldState = bottomSheetState,
         sheetPeekHeight = 100.dp,
@@ -131,12 +140,13 @@ fun MapScreen(
 
             MapDisplay(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(450.dp),
+                    .fillMaxSize(),
                 cameraPositionState = cameraPositionState,
                 onMapLoaded = {
                     isMapLoaded = true
-                }
+                },
+                viewModel = viewModel, // Create a LocationViewModel instance using viewModel()
+                context = LocalContext.current // Obtain the Android context using LocalContext.current
             )
         }
 
