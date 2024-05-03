@@ -75,6 +75,8 @@ import com.example.onlysends_compose.ui.maps.new_height.AddHeightScreen
 import com.example.onlysends_compose.ui.search.SearchScreen
 import com.example.onlysends_compose.ui.search.SearchViewModel
 import com.example.onlysends_compose.ui.sign_in.UserData
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.libraries.places.api.Places
 import com.google.maps.android.compose.rememberCameraPositionState
 
 
@@ -91,7 +93,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "MainActivity loaded")
-
+        MapsInitializer.initialize(getApplicationContext());
+        Places.initialize(applicationContext, "AIzaSyDJgK-hMQ1v8qgXXUg1NFgZgfV7nlZeFCo")
         setContent {
             // navigation bar elements
             val navController = rememberNavController()

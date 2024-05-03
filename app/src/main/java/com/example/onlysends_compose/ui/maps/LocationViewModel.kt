@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Geocoder
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -24,6 +25,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
@@ -36,9 +38,13 @@ import kotlinx.coroutines.tasks.await
 
 
 const val REQUEST_LOCATION_PERMISSIONS = 1001 // Define your desired request code
+const val TAG = "LocationViewModel"
 
 class LocationViewModel(private val context: Context, private val activity: Activity) : ViewModel(){
     lateinit var placesClient: PlacesClient
+    init {
+        placesClient = Places.createClient(context)
+    }
     lateinit var geoCoder: Geocoder
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(context)
@@ -132,6 +138,7 @@ class LocationViewModel(private val context: Context, private val activity: Acti
                 .build()
 
             try {
+                Log.d(TAG, "Querying places API with query: $query")
                 // Perform the API call to find autocomplete predictions
                 val response = placesClient.findAutocompletePredictions(request).await()
 
@@ -142,6 +149,7 @@ class LocationViewModel(private val context: Context, private val activity: Acti
                         it.placeId
                     )
                 })
+                Log.d(TAG, "Autocomplete predictions: $locationAutofill")
             } catch (e: Exception) {
                 // Handle any exceptions that may occur during the API call
                 e.printStackTrace()
