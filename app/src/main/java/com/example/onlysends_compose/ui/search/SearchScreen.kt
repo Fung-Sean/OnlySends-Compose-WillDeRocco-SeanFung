@@ -101,7 +101,7 @@ fun SearchScreen(
 private fun SearchScreenPreview() {
     SearchScreen(
         searchUiState = SearchUiState(),
-        fetchMoreData = {  },
+        fetchMoreData = { },
         onFollowFriend = { },
         onAcceptFriend = { }
     )

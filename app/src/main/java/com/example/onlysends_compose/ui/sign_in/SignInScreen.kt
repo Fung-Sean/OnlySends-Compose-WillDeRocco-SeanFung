@@ -4,9 +4,12 @@ import android.widget.Space
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -14,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,8 +35,10 @@ import androidx.compose.ui.res.fontResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.onlysends_compose.R
+import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 import com.example.onlysends_compose.ui.home.theme.signOutColor
 
@@ -51,39 +57,47 @@ fun SignInScreen(
             colorResource(id = R.color.white)
         )
     )
-    Box(
-        modifier = Modifier.fillMaxSize().background(brush = gradientBrush),
-        contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(brush = gradientBrush),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         
-        Text(text = "OnlySends", modifier = modifier
-            .padding(top = 40.dp)
-            .align(Alignment.TopCenter),
+        Text(
+            text = "OnlySends",
             style = MaterialTheme.typography.headlineLarge,
             fontFamily = FontFamily(Font(R.font.lexend_medium))
         )
-        Spacer(modifier = modifier.padding(40.dp))
         Image(
             painter = painterResource(id = R.drawable.temp_logo),
             contentDescription = "Logo for app",
             modifier = modifier
-                .padding(top = 100.dp)
-                .align(Alignment.TopCenter)
                 .size(300.dp) // Adjust the size as needed
         )
-        Box(
-            modifier = Modifier.fillMaxSize(), // Fill the entire screen
-            contentAlignment = Alignment.Center,
+        
+        Spacer(modifier = Modifier.height(100.dp))
+        
+        // Your sign-in button
+        Button(
+            onClick = onSignInClick,
+            colors = ButtonDefaults.buttonColors(signOutColor),
         ) {
+            Text(text = "Sign in with Google")
+        }
+    }
+}
 
-            // Your sign-in button
-            Button(
-                onClick = onSignInClick,
-                colors = ButtonDefaults.buttonColors(signOutColor),
-                modifier = modifier.padding(top=200.dp)
-            ) {
-                Text(text = "Sign in with Google")
-            }
+@Preview
+@Composable
+fun SignInScreenPreview() {
+    OnlySendsTheme {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            SignInScreen(
+                state = SignInState(),
+                onSignInClick = { }
+            )
         }
     }
 }
