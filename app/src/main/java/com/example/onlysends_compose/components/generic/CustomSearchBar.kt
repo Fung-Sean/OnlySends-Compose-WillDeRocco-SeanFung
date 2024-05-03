@@ -16,8 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.onlysends_compose.R
+import com.example.onlysends_compose.ui.search.SearchScreen
+import com.example.onlysends_compose.ui.search.SearchUiState
 
 // NOTE: this custom search bar was inspired by https://stackoverflow.com/questions/64542659/jetpack-compose-custom-textfield-design
 @Composable
@@ -67,4 +70,15 @@ fun CustomSearchBar(
             color = blue
         )
     }
+}
+
+@Preview
+@Composable
+private fun CustomSearchBarPreview() {
+    CustomSearchBar(
+        searchQuery = "",
+        placeHolder = "Enter a query",
+        maxLength = 50,
+        onUpdateSearch = {}
+    )
 }
