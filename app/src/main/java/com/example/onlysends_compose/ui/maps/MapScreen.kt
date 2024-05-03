@@ -1,6 +1,8 @@
 package com.example.onlysends_compose.ui.maps
 
 import android.R
+import android.app.Activity
+import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -47,8 +49,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun MapScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    context: Context,
+    activity: Activity
 ){
+
     val cameraPositionState = rememberCameraPositionState{
         position = defaultCameraPosition
     }
@@ -62,7 +67,9 @@ fun MapScreen(
 
     val bottomSheetState = rememberBottomSheetScaffoldState()
     val scope = rememberCoroutineScope()
-
+    val viewModel = remember {
+        LocationViewModel(context, activity ) // Pass both context and activity
+    }
     androidx.compose.material3.BottomSheetScaffold(
         scaffoldState = bottomSheetState,
         sheetPeekHeight = 100.dp,
@@ -139,7 +146,7 @@ fun MapScreen(
                 onMapLoaded = {
                     isMapLoaded = true
                 },
-                viewModel = viewModel(), // Create a LocationViewModel instance using viewModel()
+                viewModel = viewModel, // Create a LocationViewModel instance using viewModel()
                 context = LocalContext.current // Obtain the Android context using LocalContext.current
             )
         }

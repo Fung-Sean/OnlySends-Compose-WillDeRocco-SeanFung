@@ -1,6 +1,7 @@
 package com.example.onlysends_compose.ui.maps
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.compose.runtime.getValue
@@ -9,6 +10,8 @@ import androidx.compose.runtime.setValue
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider.Factory
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -20,28 +23,38 @@ import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.type.LatLng
 
-class LocationViewModel(private val context: Context) : ViewModel(){
-    lateinit var fusedLocationClient: FusedLocationProviderClient
+const val REQUEST_LOCATION_PERMISSIONS = 1001 // Define your desired request code
 
+class LocationViewModel(private val context: Context, private val activity: Activity) : ViewModel(){
+
+    private val fusedLocationClient: FusedLocationProviderClient by lazy {
+        LocationServices.getFusedLocationProviderClient(context)
+    }
 
     var locationState by mutableStateOf<LocationState>(LocationState.NoPermission)
     fun requestLocationPermissions() {
-        locationState = LocationState.LocationLoading
         if (ContextCompat.checkSelfPermission(
-                context,
+                activity,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED &&
             ContextCompat.checkSelfPermission(
-                context,
+                activity,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // Permissions not granted, handle this scenario
-            locationState = LocationState.NoPermission
-            return
+            // Permissions not granted, request them
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
+                REQUEST_LOCATION_PERMISSIONS
+            )
+        } else {
+            // Permissions already granted, fetch current location
+            getCurrentLocation()
         }
-        // Permissions granted, fetch current location
-        getCurrentLocation()
     }
 
     // Function to enable location services
@@ -90,3 +103,5 @@ class LocationViewModel(private val context: Context) : ViewModel(){
             }
     }
 }
+
+

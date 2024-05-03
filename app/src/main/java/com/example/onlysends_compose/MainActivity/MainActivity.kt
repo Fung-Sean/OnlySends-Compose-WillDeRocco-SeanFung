@@ -353,7 +353,9 @@ class MainActivity : AppCompatActivity() {
                         updateCurrentRoute(navController = navController)
 
                         MapScreen(
-                            navController
+                            navController,
+                            context = applicationContext,
+                            activity = this@MainActivity
                         )
                     }
 
