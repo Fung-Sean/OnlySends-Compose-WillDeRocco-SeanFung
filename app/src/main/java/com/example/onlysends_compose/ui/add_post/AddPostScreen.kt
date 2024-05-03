@@ -19,10 +19,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,6 +54,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.onlysends_compose.R
+import com.example.onlysends_compose.components.generic.ButtonWithIcon
 import com.example.onlysends_compose.components.navigation.PageHeaderText
 import com.example.onlysends_compose.firestore.Firestore
 import com.example.onlysends_compose.firestore.types.User
@@ -58,14 +67,13 @@ import kotlin.reflect.KFunction1
 
 private const val TAG = "AddPostScreen"
 
-//USED CHATGPT FOR LAYOUT IN THAT IT WASN'T BEING LAYED OUT CORRECTLY
 @Composable
 fun AddPostScreen(
     context: Context? = null,
     user: User,
     navController: NavHostController,
 ) {
-    val caption = remember { mutableStateOf("") } // Initialize caption state
+    val caption = remember { mutableStateOf("") }
 
     var selectedImageByUri by remember {
         mutableStateOf<Uri?>(null)
@@ -79,123 +87,87 @@ fun AddPostScreen(
         }
     )
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+    Column(
+        modifier = Modifier
+            .padding(10.dp)
+            .padding(bottom = 30.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        PageHeaderText(text = "Add a Post")
+        PageHeaderText(
+            text = "Add a Post"
+        )
 
-        Column(
+        ButtonWithIcon(
+            text = "Select a photo",
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorResource(id = R.color.onlySendsBlue),
+                contentColor = colorResource(id = R.color.white)
+            ),
+            icon = Icons.Default.AddAPhoto,
+            onClick = {
+                photoPickerLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
+            }
+        )
+
+        Spacer(modifier = Modifier.padding(30.dp))
+
+        AsyncImage(
             modifier = Modifier
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
+                .fillMaxWidth()
+                .height(280.dp)
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(topEnd = 8.dp , topStart = 8.dp, bottomEnd = 8.dp, bottomStart = 8.dp)),
+            model = selectedImageByUri,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+        )
 
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    signOutColor,
-                    contentColor = Color.White
-                ),
-                onClick = {
-                    photoPickerLauncher.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
-                }
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Pick A Photo To Post",
-                        style = MaterialTheme.typography.labelMedium.copy(
-                            fontSize = 18.sp,
-                        ),
-                        modifier = Modifier.weight(1f)
-                    )
-                    Spacer(modifier = Modifier.padding(4.dp))
-                    Icon(
-                        painter = painterResource(id = R.drawable.add_photo),
-                        contentDescription = "Add image",
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
+        Spacer(modifier = Modifier.padding(40.dp))
+
+        OutlinedTextField(
+            value = caption.value,
+            onValueChange = { newValue -> caption.value = newValue },
+            label = { Text("Caption") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        ButtonWithIcon(
+            text = "Add Post",
+            icon = Icons.Default.AddCircle,
+            onClick = {
+                Firestore.handleCreatePost(
+                    context = context,
+                    user = user,
+                    caption = caption.value,
+                    postPictureUri = selectedImageByUri,
+                    navController = navController,
+                )
             }
-            Spacer(modifier = Modifier.padding(30.dp))
-            AsyncImage(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(240.dp)
-                    .aspectRatio(1f)
-                    .clip(RoundedCornerShape()),
-                model = selectedImageByUri,
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds
-            )
-            Spacer(modifier = Modifier.padding(40.dp))
-            OutlinedTextField(
-                value = caption.value,
-                onValueChange = { newValue -> caption.value = newValue },
-                label = { Text("Caption") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Button(
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    signOutColor,
-                ),
-                onClick = {
-                    Firestore.handleCreatePost(
-                        context = context,
-                        user = user,
-                        caption = caption.value,
-                        postPictureUri = selectedImageByUri,
-                        navController = navController,
-                    )
-                },
-                modifier = Modifier
-                    .padding(vertical = 16.dp)
-                    .align(Alignment.CenterHorizontally)
-                    .fillMaxWidth()
-            ) {
-                Row {
-                    Icon(
-                        painter = painterResource(id = android.R.drawable.ic_input_add),
-                        contentDescription = null
-                    )
-                    Text(
-                        "Add Post",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-            }
-        }
+        )
     }
 
 }
 
-//// AddPostScreenPreview : not used for page logic (only to preview layout)
-//@Preview
-//@Composable
-//fun AddPostScreenPreview() {
-//    val user = User(
-//        userId = "123",
-//        username = "SampleUser",
-//        profilePictureUrl = null, // Provide appropriate values for other fields as needed
-//    )
-//    val navController = rememberNavController()
-//
-//    OnlySendsTheme {
-//        Surface(color = MaterialTheme.colorScheme.background) {
-//            AddPostScreen(user = user, navController = navController)
-//        }
-//    }
-//}
+// AddPostScreenPreview : not used for page logic (only to preview layout)
+@Preview
+@Composable
+fun AddPostScreenPreview() {
+    val user = User(
+        userId = "123",
+        username = "SampleUser",
+        profilePictureUrl = null, // Provide appropriate values for other fields as needed
+    )
+    val navController = rememberNavController()
+
+    OnlySendsTheme {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            AddPostScreen(user = user, navController = navController)
+        }
+    }
+}
 
