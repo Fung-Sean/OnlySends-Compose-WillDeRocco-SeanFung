@@ -4,6 +4,7 @@ import android.R
 import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -113,21 +114,21 @@ fun MapScreen(
 
             // Autofill suggestions
             LazyColumn(
-                modifier = Modifier.fillMaxWidth()
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(viewModel.locationAutofill) { autofillItem ->
-                    // Display autofill item here
-                    Text(
-                        text = autofillItem.address,
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(16.dp)
                             .clickable {
-                                searchText = autofillItem.address
+                                viewModel.text = autofillItem.address
                                 viewModel.locationAutofill.clear()
                                 viewModel.getCoordinates(autofillItem)
                             }
-                            .padding(16.dp)
-                    )
+                    ) {
+                        Text(autofillItem.address)
+                    }
                 }
             }
         }
