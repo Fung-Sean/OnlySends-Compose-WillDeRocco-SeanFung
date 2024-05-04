@@ -23,6 +23,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberMarkerState
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.maps.android.compose.rememberCameraPositionState
 
 
 val bostonState = LatLng(
@@ -33,7 +34,6 @@ val defaultCameraPosition = CameraPosition.fromLatLngZoom(bostonState, 13f)
 @Composable
 fun MapDisplay(
     modifier: Modifier = Modifier,
-    cameraPositionState: CameraPositionState,
     onMapLoaded: () -> Unit,
     viewModel: LocationViewModel, // Add LocationViewModel parameter
     context: android.content.Context,
@@ -56,15 +56,7 @@ fun MapDisplay(
     var showInfoWindow by remember {
         mutableStateOf(true)
     }
-    LaunchedEffect(viewModel.currentLatLong) {
-        cameraPositionState.animate(CameraUpdateFactory.newLatLng(viewModel.currentLatLong))
-        Log.d(TAG, "LaunchEffect Launched")
-    }
-    LaunchedEffect(cameraPositionState.isMoving) {
-        if (!cameraPositionState.isMoving) {
-            viewModel.getAddress(cameraPositionState.position.target)
-        }
-    }
+
 
     AnimatedContent(
         viewModel.locationState, label = "Map"
@@ -101,8 +93,15 @@ fun MapDisplay(
             }
 
             is LocationState.LocationAvailable -> {
+                val cameraPositionState = rememberCameraPositionState {
+                    position = CameraPosition.fromLatLngZoom(state.location, 15f)
+                }
 
-
+                LaunchedEffect(cameraPositionState.isMoving) {
+                    if (!cameraPositionState.isMoving) {
+                        viewModel.getAddress(cameraPositionState.position.target)
+                    }
+                }
                 GoogleMap(
                     modifier = Modifier.fillMaxSize(),
                     cameraPositionState = cameraPositionState,

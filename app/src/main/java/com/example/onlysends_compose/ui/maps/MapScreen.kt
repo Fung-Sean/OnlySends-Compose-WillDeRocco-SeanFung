@@ -61,9 +61,6 @@ fun MapScreen(
     context: Context,
     activity: Activity,
 ){
-    val viewModel = remember {
-        LocationViewModel(context, activity ) // Pass both context and activity
-    }
 
     val cameraPositionState = rememberCameraPositionState{
         position = defaultCameraPosition
@@ -72,7 +69,18 @@ fun MapScreen(
         mutableStateOf(false)
     }
 
+    var searchText by remember {
+        mutableStateOf("Search a place")
+    }
+
+
+
+
     val bottomSheetState = rememberBottomSheetScaffoldState()
+    val scope = rememberCoroutineScope()
+    val viewModel = remember {
+        LocationViewModel(context, activity ) // Pass both context and activity
+    }
 
 
     val addressState = remember(viewModel.currentLatLong) {
@@ -83,6 +91,8 @@ fun MapScreen(
         viewModel.getAddress(viewModel.currentLatLong)
     }
 
+
+    val address = addressState.value
     androidx.compose.material3.BottomSheetScaffold(
         scaffoldState = bottomSheetState,
         sheetPeekHeight = 100.dp,
@@ -99,7 +109,7 @@ fun MapScreen(
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Search",
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(2.dp)
                     )
 
                     OutlinedTextField(
@@ -108,8 +118,9 @@ fun MapScreen(
                             viewModel.textState.value = it
                             viewModel.searchPlaces(it)
                         },
+                        label = { Text("Search for a Place to Add") },
                         modifier = Modifier
-                            .padding(8.dp)
+
                     )
 
                     Button(
@@ -119,13 +130,17 @@ fun MapScreen(
                         },
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
-                            .padding(2.dp),
-                        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 8.dp, bottomEnd = 8.dp),
+
+                            .padding(4.dp),
+
+                        shape = RoundedCornerShape(),
                         colors = ButtonDefaults.buttonColors(signOutColor)
                     ) {
                         Text(text = "+")
                     }
                 }
+
+
             }
 
             // Autofill suggestions
@@ -172,7 +187,6 @@ fun MapScreen(
             MapDisplay(
                 modifier = Modifier
                     .fillMaxSize(),
-                cameraPositionState = cameraPositionState,
                 onMapLoaded = {
                     isMapLoaded = true
                 },
