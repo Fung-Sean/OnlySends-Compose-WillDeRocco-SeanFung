@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -40,11 +41,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.onlysends_compose.MainActivity.Destinations
+import com.example.onlysends_compose.components.generic.CustomSearchBar
 import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 import com.example.onlysends_compose.ui.home.theme.signOutColor
@@ -75,8 +78,10 @@ fun MapScreen(
     val bottomSheetState = rememberBottomSheetScaffoldState()
 
 
-    val addressState = remember(viewModel.currentLatLong) {
-        mutableStateOf("")
+    // updateSearchQuery : passed into CustomSearchBar and updates searchQuery on keystroke change
+    val updateSearchQuery: (String) -> Unit = { newQuery ->
+        viewModel.textState.value = newQuery
+        viewModel.searchPlaces(newQuery)
     }
 
     LaunchedEffect(viewModel.currentLatLong) {
@@ -87,45 +92,40 @@ fun MapScreen(
         scaffoldState = bottomSheetState,
         sheetPeekHeight = 100.dp,
         sheetContent = {
-            // Your bottom sheet content here
-            Column(
-                modifier = Modifier.padding(16.dp) // Adjust padding as needed
+
+            // Icon, TextField, and Button for search input
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.Center
             ) {
-                // Icon, TextField, and Button for search input
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+
+                CustomSearchBar(
+                    modifier = Modifier
+                        .width(300.dp),
+                    searchQuery = viewModel.textState.value,
+                    placeHolder = "Search for climbing spots!",
+                    maxLength = 100,
+                    onUpdateSearch = updateSearchQuery
+                )
+
+                Button(
+                    modifier = Modifier
+                        .padding(horizontal = 4.dp)
+                        .size(55.dp),
+                    onClick = {
+                        val location = viewModel.textState.value
+                        navController.navigate("${Destinations.AddHeight}/$location")
+                    },
+                    shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 8.dp, bottomEnd = 8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(id = com.example.onlysends_compose.R.color.onlySends),
+                        contentColor = colorResource(id = com.example.onlysends_compose.R.color.white)
+                    ),
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Search",
-                        modifier = Modifier.size(24.dp)
-                    )
-
-                    OutlinedTextField(
-                        value = viewModel.textState.value,
-                        onValueChange = {
-                            viewModel.textState.value = it
-                            viewModel.searchPlaces(it)
-                        },
-                        modifier = Modifier
-                            .padding(8.dp)
-                    )
-
-                    Button(
-                        onClick = {
-                            val location = viewModel.textState.value
-                            navController.navigate("${Destinations.AddHeight}/$location")
-                        },
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .padding(2.dp),
-                        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 8.dp, bottomEnd = 8.dp),
-                        colors = ButtonDefaults.buttonColors(signOutColor)
-                    ) {
-                        Text(text = "+")
-                    }
+                    Text(text = "+")
                 }
+
             }
 
             // Autofill suggestions
