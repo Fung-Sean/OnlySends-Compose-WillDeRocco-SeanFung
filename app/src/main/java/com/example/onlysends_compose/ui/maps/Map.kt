@@ -64,21 +64,9 @@ fun MapDisplay(
         when (state) {
             is LocationState.NoPermission -> {
                 viewModel.requestLocationPermissions()
-//                Column {
-//                    Text("We need location permission to continue")
-//                    Button(onClick = { viewModel.requestLocationPermissions() }) {
-//                        Text("Request permission")
-//                    }
-//                }
             }
             is LocationState.LocationDisabled -> {
                 viewModel.enableLocationServices()
-//                Column {
-//                    Text("We need location to continue")
-//                    Button(onClick = { viewModel.enableLocationServices() }) {
-//                        Text("Enable location")
-//                    }
-//                }
             }
 
             is LocationState.LocationLoading -> {
