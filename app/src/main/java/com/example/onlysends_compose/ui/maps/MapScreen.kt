@@ -70,11 +70,26 @@ fun MapScreen(
         mutableStateOf("Search a place")
     }
 
+
+
+
     val bottomSheetState = rememberBottomSheetScaffoldState()
     val scope = rememberCoroutineScope()
     val viewModel = remember {
         LocationViewModel(context, activity ) // Pass both context and activity
     }
+
+
+    val addressState = remember(viewModel.currentLatLong) {
+        mutableStateOf("")
+    }
+
+    LaunchedEffect(viewModel.currentLatLong) {
+        viewModel.getAddress(viewModel.currentLatLong)
+    }
+
+
+    val address = addressState.value
     androidx.compose.material3.BottomSheetScaffold(
         scaffoldState = bottomSheetState,
         sheetPeekHeight = 100.dp,
@@ -95,14 +110,14 @@ fun MapScreen(
                     )
 
                     OutlinedTextField(
-                        value = searchText,
-                        onValueChange = { newValue ->
-                            searchText = newValue
-                            viewModel.searchPlaces(newValue) // Call the searchPlace function with the new value
+                        value = viewModel.textState.value,
+                        onValueChange = {
+                            viewModel.textState.value = it
+                            viewModel.searchPlaces(it)
                         },
                         modifier = Modifier
-                            .weight(1f)
-                            .padding(start = 8.dp)
+                            .fillMaxWidth()
+                            .padding(8.dp)
                     )
 
                     Button(
