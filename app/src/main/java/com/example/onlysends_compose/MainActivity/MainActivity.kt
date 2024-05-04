@@ -367,7 +367,10 @@ class MainActivity : AppCompatActivity() {
                                 application = application,
                                 user = user!!,
                                 siteLocation = siteLocation,
-                                onSuccess = {}
+                                onSuccess = {
+                                    navController.navigate(getString(R.string.maps))
+                                    Toast.makeText(applicationContext, "Succesfully placed marker", Toast.LENGTH_LONG).show()
+                                }
                             )
                         }
 
