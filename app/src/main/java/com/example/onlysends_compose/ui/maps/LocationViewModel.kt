@@ -10,10 +10,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.onlysends_compose.firestore.Firestore
+import com.example.onlysends_compose.firestore.types.FriendRequest
+import com.example.onlysends_compose.firestore.types.MapLocation
+import com.example.onlysends_compose.firestore.types.User
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -29,22 +34,52 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-
+import kotlinx.coroutines.withContext
+import java.io.IOException
 
 
 const val REQUEST_LOCATION_PERMISSIONS = 1001 // Define your desired request code
 const val TAG = "LocationViewModel"
 
-class LocationViewModel(private val context: Context, private val activity: Activity) : ViewModel(){
-    lateinit var placesClient: PlacesClient
-    lateinit var geoCoder: Geocoder // Initialize the geoCoder property
+class LocationViewModel(
+    private val context: Context,
+    private val activity: Activity,
+    private val user: User
+) : ViewModel(){
+
+    // Initialize placesClient and goeCoder
+    private var placesClient: PlacesClient = Places.createClient(context)
+    private var geoCoder: Geocoder = Geocoder(context)
+
+    // initialize list of MapLocations
+    val locations: SnapshotStateList<MapLocation> = mutableStateListOf()
+
     init {
-        placesClient = Places.createClient(context)
-        geoCoder = Geocoder(context)
+        // fetch all MapLocations of user/friends
+        fetchData()
     }
+
+    // fetchData : updates searchUiState with list of potential friends
+    private fun fetchData() {
+        viewModelScope.launch {
+            // Fetch data from Firestore using application context
+            val locationsFromFirestore =
+                Firestore.handleGetHeights(
+                    context = context,
+                    user = user
+                )
+
+            locations.clear()
+            locations.addAll(locationsFromFirestore)
+
+            Log.d(TAG, "updated locationsFromFirestore ${locations.toList()}")
+        }
+    }
+
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(context)
     }
@@ -170,7 +205,6 @@ class LocationViewModel(private val context: Context, private val activity: Acti
     }
     val textState = mutableStateOf("")
     var text = ""
-    var siteLocationText by mutableStateOf("")
 
     fun getAddress(latLng: LatLng) {
         viewModelScope.launch {
@@ -190,11 +224,15 @@ class LocationViewModel(private val context: Context, private val activity: Acti
             }
         }
     }
-
 }
 data class AutocompleteResult(
     val address: String,
     val placeId: String,
-
 )
+
+//data class LocationUiState(
+//    var isLoading: Boolean = false,
+//    val error: String? = null
+//)
+
 
