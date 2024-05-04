@@ -168,6 +168,8 @@ class LocationViewModel(private val context: Context, private val activity: Acti
     }
     val textState = mutableStateOf("")
     var text = ""
+    var siteLocationText by mutableStateOf("")
+
     fun getAddress(latLng: LatLng) {
         viewModelScope.launch {
             try {
