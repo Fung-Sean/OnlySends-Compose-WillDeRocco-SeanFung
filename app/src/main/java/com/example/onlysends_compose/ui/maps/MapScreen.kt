@@ -148,7 +148,7 @@ fun MapScreen(
                     }
                 }
             }
-            Spacer(modifier = Modifier.padding(200.dp))
+            Spacer(modifier = Modifier.padding(100.dp))
         }
 
     ) {
