@@ -209,9 +209,7 @@ fun ProfileScreen(
                 ),
             text = "Sign out",
             icon = Icons.AutoMirrored.Filled.Logout,
-            onClick = {
-                onSignOut()
-            }
+            onClick = onSignOut
         )
     }
 
