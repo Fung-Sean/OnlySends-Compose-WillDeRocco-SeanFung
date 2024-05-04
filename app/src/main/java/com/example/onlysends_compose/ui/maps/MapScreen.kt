@@ -126,8 +126,6 @@ fun MapScreen(
                         Text(text = "+")
                     }
                 }
-
-
             }
 
             // Autofill suggestions

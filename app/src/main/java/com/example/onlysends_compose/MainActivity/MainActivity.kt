@@ -73,6 +73,7 @@ import com.example.onlysends_compose.ui.maps.MapDisplay
 import com.example.onlysends_compose.ui.maps.MapScreen
 import com.example.onlysends_compose.ui.maps.defaultCameraPosition
 import com.example.onlysends_compose.ui.maps.new_height.AddHeightScreen
+import com.example.onlysends_compose.ui.maps.new_height.AddHeightViewModel
 import com.example.onlysends_compose.ui.search.SearchScreen
 import com.example.onlysends_compose.ui.search.SearchViewModel
 import com.example.onlysends_compose.ui.sign_in.UserData
@@ -287,23 +288,6 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
-                    composable(
-                        route = "${Destinations.AddHeight}/{siteLocation}",
-                        arguments = listOf(navArgument("siteLocation") { defaultValue = "" })
-                    ) { backStackEntry ->
-                        val siteLocationTextValue = backStackEntry.arguments?.getString("siteLocation") ?: ""
-                        val siteLocationText = remember { mutableStateOf(siteLocationTextValue) }
-                        val notesText = remember { mutableStateOf("") }
-
-                        // Call AddHeightScreen and pass the necessary parameters
-                        AddHeightScreen(
-                            initialSiteLocation = siteLocationTextValue,
-                            notesText = notesText,
-                            onLocationAdded = { /* Handle navigation or other actions */ }
-                        )
-                    }
-
-
                     // add more routes other composable functions
                     // ----------------------- route 1) "home" -----------------------
                     composable(route = getString(R.string.home)) {
@@ -356,7 +340,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
-                    // ----------------------- route 4) "maps" -----------------------
+                    // ----------------------- route 4.1) "maps" -----------------------
                     composable(route = getString(R.string.maps)) {
                         // Update the currentRoute when navigating to "maps" (or any other page)
                         updateCurrentRoute(navController = navController)
@@ -365,6 +349,32 @@ class MainActivity : AppCompatActivity() {
                             navController,
                             context = applicationContext,
                             activity = this@MainActivity,
+                        )
+                    }
+
+                    // ----------------------- route 4.2) "AddHeight/siteLocation" -----------------------
+                    composable(
+                        route = "${Destinations.AddHeight}/{siteLocation}",
+                        arguments = listOf(navArgument("siteLocation") { defaultValue = "" })
+                    ) { backStackEntry ->
+                        val siteLocation = remember {
+                            mutableStateOf(backStackEntry.arguments?.getString("siteLocation") ?: "")
+                        }
+
+                        // initialize viewModel
+                        val viewModel: AddHeightViewModel = remember {
+                            AddHeightViewModel(
+                                application = application,
+                                user = user!!,
+                                siteLocation = siteLocation,
+                                onSuccess = {}
+                            )
+                        }
+
+                        // Call AddHeightScreen and pass the necessary parameters
+                        AddHeightScreen(
+                            addHeightUiState = viewModel.addHeightUiState.value,
+                            onAddHeight = viewModel::addHeight
                         )
                     }
 
