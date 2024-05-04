@@ -43,6 +43,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 import com.example.onlysends_compose.ui.home.theme.signOutColor
 import com.google.android.gms.maps.model.LatLng
@@ -116,17 +117,19 @@ fun MapScreen(
                             viewModel.searchPlaces(it)
                         },
                         modifier = Modifier
-                            .fillMaxWidth()
                             .padding(8.dp)
                     )
 
                     Button(
-                        onClick = { /* Handle search action */ },
-                        modifier = Modifier.padding(start = 8.dp),
-                        colors = ButtonDefaults.buttonColors(buttonColor)
-                    ) {
-                        Text(text = "Search")
-                    }
+                        onClick = { navController.navigate("AddHeight")},
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(2.dp),
+                        shape = RoundedCornerShape(),
+                        colors = ButtonDefaults.buttonColors(signOutColor)
+                        ) {
+                            Text(text = "+")
+                        }
                 }
 
 
@@ -187,3 +190,17 @@ fun MapScreen(
 
     }
 }
+
+//Button(
+//onClick = { navController.navigate("AddHeight")},
+//modifier = Modifier
+//.align(Alignment.CenterVertically)
+//.padding(2.dp),
+//shape = CircleShape,
+//colors = ButtonDefaults.buttonColors(signOutColor)
+//) {
+//    Icon(
+//        painter = painterResource(id = R.drawable.ic_input_add),
+//        contentDescription = null,
+//    )
+//}
