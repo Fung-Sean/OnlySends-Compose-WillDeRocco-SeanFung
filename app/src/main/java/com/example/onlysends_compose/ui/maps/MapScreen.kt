@@ -3,6 +3,7 @@ package com.example.onlysends_compose.ui.maps
 import android.R
 import android.app.Activity
 import android.content.Context
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -48,6 +49,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.onlysends_compose.MainActivity.Destinations
 import com.example.onlysends_compose.components.generic.CustomSearchBar
+import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 import com.example.onlysends_compose.ui.home.theme.signOutColor
@@ -63,9 +65,10 @@ fun MapScreen(
     modifier: Modifier = Modifier,
     context: Context,
     activity: Activity,
+    user: User
 ){
     val viewModel = remember {
-        LocationViewModel(context, activity ) // Pass both context and activity
+        LocationViewModel(context, activity, user ) // Pass both context and activity
     }
 
     val cameraPositionState = rememberCameraPositionState{
@@ -115,7 +118,10 @@ fun MapScreen(
                         .size(55.dp),
                     onClick = {
                         val location = viewModel.textState.value
-                        navController.navigate("${Destinations.AddHeight}/$location")
+                        // Pass viewModel.currentLatLong to the destination
+                        val lat = viewModel.currentLatLong.latitude
+                        val long = viewModel.currentLatLong.longitude
+                        navController.navigate("${Destinations.AddHeight}/$location/$lat/$long")
                     },
                     shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 8.dp, bottomEnd = 8.dp),
                     colors = ButtonDefaults.buttonColors(
@@ -173,8 +179,8 @@ fun MapScreen(
                 onMapLoaded = {
                     isMapLoaded = true
                 },
-                viewModel = viewModel, // Create a LocationViewModel instance using viewModel()
-                context = LocalContext.current // Obtain the Android context using LocalContext.current
+                viewModel = viewModel,
+                context = LocalContext.current
             )
         }
 

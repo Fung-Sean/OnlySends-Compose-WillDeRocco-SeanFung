@@ -10,11 +10,13 @@ import com.example.onlysends_compose.firestore.modules.createPost
 import com.example.onlysends_compose.firestore.modules.createUserDocument
 import com.example.onlysends_compose.firestore.modules.followFriend
 import com.example.onlysends_compose.firestore.modules.getFriendPosts
+import com.example.onlysends_compose.firestore.modules.getHeights
 import com.example.onlysends_compose.firestore.modules.removeFriend
 import com.example.onlysends_compose.firestore.modules.searchAllFriends
 import com.example.onlysends_compose.firestore.modules.searchUserFriends
 import com.example.onlysends_compose.firestore.modules.updateUserProfile
 import com.example.onlysends_compose.firestore.types.FriendRequest
+import com.example.onlysends_compose.firestore.types.MapLocation
 import com.example.onlysends_compose.firestore.types.Post
 import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.maps.new_height.AddHeightUiState
@@ -178,6 +180,17 @@ object Firestore {
             user = user,
             addHeightUiState = addHeightUiState,
             onSuccess = onSuccess
+        )
+    }
+
+    suspend fun handleGetHeights(
+        context: Context,
+        user: User,
+    ): SnapshotStateList<MapLocation> {
+        return getHeights(
+            db = db,
+            context = context,
+            user = user
         )
     }
 }
