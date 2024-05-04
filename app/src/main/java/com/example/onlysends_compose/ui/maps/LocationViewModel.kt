@@ -146,7 +146,7 @@ class LocationViewModel(private val context: Context, private val activity: Acti
                 locationAutofill.addAll(response.autocompletePredictions.map {
                     AutocompleteResult(
                         it.getFullText(null).toString(),
-                        it.placeId
+                        it.placeId,
                     )
                 })
                 Log.d(TAG, "Autocomplete predictions: $locationAutofill")
@@ -170,6 +170,7 @@ class LocationViewModel(private val context: Context, private val activity: Acti
             .addOnFailureListener {
                 it.printStackTrace()
             }
+        Log.d(TAG, "CurrentLatLong is $currentLatLong")
     }
     var text by mutableStateOf("")
 
@@ -182,7 +183,7 @@ class LocationViewModel(private val context: Context, private val activity: Acti
 }
 data class AutocompleteResult(
     val address: String,
-    val placeId: String
-)
+    val placeId: String,
 
+)
 

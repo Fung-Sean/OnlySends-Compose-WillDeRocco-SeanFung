@@ -1,5 +1,6 @@
 package com.example.onlysends_compose.ui.maps
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,7 +45,8 @@ fun MapDisplay(
     cameraPositionState: CameraPositionState,
     onMapLoaded: () -> Unit,
     viewModel: LocationViewModel, // Add LocationViewModel parameter
-    context: android.content.Context
+    context: android.content.Context,
+
 ) {
     LocationPermissionHandler(
         viewModel = viewModel,
@@ -67,6 +69,7 @@ fun MapDisplay(
     }
     LaunchedEffect(viewModel.currentLatLong) {
         cameraPositionState.animate(CameraUpdateFactory.newLatLng(viewModel.currentLatLong))
+        Log.d(TAG, "LaunchEffect Launched")
     }
 
     AnimatedContent(
@@ -104,9 +107,7 @@ fun MapDisplay(
             }
 
             is LocationState.LocationAvailable -> {
-                val cameraPositionState = rememberCameraPositionState {
-                    position = CameraPosition.fromLatLngZoom(state.location, 15f)
-                }
+
                 val mapUiSettings by remember { mutableStateOf(MapUiSettings()) }
                 val mapProperties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = true)) }
 
