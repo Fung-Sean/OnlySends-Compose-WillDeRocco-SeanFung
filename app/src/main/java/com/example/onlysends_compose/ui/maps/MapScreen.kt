@@ -11,12 +11,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
@@ -40,6 +42,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -75,6 +79,8 @@ fun MapScreen(
         mutableStateOf(false)
     }
 
+    var bottomSheetVisible by remember { mutableStateOf(false) }
+
     val bottomSheetState = rememberBottomSheetScaffoldState()
 
 
@@ -83,11 +89,15 @@ fun MapScreen(
         viewModel.textState.value = newQuery
         viewModel.searchPlaces(newQuery)
     }
+    val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(viewModel.currentLatLong) {
         viewModel.getAddress(viewModel.currentLatLong)
     }
-
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+        bottomSheetVisible = true
+    }
     androidx.compose.material3.BottomSheetScaffold(
         scaffoldState = bottomSheetState,
         sheetPeekHeight = 200.dp,
@@ -96,15 +106,21 @@ fun MapScreen(
             // Icon, TextField, and Button for search input
             Column(
                 modifier = Modifier.fillMaxSize()
+                    .focusRequester(focusRequester)
             ) {
                 // Search bar and button
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     CustomSearchBar(
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f)
+                            .clickable {
+                                // Set the boolean variable to true to show the bottom sheet
+                                bottomSheetVisible = true
+                            }
+                            .offset(y = 10.dp),
                         searchQuery = viewModel.textState.value,
                         placeHolder = "Search for climbing spots!",
                         maxLength = 100,
@@ -112,25 +128,23 @@ fun MapScreen(
                     )
 
                     Button(
-                        modifier = Modifier.size(55.dp),
+                        modifier = Modifier
+                            .size(56.dp)
+                            .align(Alignment.CenterVertically), // Align the Button vertically
                         onClick = {
                             val location = viewModel.textState.value
                             navController.navigate("${Destinations.AddHeight}/$location")
                         },
-                        shape = RoundedCornerShape(
-                            topStart = 8.dp,
-                            topEnd = 8.dp,
-                            bottomStart = 8.dp,
-                            bottomEnd = 8.dp
-                        ),
+                        shape = CutCornerShape(4.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = colorResource(id = com.example.onlysends_compose.R.color.onlySends),
                             contentColor = colorResource(id = com.example.onlysends_compose.R.color.white)
                         ),
                     ) {
-                        Text(text = "+")
+                        Text(text = "+", modifier = modifier)
                     }
                 }
+
 
                 // Autofill suggestions
                 LazyColumn(
