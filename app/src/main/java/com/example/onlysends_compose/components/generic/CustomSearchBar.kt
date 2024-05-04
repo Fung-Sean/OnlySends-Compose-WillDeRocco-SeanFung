@@ -25,12 +25,15 @@ import com.example.onlysends_compose.ui.search.SearchUiState
 // NOTE: this custom search bar was inspired by https://stackoverflow.com/questions/64542659/jetpack-compose-custom-textfield-design
 @Composable
 fun CustomSearchBar(
+    modifier: Modifier = Modifier,
     searchQuery: String,
     placeHolder: String,
     maxLength: Int,
     onUpdateSearch: (String) -> Unit
 ) {
-    Column {
+    Column(
+        modifier = modifier
+    ) {
         val gray = colorResource(id = R.color.searchBarGray)
         val blue = colorResource(id = R.color.onlySends)
 
