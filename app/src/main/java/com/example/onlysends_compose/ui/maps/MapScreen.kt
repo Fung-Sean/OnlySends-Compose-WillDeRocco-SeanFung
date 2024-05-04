@@ -61,6 +61,9 @@ fun MapScreen(
     context: Context,
     activity: Activity,
 ){
+    val viewModel = remember {
+        LocationViewModel(context, activity ) // Pass both context and activity
+    }
 
     val cameraPositionState = rememberCameraPositionState{
         position = defaultCameraPosition
@@ -69,18 +72,7 @@ fun MapScreen(
         mutableStateOf(false)
     }
 
-    var searchText by remember {
-        mutableStateOf("Search a place")
-    }
-
-
-
-
     val bottomSheetState = rememberBottomSheetScaffoldState()
-    val scope = rememberCoroutineScope()
-    val viewModel = remember {
-        LocationViewModel(context, activity ) // Pass both context and activity
-    }
 
 
     val addressState = remember(viewModel.currentLatLong) {
@@ -91,8 +83,6 @@ fun MapScreen(
         viewModel.getAddress(viewModel.currentLatLong)
     }
 
-
-    val address = addressState.value
     androidx.compose.material3.BottomSheetScaffold(
         scaffoldState = bottomSheetState,
         sheetPeekHeight = 100.dp,
@@ -130,7 +120,7 @@ fun MapScreen(
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .padding(2.dp),
-                        shape = RoundedCornerShape(),
+                        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 8.dp, bottomEnd = 8.dp),
                         colors = ButtonDefaults.buttonColors(signOutColor)
                     ) {
                         Text(text = "+")
