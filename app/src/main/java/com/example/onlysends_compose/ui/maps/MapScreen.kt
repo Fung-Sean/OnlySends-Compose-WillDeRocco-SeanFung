@@ -108,44 +108,19 @@ fun MapScreen(
 
             // Icon, TextField, and Button for search input
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .focusRequester(focusRequester)
             ) {
 
-                CustomSearchBar(
+                Row(
                     modifier = Modifier
-                        .width(300.dp),
-                    searchQuery = viewModel.textState.value,
-                    placeHolder = "Search for climbing spots!",
-                    maxLength = 100,
-                    onUpdateSearch = updateSearchQuery
-                )
-
-                Button(
-                    modifier = Modifier
-                        .padding(horizontal = 4.dp)
-                        .size(55.dp),
-                    onClick = {
-                        val location = viewModel.textState.value
-                        // Pass viewModel.currentLatLong to the destination
-                        val lat = viewModel.currentLatLong.latitude
-                        val long = viewModel.currentLatLong.longitude
-                        navController.navigate("${Destinations.AddHeight}/$location/$lat/$long")
-                    },
-                    shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 8.dp, bottomEnd = 8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(id = com.example.onlysends_compose.R.color.onlySends),
-                        contentColor = colorResource(id = com.example.onlysends_compose.R.color.white)
-                    ),
-
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
                 ) {
                     CustomSearchBar(
-                        modifier = Modifier.weight(1f)
-                            .clickable {
-                                // Set the boolean variable to true to show the bottom sheet
-                                bottomSheetVisible = true
-                            }
-                            .offset(y = 10.dp),
+                        modifier = Modifier
+                            .width(300.dp),
                         searchQuery = viewModel.textState.value,
                         placeHolder = "Search for climbing spots!",
                         maxLength = 100,
@@ -154,19 +129,23 @@ fun MapScreen(
 
                     Button(
                         modifier = Modifier
-                            .size(56.dp)
-                            .align(Alignment.CenterVertically), // Align the Button vertically
+                            .padding(horizontal = 4.dp)
+                            .size(55.dp),
                         onClick = {
                             val location = viewModel.textState.value
-                            navController.navigate("${Destinations.AddHeight}/$location")
+                            // Pass viewModel.currentLatLong to the destination
+                            val lat = viewModel.currentLatLong.latitude
+                            val long = viewModel.currentLatLong.longitude
+                            navController.navigate("${Destinations.AddHeight}/$location/$lat/$long")
                         },
-                        shape = CutCornerShape(4.dp),
+                        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 8.dp, bottomEnd = 8.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = colorResource(id = com.example.onlysends_compose.R.color.onlySends),
                             contentColor = colorResource(id = com.example.onlysends_compose.R.color.white)
                         ),
+
                     ) {
-                        Text(text = "+", modifier = modifier)
+                        Text(text = "+")
                     }
                 }
 
