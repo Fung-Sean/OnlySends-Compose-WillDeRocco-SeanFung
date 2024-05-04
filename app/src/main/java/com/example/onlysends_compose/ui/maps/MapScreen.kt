@@ -167,22 +167,10 @@ fun MapScreen(
                     style = MaterialTheme.typography.displayMedium,
                     modifier = Modifier
                         .padding(16.dp)
+                        .align(Alignment.CenterVertically)
 
                 )
-                Spacer(modifier = Modifier.weight(1f)) // Add a spacer to occupy the available space
-                Button(
-                    onClick = { navController.navigate("AddHeight")},
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .padding(2.dp),
-                    shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(signOutColor)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_input_add),
-                        contentDescription = null,
-                    )
-                }
+
             }
 
             MapDisplay(
