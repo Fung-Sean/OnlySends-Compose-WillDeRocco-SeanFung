@@ -16,7 +16,7 @@ class AddHeightViewModel(
     application: Application,
     private val user: User,
     siteLocation: MutableState<String>,
-    onSuccess: () -> Unit
+    private val onSuccess: () -> Unit
 ) : AndroidViewModel(application) {
 
     // obtain context from application
@@ -27,7 +27,7 @@ class AddHeightViewModel(
 
     init {
         addHeightUiState.value.siteLocation = siteLocation
-        addHeightUiState.value.siteName = siteLocation  // can be altered by user
+        addHeightUiState.value.siteName = mutableStateOf(siteLocation.value) // can be altered by user
         Log.d(TAG, "initialized addHeightUiState ${addHeightUiState.value}")
     }
 
@@ -36,19 +36,16 @@ class AddHeightViewModel(
     fun addHeight() {
         Log.d(TAG, "adding height ${addHeightUiState.value}")
         viewModelScope.launch {
-            // call handleRemoveFriend with fetchData as callback function
-//            Firestore.handleRemoveFriend(
-//                context = context,
-//                user = user,
-//                friend = friend,
-//                onSuccess = onSuccess
-//            )
+            // call handleAddHeight with fetchData as callback function
+            Firestore.handleAddHeight(
+                context = context,
+                user = user,
+                addHeightUiState = addHeightUiState.value,
+                onSuccess = onSuccess
+            )
         }
     }
-
-
 }
-
 
 data class AddHeightUiState(
     var isLoading: Boolean = false,
