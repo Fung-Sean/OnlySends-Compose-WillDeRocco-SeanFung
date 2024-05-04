@@ -90,8 +90,7 @@ fun MapScreen(
 
     androidx.compose.material3.BottomSheetScaffold(
         scaffoldState = bottomSheetState,
-        sheetPeekHeight = 100.dp
-        ,
+        sheetPeekHeight = 200.dp,
         sheetContent = {
 
             // Icon, TextField, and Button for search input
