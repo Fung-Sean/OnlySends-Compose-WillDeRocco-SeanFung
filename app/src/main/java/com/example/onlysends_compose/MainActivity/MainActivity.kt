@@ -59,6 +59,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.navArgument
 import com.example.onlysends_compose.R
 import com.example.onlysends_compose.ui.add_post.AddPostScreen
 import com.example.onlysends_compose.components.navigation.CustomTopAppBar
@@ -81,7 +82,9 @@ import com.google.maps.android.compose.rememberCameraPositionState
 
 
 private const val TAG = "MainActivity"
-
+object Destinations {
+    const val AddHeight = "AddHeight"
+}
 class MainActivity : AppCompatActivity() {
     private val googleAuthUiClient by lazy {
         GoogleAuthUiClient(
@@ -284,19 +287,22 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
-                    composable(route = "AddHeight") {
-                        val siteLocationText = remember {
-                            mutableStateOf("")
-                        }
-                        val notesText = remember {
-                            mutableStateOf("")
-                        }
+                    composable(
+                        route = "${Destinations.AddHeight}/{siteLocation}",
+                        arguments = listOf(navArgument("siteLocation") { defaultValue = "" })
+                    ) { backStackEntry ->
+                        val siteLocationTextValue = backStackEntry.arguments?.getString("siteLocation") ?: ""
+                        val siteLocationText = remember { mutableStateOf(siteLocationTextValue) }
+                        val notesText = remember { mutableStateOf("") }
+
+                        // Call AddHeightScreen and pass the necessary parameters
                         AddHeightScreen(
-                            siteLocationText = siteLocationText,
+                            initialSiteLocation = siteLocationTextValue,
                             notesText = notesText,
                             onLocationAdded = { /* Handle navigation or other actions */ }
                         )
                     }
+
 
                     // add more routes other composable functions
                     // ----------------------- route 1) "home" -----------------------
@@ -358,7 +364,7 @@ class MainActivity : AppCompatActivity() {
                         MapScreen(
                             navController,
                             context = applicationContext,
-                            activity = this@MainActivity
+                            activity = this@MainActivity,
                         )
                     }
 
