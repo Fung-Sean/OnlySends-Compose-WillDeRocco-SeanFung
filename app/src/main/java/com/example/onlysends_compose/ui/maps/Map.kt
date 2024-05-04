@@ -58,8 +58,6 @@ fun MapDisplay(
         mutableStateOf(true)
     }
 
-
-
     AnimatedContent(
         viewModel.locationState, label = "Map"
     ) { state ->
@@ -114,7 +112,7 @@ fun MapDisplay(
                 )
                 LaunchedEffect(viewModel.currentLatLong) {
                     cameraPositionState.animate(CameraUpdateFactory.newLatLng(viewModel.currentLatLong))
-                    Log.d(TAG, "LaunchEffect Launched")
+                    Log.d(TAG, "LaunchEffect Launched, ${viewModel.currentLatLong}")
                 }
             }
         }
