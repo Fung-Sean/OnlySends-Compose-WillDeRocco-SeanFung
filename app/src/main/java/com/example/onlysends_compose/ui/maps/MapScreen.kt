@@ -45,6 +45,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 import com.example.onlysends_compose.ui.home.theme.signOutColor
+import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
 
@@ -129,6 +130,7 @@ fun MapScreen(
                                 viewModel.text = autofillItem.address
                                 viewModel.locationAutofill.clear()
                                 viewModel.getCoordinates(autofillItem)
+                                // Update viewModel.currentLatLong
                             }
                     ) {
                         Text(autofillItem.address)
