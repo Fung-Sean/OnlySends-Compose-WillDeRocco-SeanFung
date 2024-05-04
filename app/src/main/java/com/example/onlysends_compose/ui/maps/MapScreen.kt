@@ -30,6 +30,7 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.onlysends_compose.MainActivity.Destinations
 import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 import com.example.onlysends_compose.ui.home.theme.signOutColor
@@ -57,7 +59,7 @@ fun MapScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     context: Context,
-    activity: Activity
+    activity: Activity,
 ){
 
     val cameraPositionState = rememberCameraPositionState{
@@ -121,15 +123,18 @@ fun MapScreen(
                     )
 
                     Button(
-                        onClick = { navController.navigate("AddHeight")},
+                        onClick = {
+                            val location = viewModel.textState.value
+                            navController.navigate("${Destinations.AddHeight}/$location")
+                        },
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .padding(2.dp),
                         shape = RoundedCornerShape(),
                         colors = ButtonDefaults.buttonColors(signOutColor)
-                        ) {
-                            Text(text = "+")
-                        }
+                    ) {
+                        Text(text = "+")
+                    }
                 }
 
 
@@ -191,16 +196,3 @@ fun MapScreen(
     }
 }
 
-//Button(
-//onClick = { navController.navigate("AddHeight")},
-//modifier = Modifier
-//.align(Alignment.CenterVertically)
-//.padding(2.dp),
-//shape = CircleShape,
-//colors = ButtonDefaults.buttonColors(signOutColor)
-//) {
-//    Icon(
-//        painter = painterResource(id = R.drawable.ic_input_add),
-//        contentDescription = null,
-//    )
-//}
