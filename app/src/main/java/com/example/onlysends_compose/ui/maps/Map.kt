@@ -24,6 +24,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberMarkerState
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
 
 // Function to convert address to LatLng coordinates
@@ -89,8 +90,22 @@ fun MapDisplay(
                     modifier = Modifier.fillMaxSize(),
                     cameraPositionState = cameraPositionState,
                     uiSettings = mapUiSettings,
-                    properties = mapProperties
-                )
+                    properties = mapProperties,
+                    onMapLoaded = onMapLoaded,
+                ) {
+                    // Add markers for each MapLocation
+                    viewModel.locations.forEach { location ->
+                        val latLng = LatLng(location.latLng.latitude, location.latLng.longitude)
+                        Marker(
+                            state = rememberMarkerState( position = latLng),
+                            title = location.siteName,
+                            snippet = location.notes,
+                            // You can customize marker icon if needed
+                            // icon = BitmapDescriptorFactory.fromResource(R.drawable.your_custom_marker_icon)
+                        )
+                    }
+                }
+
                 LaunchedEffect(viewModel.currentLatLong) {
                     cameraPositionState.animate(CameraUpdateFactory.newLatLng(viewModel.currentLatLong))
                     Log.d(TAG, "LaunchEffect Launched, ${viewModel.currentLatLong}")
