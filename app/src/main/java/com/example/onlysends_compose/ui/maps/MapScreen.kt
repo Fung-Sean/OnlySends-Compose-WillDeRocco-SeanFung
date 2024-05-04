@@ -172,7 +172,6 @@ fun MapScreen(
             MapDisplay(
                 modifier = Modifier
                     .fillMaxSize(),
-                cameraPositionState = cameraPositionState,
                 onMapLoaded = {
                     isMapLoaded = true
                 },
