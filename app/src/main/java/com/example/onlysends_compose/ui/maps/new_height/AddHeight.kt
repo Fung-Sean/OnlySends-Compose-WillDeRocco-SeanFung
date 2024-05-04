@@ -20,25 +20,33 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
 import com.example.onlysends_compose.ui.home.theme.buttonColor
+
+
 
 @Composable
 fun AddHeightScreen(
     modifier: Modifier = Modifier,
-    siteLocationText: MutableState<String>,
+    initialSiteLocation: String,
     notesText: MutableState<String>,
     onLocationAdded: () -> Unit //Need to add a location data class and implement that here
 
 ){
+    var siteLocationText by remember { mutableStateOf(initialSiteLocation) }
+
     Column (
         modifier = modifier
             .wrapContentSize(Alignment.Center)
@@ -58,10 +66,11 @@ fun AddHeightScreen(
                 .align(Alignment.CenterHorizontally)
             )
         OutlinedTextField(
-            value = siteLocationText.value,
-            onValueChange = { newValue -> siteLocationText.value = newValue },
+            value = siteLocationText,
+            onValueChange = { siteLocationText = it },
             label = { Text("Add a Location") },
-            modifier = Modifier.width(300.dp)
+            modifier = Modifier
+                .width(300.dp)
                 .align(Alignment.CenterHorizontally)
         )
         Spacer(modifier = modifier.padding(20.dp))
@@ -104,23 +113,23 @@ fun AddHeightScreen(
         }
     }
 }
-@Preview(
-    backgroundColor = 0xFFFFFFFF,
-)
-@Composable
-fun AddHeightScreenPreview() {
-    // Sample mutable state values for site location text and notes text
-    val siteLocationText = remember {
-        mutableStateOf("")
-    }
-    val notesText = remember {
-        mutableStateOf("")
-    }
-
-
-    AddHeightScreen(
-        siteLocationText = siteLocationText,
-        notesText = notesText,
-        onLocationAdded = {}
-    )
-}
+//@Preview(
+//    backgroundColor = 0xFFFFFFFF,
+//)
+//@Composable
+//fun AddHeightScreenPreview() {
+//    // Sample mutable state values for site location text and notes text
+//    val siteLocationText = remember {
+//        mutableStateOf("")
+//    }
+//    val notesText = remember {
+//        mutableStateOf("")
+//    }
+//
+//
+//    AddHeightScreen(
+//        siteLocationText = siteLocationText,
+//        notesText = notesText,
+//        onLocationAdded = {}
+//    )
+//}
