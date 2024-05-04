@@ -9,6 +9,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.onlysends_compose.firestore.Firestore
 import com.example.onlysends_compose.firestore.types.User
+import com.google.firebase.firestore.GeoPoint
+import com.google.type.LatLng
 import kotlinx.coroutines.launch
 
 private const val TAG = "AddHeightViewModel"
@@ -16,6 +18,7 @@ class AddHeightViewModel(
     application: Application,
     private val user: User,
     siteLocation: MutableState<String>,
+    currentLatLong: MutableState<GeoPoint>,
     private val onSuccess: () -> Unit
 ) : AndroidViewModel(application) {
 
@@ -27,6 +30,7 @@ class AddHeightViewModel(
 
     init {
         addHeightUiState.value.siteLocation = siteLocation
+        addHeightUiState.value.currentLatLng = currentLatLong
         addHeightUiState.value.siteName = mutableStateOf(siteLocation.value) // can be altered by user
         Log.d(TAG, "initialized addHeightUiState ${addHeightUiState.value}")
     }
@@ -51,6 +55,7 @@ data class AddHeightUiState(
     var isLoading: Boolean = false,
     var siteLocation: MutableState<String> = mutableStateOf(""),
     var siteName: MutableState<String> = mutableStateOf(""),
+    var currentLatLng: MutableState<GeoPoint> = mutableStateOf(GeoPoint(0.0, 0.0)),
     var notes: MutableState<String> = mutableStateOf(""),
     val error: String? = null
 )

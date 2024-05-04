@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.example.onlysends_compose.firestore.types.MapLocation
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
@@ -25,6 +26,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.maps.android.compose.rememberCameraPositionState
 
+// Function to convert address to LatLng coordinates
 
 val bostonState = LatLng(
     42.3601,
@@ -38,25 +40,14 @@ fun MapDisplay(
     onMapLoaded: () -> Unit,
     viewModel: LocationViewModel, // Add LocationViewModel parameter
     context: android.content.Context,
-
 ) {
     LocationPermissionHandler(
         viewModel = viewModel,
         context = context
     ) // Call LocationPermissionHandler composable
 
-    val locationState = rememberMarkerState(
-        position = bostonState
-    )
-
-
     val mapUiSettings by remember { mutableStateOf(MapUiSettings()) }
     val mapProperties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = true)) }
-
-
-    var showInfoWindow by remember {
-        mutableStateOf(true)
-    }
 
     AnimatedContent(
         viewModel.locationState, label = "Map"

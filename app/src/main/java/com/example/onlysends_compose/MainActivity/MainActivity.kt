@@ -1,5 +1,6 @@
 package com.example.onlysends_compose.MainActivity
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -35,6 +36,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -79,6 +81,7 @@ import com.example.onlysends_compose.ui.search.SearchViewModel
 import com.example.onlysends_compose.ui.sign_in.UserData
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.libraries.places.api.Places
+import com.google.firebase.firestore.GeoPoint
 import com.google.maps.android.compose.rememberCameraPositionState
 
 
@@ -349,16 +352,28 @@ class MainActivity : AppCompatActivity() {
                             navController,
                             context = applicationContext,
                             activity = this@MainActivity,
+                            user = user!!
                         )
                     }
 
                     // ----------------------- route 4.2) "AddHeight/siteLocation" -----------------------
                     composable(
-                        route = "${Destinations.AddHeight}/{siteLocation}",
-                        arguments = listOf(navArgument("siteLocation") { defaultValue = "" })
+                        route = "${Destinations.AddHeight}/{siteLocation}/{latitude}/{longitude}",
+                        arguments = listOf(
+                            navArgument("siteLocation") { defaultValue = "" },
+                            navArgument("latitude") { defaultValue = "" },
+                            navArgument("longitude") { defaultValue = "" }
+                        )
                     ) { backStackEntry ->
                         val siteLocation = remember {
                             mutableStateOf(backStackEntry.arguments?.getString("siteLocation") ?: "")
+                        }
+
+                        val latitude = backStackEntry.arguments?.getString("latitude")?.toDouble() ?: 0.0
+                        val longitude = backStackEntry.arguments?.getString("longitude")?.toDouble() ?: 0.0
+
+                        val currentLatLong = remember {
+                            mutableStateOf(GeoPoint(latitude, longitude))
                         }
 
                         // initialize viewModel
@@ -367,6 +382,7 @@ class MainActivity : AppCompatActivity() {
                                 application = application,
                                 user = user!!,
                                 siteLocation = siteLocation,
+                                currentLatLong = currentLatLong,
                                 onSuccess = {
                                     navController.navigate(getString(R.string.maps))
                                     Toast.makeText(applicationContext, "Succesfully placed marker", Toast.LENGTH_LONG).show()
