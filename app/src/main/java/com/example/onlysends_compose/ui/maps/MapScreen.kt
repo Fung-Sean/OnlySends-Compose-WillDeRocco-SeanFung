@@ -41,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -91,36 +92,40 @@ fun MapScreen(
         scaffoldState = bottomSheetState,
         sheetPeekHeight = 100.dp,
         sheetContent = {
-            // Your bottom sheet content here
-            Column(
-                modifier = Modifier.padding(16.dp) // Adjust padding as needed
+
+            // Icon, TextField, and Button for search input
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.Center
             ) {
-                // Icon, TextField, and Button for search input
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.Top
+
+                CustomSearchBar(
+                    modifier = Modifier
+                        .width(300.dp),
+                    searchQuery = viewModel.textState.value,
+                    placeHolder = "Search for climbing spots!",
+                    maxLength = 100,
+                    onUpdateSearch = updateSearchQuery
+                )
+
+                Button(
+                    modifier = Modifier
+                        .padding(horizontal = 4.dp)
+                        .size(55.dp),
+                    onClick = {
+                        val location = viewModel.textState.value
+                        navController.navigate("${Destinations.AddHeight}/$location")
+                    },
+                    shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 8.dp, bottomEnd = 8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(id = com.example.onlysends_compose.R.color.onlySends),
+                        contentColor = colorResource(id = com.example.onlysends_compose.R.color.white)
+                    ),
                 ) {
-
-                    CustomSearchBar(
-                        modifier = Modifier
-                            .width(300.dp),
-                        searchQuery = viewModel.textState.value,
-                        placeHolder = "Search for climbing spots!",
-                        maxLength = 100,
-                        onUpdateSearch = updateSearchQuery
-                    )
-
-                    Button(
-                        onClick = {
-                            val location = viewModel.textState.value
-                            navController.navigate("${Destinations.AddHeight}/$location")
-                        },
-                        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 8.dp, bottomEnd = 8.dp),
-                        colors = ButtonDefaults.buttonColors(signOutColor)
-                    ) {
-                        Text(text = "+")
-                    }
+                    Text(text = "+")
                 }
+
             }
 
             // Autofill suggestions
