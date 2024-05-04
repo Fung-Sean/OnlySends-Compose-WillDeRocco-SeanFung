@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -19,8 +21,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.onlysends_compose.components.generic.ButtonWithIcon
 import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 
@@ -41,7 +45,8 @@ fun AddHeightScreen(
     Column (
         modifier = modifier
             .wrapContentSize(Alignment.Center)
-            .fillMaxSize()
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ){
         Text(text = "Add New Height",
             style = MaterialTheme.typography.displaySmall,
@@ -50,7 +55,7 @@ fun AddHeightScreen(
                 .padding(40.dp)
         )
         Text(
-            text = "Site Location:                                             ",
+            text = "Site Name:                                             ",
             style = MaterialTheme.typography.bodyLarge,
             modifier = modifier
                 .padding(2.dp)
@@ -59,7 +64,7 @@ fun AddHeightScreen(
         OutlinedTextField(
             value = siteNameText.value,
             onValueChange = { siteNameText.value = it },
-            label = { Text("Add a Location") },
+            label = { Text("Edit site name") },
             modifier = Modifier
                 .width(300.dp)
                 .align(Alignment.CenterHorizontally)
@@ -77,31 +82,23 @@ fun AddHeightScreen(
             value = notesText.value,
             onValueChange = { newValue -> notesText.value = newValue },
             label = { Text("Add a Note") },
-            modifier = Modifier.width(300.dp)
+            modifier = Modifier
+                .width(300.dp)
                 .align(Alignment.CenterHorizontally)
                 .height(150.dp)
         )
         Spacer(modifier = modifier.padding(100.dp))
-        Button(
-            onClick = onAddHeight,
-            modifier = modifier
-                .padding(10.dp)
-                .width(300.dp)
-                .align(Alignment.CenterHorizontally),
-            shape = RoundedCornerShape(),
-            colors = ButtonDefaults.buttonColors(buttonColor)
-        ) {
-            Row {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_input_add),
-                    contentDescription = null
-                )
-                Text(
-                    "Place Marker",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        }
+        ButtonWithIcon(
+            modifier = Modifier
+                .width(300.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorResource(id = com.example.onlysends_compose.R.color.onlySendsBlue),
+                contentColor = colorResource(id = com.example.onlysends_compose.R.color.white)
+            ),
+            text = "Place marker",
+            icon = Icons.Default.AddCircle,
+            onClick = onAddHeight
+        )
     }
 }
 //@Preview(
