@@ -1,16 +1,13 @@
 package com.example.onlysends_compose.ui.maps.new_height
 
 import android.R
-import android.graphics.Paint.Style
-import android.location.Location
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
@@ -20,32 +17,26 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 
-
+private const val TAG = "AddHeightScreen"
 
 @Composable
 fun AddHeightScreen(
     modifier: Modifier = Modifier,
-    initialSiteLocation: String,
-    notesText: MutableState<String>,
-    onLocationAdded: () -> Unit //Need to add a location data class and implement that here
-
+    addHeightUiState: AddHeightUiState,
+    onAddHeight: () -> Unit //Need to add a location data class and implement that here
 ){
-    var siteLocationText by remember { mutableStateOf(initialSiteLocation) }
+
+    Log.d(TAG, "addHeightUiState is $addHeightUiState")
+
+    var siteNameText = addHeightUiState.siteName
+    var notesText = addHeightUiState.notes
 
     Column (
         modifier = modifier
@@ -66,8 +57,8 @@ fun AddHeightScreen(
                 .align(Alignment.CenterHorizontally)
             )
         OutlinedTextField(
-            value = siteLocationText,
-            onValueChange = { siteLocationText = it },
+            value = siteNameText.value,
+            onValueChange = { siteNameText.value = it },
             label = { Text("Add a Location") },
             modifier = Modifier
                 .width(300.dp)
@@ -92,7 +83,7 @@ fun AddHeightScreen(
         )
         Spacer(modifier = modifier.padding(100.dp))
         Button(
-            onClick = { /*TODO*/ },
+            onClick = onAddHeight,
             modifier = modifier
                 .padding(10.dp)
                 .width(300.dp)
@@ -119,7 +110,7 @@ fun AddHeightScreen(
 //@Composable
 //fun AddHeightScreenPreview() {
 //    // Sample mutable state values for site location text and notes text
-//    val siteLocationText = remember {
+//    val siteNameText = remember {
 //        mutableStateOf("")
 //    }
 //    val notesText = remember {
@@ -128,7 +119,7 @@ fun AddHeightScreen(
 //
 //
 //    AddHeightScreen(
-//        siteLocationText = siteLocationText,
+//        siteNameText = siteNameText,
 //        notesText = notesText,
 //        onLocationAdded = {}
 //    )
