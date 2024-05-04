@@ -143,7 +143,7 @@ fun MapScreen(
                             containerColor = colorResource(id = com.example.onlysends_compose.R.color.onlySends),
                             contentColor = colorResource(id = com.example.onlysends_compose.R.color.white)
                         ),
-
+                        enabled = viewModel.textState.value != "Address not found" // Disable button if the address is not found
                     ) {
                         Text(text = "+")
                     }
