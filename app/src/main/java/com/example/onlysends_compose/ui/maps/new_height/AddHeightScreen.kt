@@ -23,8 +23,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.onlysends_compose.components.generic.ButtonWithIcon
+import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
 import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
 import com.example.onlysends_compose.ui.home.theme.buttonColor
 
@@ -101,23 +103,14 @@ fun AddHeightScreen(
         )
     }
 }
-//@Preview(
-//    backgroundColor = 0xFFFFFFFF,
-//)
-//@Composable
-//fun AddHeightScreenPreview() {
-//    // Sample mutable state values for site location text and notes text
-//    val siteNameText = remember {
-//        mutableStateOf("")
-//    }
-//    val notesText = remember {
-//        mutableStateOf("")
-//    }
-//
-//
-//    AddHeightScreen(
-//        siteNameText = siteNameText,
-//        notesText = notesText,
-//        onLocationAdded = {}
-//    )
-//}
+
+@Preview()
+@Composable
+fun AddHeightScreenPreview() {
+    OnlySendsTheme {
+        AddHeightScreen(
+            addHeightUiState = AddHeightUiState(),
+            onAddHeight = {}
+        )
+    }
+}
