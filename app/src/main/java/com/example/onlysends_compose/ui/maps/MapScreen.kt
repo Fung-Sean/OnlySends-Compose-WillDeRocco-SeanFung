@@ -94,61 +94,66 @@ fun MapScreen(
         sheetContent = {
 
             // Icon, TextField, and Button for search input
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.Center
+            Column(
+                modifier = Modifier.fillMaxSize()
             ) {
-
-                CustomSearchBar(
-                    modifier = Modifier
-                        .width(300.dp),
-                    searchQuery = viewModel.textState.value,
-                    placeHolder = "Search for climbing spots!",
-                    maxLength = 100,
-                    onUpdateSearch = updateSearchQuery
-                )
-
-                Button(
-                    modifier = Modifier
-                        .padding(horizontal = 4.dp)
-                        .size(55.dp),
-                    onClick = {
-                        val location = viewModel.textState.value
-                        navController.navigate("${Destinations.AddHeight}/$location")
-                    },
-                    shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 8.dp, bottomEnd = 8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(id = com.example.onlysends_compose.R.color.onlySends),
-                        contentColor = colorResource(id = com.example.onlysends_compose.R.color.white)
-                    ),
+                // Search bar and button
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(text = "+")
+                    CustomSearchBar(
+                        modifier = Modifier.weight(1f),
+                        searchQuery = viewModel.textState.value,
+                        placeHolder = "Search for climbing spots!",
+                        maxLength = 100,
+                        onUpdateSearch = updateSearchQuery
+                    )
+
+                    Button(
+                        modifier = Modifier.size(55.dp),
+                        onClick = {
+                            val location = viewModel.textState.value
+                            navController.navigate("${Destinations.AddHeight}/$location")
+                        },
+                        shape = RoundedCornerShape(
+                            topStart = 8.dp,
+                            topEnd = 8.dp,
+                            bottomStart = 8.dp,
+                            bottomEnd = 8.dp
+                        ),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorResource(id = com.example.onlysends_compose.R.color.onlySends),
+                            contentColor = colorResource(id = com.example.onlysends_compose.R.color.white)
+                        ),
+                    ) {
+                        Text(text = "+")
+                    }
                 }
 
-            }
-
-            // Autofill suggestions
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(viewModel.locationAutofill) { autofillItem ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                            .clickable {
-                                viewModel.text = autofillItem.address
-                                viewModel.locationAutofill.clear()
-                                viewModel.getCoordinates(autofillItem)
-                                // Update viewModel.currentLatLong
-                            }
-                    ) {
-                        Text(autofillItem.address)
+                // Autofill suggestions
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(viewModel.locationAutofill) { autofillItem ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                                .clickable {
+                                    viewModel.text = autofillItem.address
+                                    viewModel.locationAutofill.clear()
+                                    viewModel.getCoordinates(autofillItem)
+                                    // Update viewModel.currentLatLong
+                                }
+                        ) {
+                            Text(autofillItem.address)
+                        }
                     }
                 }
             }
-            Spacer(modifier = Modifier.padding(100.dp))
         }
 
     ) {
