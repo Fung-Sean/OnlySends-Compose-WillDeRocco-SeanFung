@@ -1,7 +1,5 @@
 package com.example.onlysends_compose.firestore.types
 
-import com.example.onlysends_compose.ui.sign_in.UserData
-
 data class User(
     val userId: String,
     val username: String,
@@ -10,7 +8,7 @@ data class User(
     val outgoingFriends: List<String> = listOf(),
     val incomingFriends: List<String> = listOf(),
     val posts: List<Post> = listOf(),
-    val favoriteMaps: List<GoogleMap> = listOf(),
+    val favoriteMaps: List<MapLocation> = listOf(),
     val climbingStyle: String = "",
     val numFriends: Int = 0
 ) {

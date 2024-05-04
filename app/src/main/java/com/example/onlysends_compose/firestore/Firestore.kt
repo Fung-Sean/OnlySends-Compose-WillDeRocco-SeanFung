@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation.NavHostController
 import com.example.onlysends_compose.firestore.modules.acceptFriend
+import com.example.onlysends_compose.firestore.modules.addHeight
 import com.example.onlysends_compose.firestore.modules.createPost
 import com.example.onlysends_compose.firestore.modules.createUserDocument
 import com.example.onlysends_compose.firestore.modules.followFriend
@@ -16,6 +17,7 @@ import com.example.onlysends_compose.firestore.modules.updateUserProfile
 import com.example.onlysends_compose.firestore.types.FriendRequest
 import com.example.onlysends_compose.firestore.types.Post
 import com.example.onlysends_compose.firestore.types.User
+import com.example.onlysends_compose.ui.maps.new_height.AddHeightUiState
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -163,4 +165,19 @@ object Firestore {
         )
     }
 
+    /* ------------------------------ MapsFirestore functions ------------------------------ */
+    suspend fun handleAddHeight(
+        context: Context,
+        user: User,
+        addHeightUiState: AddHeightUiState,
+        onSuccess: () -> Unit
+    ) {
+        addHeight(
+            db = db,
+            context = context,
+            user = user,
+            addHeightUiState = addHeightUiState,
+            onSuccess = onSuccess
+        )
+    }
 }
