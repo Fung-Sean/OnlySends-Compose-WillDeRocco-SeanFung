@@ -49,12 +49,9 @@ fun MapDisplay(
     )
 
 
-    val mapUiSettings by remember {
-        mutableStateOf(MapUiSettings(compassEnabled = false))
-    }
-    val mapProperties by remember {
-        mutableStateOf(MapProperties(mapType = MapType.NORMAL))
-    }
+    val mapUiSettings by remember { mutableStateOf(MapUiSettings()) }
+    val mapProperties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = true)) }
+
 
     var showInfoWindow by remember {
         mutableStateOf(true)
@@ -105,8 +102,6 @@ fun MapDisplay(
 
             is LocationState.LocationAvailable -> {
 
-                val mapUiSettings by remember { mutableStateOf(MapUiSettings()) }
-                val mapProperties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = true)) }
 
                 GoogleMap(
                     modifier = Modifier.fillMaxSize(),
