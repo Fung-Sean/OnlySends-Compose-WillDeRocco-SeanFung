@@ -164,9 +164,7 @@ fun MapScreen(
                     modifier = Modifier
                         .padding(16.dp)
                         .align(Alignment.CenterVertically)
-
                 )
-
             }
 
             MapDisplay(

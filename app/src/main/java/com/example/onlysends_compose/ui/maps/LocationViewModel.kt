@@ -115,6 +115,8 @@ class LocationViewModel(private val context: Context, private val activity: Acti
                 locationState = if (location == null) {
                     LocationState.Error
                 } else {
+                    currentLatLong = LatLng(location.latitude, location.longitude)
+
                     LocationState.LocationAvailable(
                         com.google.android.gms.maps.model.LatLng(location.latitude, location.longitude)
                     )
