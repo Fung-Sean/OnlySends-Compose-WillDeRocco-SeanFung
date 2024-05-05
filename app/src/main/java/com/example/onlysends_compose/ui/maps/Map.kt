@@ -2,9 +2,22 @@ package com.example.onlysends_compose.ui.maps
 
 import android.util.Log
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CenterFocusWeak
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,7 +25,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+import com.example.onlysends_compose.R
 import com.example.onlysends_compose.firestore.types.MapLocation
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -25,6 +45,7 @@ import com.google.maps.android.compose.rememberMarkerState
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.rememberCameraPositionState
 
 // Function to convert address to LatLng coordinates
@@ -51,7 +72,8 @@ fun MapDisplay(
     val mapProperties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = true)) }
 
     AnimatedContent(
-        viewModel.locationState, label = "Map"
+        viewModel.locationState, label = "Map",
+        contentAlignment = Alignment.Center
     ) { state ->
         when (state) {
             is LocationState.NoPermission -> {
@@ -62,7 +84,20 @@ fun MapDisplay(
             }
 
             is LocationState.LocationLoading -> {
-                Text("Loading Map")
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 200.dp),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator()
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Text("Loading Map")
+                    }
+                }
             }
 
             is LocationState.Error -> {
@@ -96,13 +131,19 @@ fun MapDisplay(
                     // Add markers for each MapLocation
                     viewModel.locations.forEach { location ->
                         val latLng = LatLng(location.latLng.latitude, location.latLng.longitude)
-                        Marker(
+                        MarkerInfoWindow(
                             state = rememberMarkerState( position = latLng),
                             title = location.siteName,
-                            snippet = location.notes,
-                            // You can customize marker icon if needed
-                            // icon = BitmapDescriptorFactory.fromResource(R.drawable.your_custom_marker_icon)
-                        )
+                        ) {
+                            CustomInfoWindowContent(title = location.siteName, snippet = location.notes)
+                        }
+//                        Marker(
+//                            state = rememberMarkerState( position = latLng),
+//                            title = location.siteName,
+//                            snippet = location.notes,
+//                            // You can customize marker icon if needed
+//                            // icon = BitmapDescriptorFactory.fromResource(R.drawable.your_custom_marker_icon)
+//                        )
                     }
                 }
 
@@ -111,6 +152,26 @@ fun MapDisplay(
                     Log.d(TAG, "LaunchEffect Launched, ${viewModel.currentLatLong}")
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun CustomInfoWindowContent(title: String, snippet: String) {
+    Box(
+        modifier = Modifier
+            .padding(16.dp)
+            .background(color = colorResource(id = R.color.white))
+            .widthIn(max = 250.dp)
+//            .heightIn(max = 100.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()) // Apply vertical scrolling directly on Column
+        ) {
+            Text(text = title, fontWeight = FontWeight.Bold)
+            Text(text = snippet)
         }
     }
 }
