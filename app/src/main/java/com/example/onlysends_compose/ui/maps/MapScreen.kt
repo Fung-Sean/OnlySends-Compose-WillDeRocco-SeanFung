@@ -6,12 +6,14 @@ import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,6 +26,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -53,6 +56,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.onlysends_compose.MainActivity.Destinations
 import com.example.onlysends_compose.components.generic.CustomSearchBar
+import com.example.onlysends_compose.components.navigation.PageHeaderText
 import com.example.onlysends_compose.firestore.types.User
 import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
 import com.example.onlysends_compose.ui.home.theme.buttonColor
@@ -75,9 +79,6 @@ fun MapScreen(
         LocationViewModel(context, activity, user ) // Pass both context and activity
     }
 
-    val cameraPositionState = rememberCameraPositionState{
-        position = defaultCameraPosition
-    }
     var isMapLoaded by remember {
         mutableStateOf(false)
     }
@@ -92,103 +93,31 @@ fun MapScreen(
         viewModel.textState.value = newQuery
         viewModel.searchPlaces(newQuery)
     }
+
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(viewModel.currentLatLong) {
         viewModel.getAddress(viewModel.currentLatLong)
     }
     LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
+//        focusRequester.requestFocus()
         bottomSheetVisible = true
     }
-    androidx.compose.material3.BottomSheetScaffold(
+    BottomSheetScaffold(
         scaffoldState = bottomSheetState,
         sheetPeekHeight = 200.dp,
         sheetContent = {
-
-            // Icon, TextField, and Button for search input
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .focusRequester(focusRequester)
-            ) {
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    CustomSearchBar(
-                        modifier = Modifier
-                            .width(300.dp),
-                        searchQuery = viewModel.textState.value,
-                        placeHolder = "Search for climbing spots!",
-                        maxLength = 100,
-                        onUpdateSearch = updateSearchQuery
-                    )
-
-                    Button(
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .size(55.dp),
-                        onClick = {
-                            val location = viewModel.textState.value
-                            // Pass viewModel.currentLatLong to the destination
-                            val lat = viewModel.currentLatLong.latitude
-                            val long = viewModel.currentLatLong.longitude
-                            navController.navigate("${Destinations.AddHeight}/$location/$lat/$long")
-                        },
-                        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 8.dp, bottomEnd = 8.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(id = com.example.onlysends_compose.R.color.onlySends),
-                            contentColor = colorResource(id = com.example.onlysends_compose.R.color.white)
-                        ),
-                        enabled = viewModel.textState.value != "Address not found" // Disable button if the address is not found
-                    ) {
-                        Text(text = "+")
-                    }
-                }
-
-
-                // Autofill suggestions
-                LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(viewModel.locationAutofill) { autofillItem ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                                .clickable {
-                                    viewModel.text = autofillItem.address
-                                    viewModel.locationAutofill.clear()
-                                    viewModel.getCoordinates(autofillItem)
-                                    // Update viewModel.currentLatLong
-                                }
-                        ) {
-                            Text(autofillItem.address)
-                        }
-                    }
-                }
-            }
+            SheetContent(
+                viewModel = viewModel,
+                updateSearchQuery = updateSearchQuery,
+                navController = navController
+            )
         }
-
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Row (
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ){
-                Text(
-                    text = "New Heights",
-                    style = MaterialTheme.typography.displayMedium,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .align(Alignment.CenterVertically)
-                )
-            }
+            PageHeaderText(text = "New Heights")
 
             MapDisplay(
                 modifier = Modifier
@@ -201,6 +130,75 @@ fun MapScreen(
             )
         }
 
+    }
+}
+
+@Composable
+private fun SheetContent(
+    viewModel: LocationViewModel,
+    updateSearchQuery: (String) -> Unit,
+    navController: NavController
+) {
+    Column(
+//        modifier = Modifier.heightIn(min = 100.dp, max = 500.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            CustomSearchBar(
+                modifier = Modifier
+                    .width(300.dp),
+                searchQuery = viewModel.textState.value,
+                placeHolder = "Search for climbing spots!",
+                maxLength = 100,
+                onUpdateSearch = updateSearchQuery
+            )
+
+            Button(
+                modifier = Modifier
+                    .padding(horizontal = 4.dp)
+                    .size(55.dp),
+                onClick = {
+                    val location = viewModel.textState.value
+                    // Pass viewModel.currentLatLong to the destination
+                    val lat = viewModel.currentLatLong.latitude
+                    val long = viewModel.currentLatLong.longitude
+                    navController.navigate("${Destinations.AddHeight}/$location/$lat/$long")
+                },
+                shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomStart = 8.dp, bottomEnd = 8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(id = com.example.onlysends_compose.R.color.onlySends),
+                    contentColor = colorResource(id = com.example.onlysends_compose.R.color.white)
+                ),
+                enabled = viewModel.textState.value != "Address not found" // Disable button if the address is not found
+            ) {
+                Text(text = "+")
+            }
+        }
+
+        // Autofill suggestions
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(viewModel.locationAutofill) { autofillItem ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .clickable {
+                            viewModel.text = autofillItem.address
+                            viewModel.locationAutofill.clear()
+                            viewModel.getCoordinates(autofillItem)
+                            // Update viewModel.currentLatLong
+                        }
+                ) {
+                    Text(autofillItem.address)
+                }
+            }
+        }
     }
 }
 
