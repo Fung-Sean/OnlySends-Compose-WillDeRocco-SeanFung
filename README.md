@@ -11,7 +11,7 @@
 - Task Tracker ([link](https://docs.google.com/spreadsheets/d/1bbkJkG-PS3HzLtA9W112ed9gqWV_Gf24eZy-Vc0oES8/edit?usp=sharing))
 
 ## Roadmap
-### 8 pages
+### 8 pages in our app and their functions
 - [x] Sign-in page:
   - Utilizing Google OAuth to ensure that a user has a profile and their preferences and data can be stored under that account.
   - Uses compose to display logo and using a gradient brush to get the colors the way it is.
@@ -42,16 +42,100 @@
   - In this page, we display all your friends and friend requests from the database to be displayed on this page. Here, you can remove friends.
   - You can also search for your friend using the above text bar.
 
-
+## Architecture:
+- Almost every page has a composable side and a viewModel that handles the background function.
+- Every screen has its own dedicated resource folder to ensure less merge conflicts and better organization.
+- Database is in its own seperate resource folder away from the UI and screen elements.
+- MainActivity hosts the navController and determines the routing to every page.
+- Components are used throughout the app depending on where they are needed. They represent the components that may be used and their styling so we dont have to recode them(app bar, search bar, button, etc.)
 ## API's Used
 - [x] Google Maps, Geocoding, Places API
   - Google Maps:
     - Google maps is used to display the map and markers. We use it on the maps page and it can be moved around but initially starts on a user's location if the user allows it.
+    - Defined as a GoogleMaps composable.
+```kotlin
+GoogleMap(
+  modifier = Modifier.fillMaxSize(),
+  cameraPositionState = cameraPositionState,
+  uiSettings = mapUiSettings,
+  properties = mapProperties,
+  onMapLoaded = onMapLoaded,
+) {
+  // Add markers for each MapLocation
+  viewModel.locations.forEach { location ->
+      val latLng = LatLng(location.latLng.latitude, location.latLng.longitude)
+      MarkerInfoWindow(
+          state = rememberMarkerState( position = latLng),
+          title = location.siteName,
+      ) {
+          CustomInfoWindowContent(
+              title = location.siteName,
+              username = location.username,
+              snippet = location.notes
+          )
+      }
+  }
+}
+```
   - Places API:
     - Places is used to autocomplete the text box. Whenever a user changes the search bar, Places gets called and displays addresses the user might be looking up.
     - When a user clicks on it, the address will be displayed in the search bar.
+```kotlin
+    // updateSearchQuery : passed into CustomSearchBar and updates searchQuery on keystroke change
+    val updateSearchQuery: (String) -> Unit = { newQuery ->
+        viewModel.textState.value = newQuery
+        viewModel.searchPlaces(newQuery)
+    }
+```
+    
+
+
   - Geocoding:
     - A specific case it is used is when the user is in the map page, the search bar's address displays the address that is in the center of the map. Geocoding is needed to turn the lattitude and longitude coordinates into that address.
     - Used whenever we receive a lattitude and longitude coordinate from the Places API to turn into a readable address.
+```kotlin
+fun getAddress(latLng: LatLng) {
+    viewModelScope.launch {
+        try {
+            val addressList = geoCoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            if (addressList != null && addressList.isNotEmpty()) {
+                // Get the first address from the list
+                val address = addressList[0].getAddressLine(0)
+                textState.value = address ?: "Address not found"
+            } else {
+                textState.value = "Address not found"
+            }
+        } catch (e: Exception) {
+            // Handle any exceptions that may occur
+            e.printStackTrace()
+            textState.value = "Error fetching address"
+        }
+    }
+}
+```
+  - Called in the following places:
+  - This one is so that when the map moves, it gets the location in the middle of the map.
+  ```kotlin
+  LaunchedEffect(cameraPositionState.isMoving) {
+      if (!cameraPositionState.isMoving) {
+          viewModel.getAddress(cameraPositionState.position.target)
+      }
+  }
+  ```
+  - This one changes based on the current lattitude and longitude in the event you click a place and to display starting address.
+  ```kotlin
+    LaunchedEffect(viewModel.currentLatLong) {
+        viewModel.getAddress(viewModel.currentLatLong)
+    }
+  ``` 
 - [x] Firebase:
+
+## Some Challenges:
+- API issues
+- Constant updates from the Google Android team left some things deprecated (e.g. Firebase OAuth,  Places API… etc.)
+- Wonky database setup → had to refactor
+- Effective use of ViewModels in Compose (especially for async functions that require coroutines)
+  - getting updates to show up using proper state methods 🥰
+- Occasionsal merge conflict
+
 
