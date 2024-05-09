@@ -10,8 +10,8 @@
 ### Project Management (Google Sheets)
 - Task Tracker ([link](https://docs.google.com/spreadsheets/d/1bbkJkG-PS3HzLtA9W112ed9gqWV_Gf24eZy-Vc0oES8/edit?usp=sharing))
 
-##Roadmap
-###8 pages
+## Roadmap
+### 8 pages
 - [x] Sign-in page:
   - Utilizing Google OAuth to ensure that a user has a profile and their preferences and data can be stored under that account.
   - Uses compose to display logo and using a gradient brush to get the colors the way it is.
@@ -43,7 +43,7 @@
   - You can also search for your friend using the above text bar.
 
 
-##API's Used
+## API's Used
 - [x] Google Maps, Geocoding, Places API
   - Google Maps:
     - Google maps is used to display the map and markers. We use it on the maps page and it can be moved around but initially starts on a user's location if the user allows it.
