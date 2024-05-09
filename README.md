@@ -54,6 +54,8 @@
 
 ## API's Used
 - [x] Google Maps, Geocoding, Places API
+  - Needed to ensure that the GoogleMaps API was set up and put it in secrets.properties file as well as the strings file to be used.
+  - Ensure that places and maps were enabled in the build.gradle file.
   - First needed to ask the user permissions and ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION
 ```kotlin
 fun getCurrentLocation(){
