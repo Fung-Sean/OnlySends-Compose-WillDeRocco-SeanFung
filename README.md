@@ -201,4 +201,12 @@ fun getAddress(latLng: LatLng) {
   - getting updates to show up using proper state methods 🥰
 - Occasionsal merge conflict
 
+## More Future Updates
+- Refactor some old code (e.g. navController, adding ViewModel to Profile composable → use coroutines)
+- Find better way to keep user object up-to-date (to help alleviate extra API-calls)
+- Better UI for Maps page (bottom-sheet covers all of map…)
+- Weather API integration
+- Video upload ability
+- COMMENTS FEATURE (to enable climbers to help each other!)
+
 
