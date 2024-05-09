@@ -51,8 +51,7 @@
     - Places is used to autocomplete the text box. Whenever a user changes the search bar, Places gets called and displays addresses the user might be looking up.
     - When a user clicks on it, the address will be displayed in the search bar.
   - Geocoding:
-    - Used for a specific use case and some more general use cases.
-    - A sp[ecific case it is used is when the user is in the map page, the search bar's address displays the address that is in the center of the map. Geocoding is needed to turn the lattitude and longitude coordinates into that address.
+    - A specific case it is used is when the user is in the map page, the search bar's address displays the address that is in the center of the map. Geocoding is needed to turn the lattitude and longitude coordinates into that address.
     - Used whenever we receive a lattitude and longitude coordinate from the Places API to turn into a readable address.
 - [x] Firebase:
 
