@@ -48,8 +48,43 @@
 - Database is in its own seperate resource folder away from the UI and screen elements.
 - MainActivity hosts the navController and determines the routing to every page.
 - Components are used throughout the app depending on where they are needed. They represent the components that may be used and their styling so we dont have to recode them(app bar, search bar, button, etc.)
+
+
+<img src="https://github.com/Fung-Sean/OnlySends-Compose-WillDeRocco-SeanFung/blob/main/46042393-83BC-4444-86C0-6CB0F1EC46CE.jpeg" alt="Alt Text" width="200" height="200"><img src="https://github.com/Fung-Sean/OnlySends-Compose-WillDeRocco-SeanFung/blob/main/4D578FD0-3549-4AE6-8A93-7169620A8466.jpeg" alt="Alt Text" width="200" height="200">
+
 ## API's Used
 - [x] Google Maps, Geocoding, Places API
+  - First needed to ask the user permissions and ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION
+```kotlin
+fun getCurrentLocation(){
+        locationState = LocationState.LocationLoading
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permissions not granted, handle this scenario
+            locationState = LocationState.NoPermission
+            return
+        }
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+            .addOnSuccessListener { location ->
+                locationState = if (location == null) {
+                    LocationState.Error
+                } else {
+                    currentLatLong = LatLng(location.latitude, location.longitude)
+        
+                    LocationState.LocationAvailable(
+                        com.google.android.gms.maps.model.LatLng(location.latitude, location.longitude)
+                    )
+                }
+            }
+}
+```
   - Google Maps:
     - Google maps is used to display the map and markers. We use it on the maps page and it can be moved around but initially starts on a user's location if the user allows it.
     - Defined as a GoogleMaps composable.
