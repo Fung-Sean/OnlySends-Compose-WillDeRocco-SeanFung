@@ -73,7 +73,7 @@ import com.example.onlysends_compose.ui.home.theme.buttonColor
 import com.example.onlysends_compose.ui.home.theme.signOutColor
 import com.example.onlysends_compose.ui.maps.MapDisplay
 import com.example.onlysends_compose.ui.maps.MapScreen
-import com.example.onlysends_compose.ui.maps.defaultCameraPosition
+//import com.example.onlysends_compose.ui.maps.defaultCameraPosition
 import com.example.onlysends_compose.ui.maps.new_height.AddHeightScreen
 import com.example.onlysends_compose.ui.maps.new_height.AddHeightViewModel
 import com.example.onlysends_compose.ui.search.SearchScreen
