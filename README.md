@@ -87,7 +87,33 @@ GoogleMap(
         viewModel.searchPlaces(newQuery)
     }
 ```
-    
+```kotlin
+fun searchPlaces(query: String) {
+    searchJob?.cancel()
+    locationAutofill.clear()
+
+    searchJob = viewModelScope.launch {
+        val request = FindAutocompletePredictionsRequest
+            .builder()
+            .setQuery(query)
+            .build()
+
+        try {
+            val response = placesClient.findAutocompletePredictions(request).await()
+
+            locationAutofill.addAll(response.autocompletePredictions.map {
+                AutocompleteResult(
+                    it.getFullText(null).toString(),
+                    it.placeId,
+                )
+            })
+            textState.value = query // Update textState value here
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+}
+```    
 
 
   - Geocoding:
