@@ -1,7 +1,7 @@
 package com.example.onlysends_compose.ui.maps
 
 import com.google.type.LatLng
-
+//Holds the information on where a user is
 sealed class LocationState {
     object NoPermission: LocationState()
     object LocationDisabled: LocationState()

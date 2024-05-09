@@ -3,7 +3,7 @@ package com.example.onlysends_compose.ui.home.theme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.ui.graphics.Color
-
+//File for holding colors related to the theme of the app
 val Blue = Color(0xFF1E80F8)
 val Gray = Color(0xFFF3F3F4)
 

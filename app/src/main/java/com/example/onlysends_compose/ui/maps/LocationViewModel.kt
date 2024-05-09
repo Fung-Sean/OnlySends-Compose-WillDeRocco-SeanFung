@@ -42,7 +42,7 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 
 
-const val REQUEST_LOCATION_PERMISSIONS = 1001 // Define your desired request code
+const val REQUEST_LOCATION_PERMISSIONS = 1001 // Define your desired request code - GPT
 const val TAG = "LocationViewModel"
 
 class LocationViewModel(
@@ -130,6 +130,8 @@ class LocationViewModel(
             }
         })
     }
+    //Function that gets the current location of the device
+    //Assumes permissions are granted.
     fun getCurrentLocation(){
         locationState = LocationState.LocationLoading
         if (ContextCompat.checkSelfPermission(
@@ -162,7 +164,7 @@ class LocationViewModel(
     //HANDLES ALL THE STUFF FOR THE PLACES API
     val locationAutofill = mutableStateListOf<AutocompleteResult>()
     private var searchJob: Job? = null // Renamed job to searchJob for clarity
-
+    //searchPlaces allows the lazy column in the bottom sheet to be populated with guesses for the user's search
     fun searchPlaces(query: String) {
         searchJob?.cancel()
         locationAutofill.clear()
@@ -188,7 +190,7 @@ class LocationViewModel(
             }
         }
     }
-
+    //retrieve the coordinates (latitude and longitude) of a place selected from an autocomplete result
     fun getCoordinates(result: AutocompleteResult) {
         val placeFields = listOf(Place.Field.LAT_LNG)
         val request = FetchPlaceRequest.newInstance(result.placeId, placeFields)
@@ -205,7 +207,7 @@ class LocationViewModel(
     }
     val textState = mutableStateOf("")
     var text = ""
-
+    //Gets the address of the current place in the center of the map.
     fun getAddress(latLng: LatLng) {
         viewModelScope.launch {
             try {
@@ -225,6 +227,8 @@ class LocationViewModel(
         }
     }
 }
+
+//Creates a data class for the autocomplete strings and the values held by them
 data class AutocompleteResult(
     val address: String,
     val placeId: String,

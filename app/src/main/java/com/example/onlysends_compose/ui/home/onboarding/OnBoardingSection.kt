@@ -25,7 +25,8 @@ import com.example.onlysends_compose.ui.home.fake_data.FollowsUser
 import com.example.onlysends_compose.ui.home.fake_data.sampleUsers
 import com.example.onlysends_compose.ui.home.theme.OnlySendsTheme
 import com.example.onlysends_compose.ui.home.theme.RoundedCornerShape
-
+//Not used but could be something we implement later.
+//This displays something similar to instagram's suggested friends list to add new people if they are new to the app.
 @Composable
 fun OnBoardingSection(
     modifier: Modifier = Modifier,

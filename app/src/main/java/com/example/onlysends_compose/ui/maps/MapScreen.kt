@@ -65,7 +65,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
 
-
+//Composable for map screen and displaying the map using the Map.kt file as a template
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun MapScreen(
@@ -78,15 +78,15 @@ fun MapScreen(
     val viewModel = remember {
         LocationViewModel(context, activity, user ) // Pass both context and activity
     }
-
+    //Use viewmodel for background functions
     var isMapLoaded by remember {
         mutableStateOf(false)
     }
-
+    //Sets the mapLoaded initially to false since we are unsure if there are permissions and of user location yet
     var bottomSheetVisible by remember { mutableStateOf(false) }
-
+    //Initializes the state of the bottom sheet to false so that it is down initially
     val bottomSheetState = rememberBottomSheetScaffoldState()
-
+    //Remembers the state of the bottom sheet based on whether it is up or down
 
     // updateSearchQuery : passed into CustomSearchBar and updates searchQuery on keystroke change
     val updateSearchQuery: (String) -> Unit = { newQuery ->
@@ -94,11 +94,11 @@ fun MapScreen(
         viewModel.searchPlaces(newQuery)
     }
 
-    val focusRequester = remember { FocusRequester() }
-
+    //Launches with the current lattitude and longitude using viewModel function
     LaunchedEffect(viewModel.currentLatLong) {
         viewModel.getAddress(viewModel.currentLatLong)
     }
+    //Ensures bottomSheetVisibility is initially down
     LaunchedEffect(Unit) {
 //        focusRequester.requestFocus()
         bottomSheetVisible = true
@@ -133,6 +133,7 @@ fun MapScreen(
     }
 }
 
+//Put all sheet content into a separate composable for readability.
 @Composable
 private fun SheetContent(
     viewModel: LocationViewModel,
