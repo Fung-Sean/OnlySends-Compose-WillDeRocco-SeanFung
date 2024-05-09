@@ -3,7 +3,7 @@ package com.example.onlysends_compose.ui.home.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-
+//Theme used for displaying some of the composables
 @Composable
 fun OnlySendsTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

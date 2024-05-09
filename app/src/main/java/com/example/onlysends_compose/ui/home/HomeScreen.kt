@@ -52,6 +52,7 @@ import okhttp3.internal.userAgent
 
 private const val TAG = "HomeScreen"
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+//Needed because we are using something that is experimental or may get depprecated
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,

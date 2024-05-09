@@ -48,19 +48,12 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.rememberCameraPositionState
 
-// Function to convert address to LatLng coordinates
-
-val bostonState = LatLng(
-    42.3601,
-    -71.0589
-)
-val defaultCameraPosition = CameraPosition.fromLatLngZoom(bostonState, 13f)
 @Composable
 fun MapDisplay(
     modifier: Modifier = Modifier,
 
     onMapLoaded: () -> Unit,
-    viewModel: LocationViewModel, // Add LocationViewModel parameter
+    viewModel: LocationViewModel,
     context: android.content.Context,
 ) {
     LocationPermissionHandler(
@@ -70,7 +63,7 @@ fun MapDisplay(
 
     val mapUiSettings by remember { mutableStateOf(MapUiSettings()) }
     val mapProperties by remember { mutableStateOf(MapProperties(isMyLocationEnabled = true)) }
-
+    //Animated content used to display the right information based on the permission, if the map is loading, and if the map is displayed
     AnimatedContent(
         viewModel.locationState, label = "Map",
         contentAlignment = Alignment.Center
@@ -120,7 +113,7 @@ fun MapDisplay(
                         viewModel.getAddress(cameraPositionState.position.target)
                     }
                 }
-
+                //Use GoogleMap composable to display the map on current location
                 GoogleMap(
                     modifier = Modifier.fillMaxSize(),
                     cameraPositionState = cameraPositionState,

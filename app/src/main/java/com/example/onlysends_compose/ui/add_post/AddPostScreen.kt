@@ -66,7 +66,7 @@ import com.example.onlysends_compose.ui.home.theme.signOutColor
 import kotlin.reflect.KFunction1
 
 private const val TAG = "AddPostScreen"
-
+//This is the add posts composable. It allows a user to add a post to the database.
 @Composable
 fun AddPostScreen(
     context: Context? = null,
@@ -74,11 +74,11 @@ fun AddPostScreen(
     navController: NavHostController,
 ) {
     val caption = remember { mutableStateOf("") }
-
+    //Uses a remember state of string to update the value of caption as a user types.
     var selectedImageByUri by remember {
         mutableStateOf<Uri?>(null)
     }
-
+    //Holds the Uri of an image
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = {
@@ -86,6 +86,7 @@ fun AddPostScreen(
             Log.d(TAG, "selected image is: $selectedImageByUri")
         }
     )
+    //Allows a user to choose an image from their photo library
 
     Column(
         modifier = Modifier
@@ -124,7 +125,7 @@ fun AddPostScreen(
             contentDescription = null,
             contentScale = ContentScale.Crop,
         )
-
+        //Async image allows a developer to display an image that is selected  by the uri
         Spacer(modifier = Modifier.padding(40.dp))
 
         OutlinedTextField(

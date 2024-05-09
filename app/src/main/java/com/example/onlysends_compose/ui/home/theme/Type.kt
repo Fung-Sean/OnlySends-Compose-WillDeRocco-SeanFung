@@ -17,7 +17,7 @@ val OpenSans = FontFamily(
     Font(R.font.open_sans_light, FontWeight.Light),
     Font(R.font.open_sans_regular, FontWeight.Normal)
 )
-
+//Different text styles corresponding to different fonts
 val Typography = Typography(
     h6 = TextStyle(
         fontFamily = Lexend,

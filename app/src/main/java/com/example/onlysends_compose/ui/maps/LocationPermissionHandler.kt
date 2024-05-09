@@ -8,6 +8,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.onlysends_compose.ui.maps.LocationViewModel
 import android.Manifest
+
+//This function handles whether or not the app has access to user location
 @Composable
 fun LocationPermissionHandler(
     viewModel: LocationViewModel = viewModel(),

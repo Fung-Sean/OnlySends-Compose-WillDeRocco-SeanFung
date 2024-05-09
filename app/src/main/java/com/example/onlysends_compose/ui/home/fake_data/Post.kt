@@ -1,4 +1,6 @@
 package com.example.onlysends_compose.ui.home.fake_data
+//Fake data to display posts. Taken from a github repo which is linked in the YouTube video
+//for the home screen
 data class Post(
     val id: String,
     val text: String,

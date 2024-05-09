@@ -1,5 +1,5 @@
 package com.example.onlysends_compose.ui.home.fake_data
-
+//Fake data used for initial testing. Can probably delete
 data class FollowsUser(
     val id: Int,
     val name: String,
