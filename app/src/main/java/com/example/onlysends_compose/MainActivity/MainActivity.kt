@@ -1,6 +1,5 @@
 package com.example.onlysends_compose.MainActivity
 
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -9,16 +8,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -30,13 +21,8 @@ import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -56,9 +42,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.navArgument
@@ -69,11 +53,7 @@ import com.example.onlysends_compose.ui.friends.FriendsScreen
 import com.example.onlysends_compose.ui.friends.FriendsViewModel
 import com.example.onlysends_compose.ui.home.HomeScreen
 import com.example.onlysends_compose.ui.home.HomeViewModel
-import com.example.onlysends_compose.ui.home.theme.buttonColor
-import com.example.onlysends_compose.ui.home.theme.signOutColor
-import com.example.onlysends_compose.ui.maps.MapDisplay
 import com.example.onlysends_compose.ui.maps.MapScreen
-//import com.example.onlysends_compose.ui.maps.defaultCameraPosition
 import com.example.onlysends_compose.ui.maps.new_height.AddHeightScreen
 import com.example.onlysends_compose.ui.maps.new_height.AddHeightViewModel
 import com.example.onlysends_compose.ui.search.SearchScreen
@@ -82,7 +62,7 @@ import com.example.onlysends_compose.ui.sign_in.UserData
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.libraries.places.api.Places
 import com.google.firebase.firestore.GeoPoint
-import com.google.maps.android.compose.rememberCameraPositionState
+import com.example.onlysends_compose.BuildConfig
 
 
 private const val TAG = "MainActivity"
@@ -100,8 +80,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "MainActivity loaded")
+        // Access the API key from BuildConfig
+        val mapsApiKey = BuildConfig.MAPS_API_KEY
         MapsInitializer.initialize(getApplicationContext());
-        Places.initialize(applicationContext, "AIzaSyDJgK-hMQ1v8qgXXUg1NFgZgfV7nlZeFCo")
+        Places.initialize(applicationContext, mapsApiKey)
         setContent {
             // navigation bar elements
             val navController = rememberNavController()

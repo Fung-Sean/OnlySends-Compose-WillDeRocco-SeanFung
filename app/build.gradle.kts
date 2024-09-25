@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -8,11 +10,11 @@ plugins {
 secrets {
     // Optionally specify a different file name containing your secrets.
     // The plugin defaults to "local.properties"
-    propertiesFileName = "secrets.properties"
+    propertiesFileName = "local.properties"
 
     // A properties file containing default secret values. This file can be
     // checked in version control.
-    defaultPropertiesFileName = "local.defaults.properties"
+//    defaultPropertiesFileName = "local.defaults.properties"
 
     // Configure which keys should be ignored by the plugin by providing regular expressions.
     // "sdk.dir" is ignored by default.
@@ -32,6 +34,22 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+
+        // NEW: use the following setup to import secrets
+        val keystoreFile = project.rootProject.file("local.properties")
+        val properties = Properties()
+        properties.load(keystoreFile.inputStream())
+
+        val mapsApiKey = properties.getProperty("MAPS_API_KEY") ?: ""
+
+//        buildConfigField(
+//            type = "String",
+//            name = "MAPS_API_KEY",
+//            value = mapsApiKey
+//        )
+        buildConfigField("String", "MAPS_API_KEY", "\"${mapsApiKey}\"")
+
     }
 
     buildTypes {
@@ -42,25 +60,23 @@ android {
                 "proguard-rules.pro"
             )
         }
-    }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-    buildFeatures {
-        compose = true
-    }
+        compileOptions {
+            sourceCompatibility = JavaVersion.VERSION_1_8
+            targetCompatibility = JavaVersion.VERSION_1_8
+        }
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+        buildFeatures {
+            compose = true
+            buildConfig = true
+        }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
+        composeOptions {
+            kotlinCompilerExtensionVersion = "1.5.8"
+        }
     }
-
-
-
 }
 
 dependencies {
